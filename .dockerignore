@@ -1,0 +1,16 @@
+node_modules
+dist
+.astro
+.git
+.github
+.env
+.env.*
+!.env.example
+docs
+*.pdf
+*.jpeg
+*.jpg
+!src/assets/**
+npm-debug.log*
+.DS_Store
+Thumbs.db

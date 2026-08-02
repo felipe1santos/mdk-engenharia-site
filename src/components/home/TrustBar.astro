@@ -1,0 +1,50 @@
+---
+/**
+ * Faixa dos tres pilares da marca, retirados do manual: Planejamento, Execucao
+ * e Compromisso. Fica logo abaixo do hero, sobrepondo-o levemente, para dar
+ * continuidade visual entre a dobra e o resto da pagina.
+ */
+import Icon from '../ui/Icon.astro';
+
+const pillars = [
+  {
+    icon: 'blueprint',
+    title: 'Planejamento',
+    text: 'Levantamento, cálculo e detalhamento antes de qualquer execução.',
+  },
+  {
+    icon: 'hammer',
+    title: 'Execução',
+    text: 'Acompanhamento técnico com cronograma e controle de qualidade.',
+  },
+  {
+    icon: 'shield',
+    title: 'Compromisso',
+    text: 'Responsabilidade técnica registrada e prazo cumprido.',
+  },
+] as const;
+---
+
+<section class="relative z-10 -mt-16 px-5 sm:px-8" aria-label="Pilares da MDK Engenharia">
+  <div
+    class="mx-auto grid w-full max-w-6xl overflow-hidden rounded-2xl bg-white shadow-[0_18px_50px_-18px_rgb(6_18_37_/_0.35)] sm:grid-cols-3"
+  >
+    {
+      pillars.map((p, i) => (
+        <div
+          class="group flex gap-4 border-b border-navy-900/8 p-7 transition-colors duration-300 last:border-b-0 hover:bg-offwhite sm:border-b-0 sm:border-r sm:last:border-r-0"
+          data-reveal
+          style={`--reveal-delay:${i * 110}ms`}
+        >
+          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-navy-800 text-orange-500 transition-all duration-300 group-hover:bg-orange-500 group-hover:text-white">
+            <Icon name={p.icon} class="h-6 w-6" />
+          </span>
+          <div>
+            <h2 class="text-base font-bold uppercase tracking-[0.1em] text-navy-900">{p.title}</h2>
+            <p class="mt-1.5 text-sm leading-relaxed text-navy-900/60">{p.text}</p>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</section>

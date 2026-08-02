@@ -1,0 +1,133 @@
+---
+/**
+ * Hero da home. Unico H1 do documento.
+ *
+ * A foto de fundo tem `loading="eager"` e `fetchpriority="high"` porque e o LCP
+ * da pagina; deixar no lazy atrasaria a metrica que mais pesa no ranqueamento.
+ * O parallax e aplicado por reveal.ts e desligado sob prefers-reduced-motion.
+ */
+import { Image } from 'astro:assets';
+import { site, whatsappUrl } from '../../data/site';
+import { getImage } from '../../lib/images';
+import Button from '../ui/Button.astro';
+import Icon from '../ui/Icon.astro';
+
+const hero = getImage('hero');
+
+const highlights = [
+  'Projeto hidráulico e elétrico',
+  'Aprovação em prefeitura',
+  'Regularização de obras',
+];
+---
+
+{/* `isolate` e obrigatorio: sem um contexto de empilhamento proprio, os filhos
+    com z-index negativo escapam para a raiz e ficam atras do bg-navy-900 desta
+    secao — a foto do hero simplesmente some. */}
+<section class="relative isolate flex min-h-[100svh] items-center overflow-hidden bg-navy-900">
+  <!-- Fundo -->
+  <div class="absolute inset-0 -z-20" data-parallax>
+    <Image
+      src={hero.src}
+      alt={hero.alt}
+      widths={[640, 1024, 1600, 1920]}
+      sizes="100vw"
+      class="h-[115%] w-full object-cover object-center"
+      loading="eager"
+      fetchpriority="high"
+    />
+  </div>
+
+  <!-- Overlays: escurecem o suficiente para o texto passar em contraste AA -->
+  <div
+    class="absolute inset-0 -z-10 bg-gradient-to-r from-navy-900 via-navy-900/85 to-navy-900/40"
+    aria-hidden="true"
+  >
+  </div>
+  <div
+    class="absolute inset-0 -z-10 bg-gradient-to-t from-navy-900 via-transparent to-navy-900/70"
+    aria-hidden="true"
+  >
+  </div>
+  <div
+    class="bg-dots absolute inset-y-0 right-0 -z-10 w-1/2 text-white/[0.07]"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="mx-auto w-full max-w-7xl px-5 pb-24 pt-32 sm:px-8 sm:pb-28 sm:pt-36">
+    <div class="max-w-3xl">
+      <p
+        class="mb-6 inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/80 backdrop-blur-sm"
+        data-reveal
+      >
+        <span class="h-1.5 w-1.5 rounded-full bg-orange-500" aria-hidden="true"></span>
+        Engenharia e Arquitetura em São Paulo
+      </p>
+
+      <h1
+        class="text-[2.5rem] leading-[1.08] text-white sm:text-6xl lg:text-[4.25rem]"
+        data-reveal
+        style="--reveal-delay:100ms"
+      >
+        Projetos de <span class="text-orange-500">instalações</span> e regularização de obras
+      </h1>
+
+      <p
+        class="mt-7 max-w-2xl text-lg leading-relaxed text-white/75 sm:text-xl"
+        data-reveal
+        style="--reveal-delay:200ms"
+      >
+        Projetos hidráulicos, elétricos e toda a documentação técnica necessária para aprovar,
+        executar e regularizar sua obra em São Paulo e Grande SP — com responsabilidade técnica
+        do início ao Habite-se.
+      </p>
+
+      <ul
+        class="mt-8 flex flex-wrap gap-x-6 gap-y-3"
+        data-reveal
+        style="--reveal-delay:280ms"
+      >
+        {
+          highlights.map((h) => (
+            <li class="flex items-center gap-2 text-sm font-medium text-white/85">
+              <Icon name="check" class="h-4 w-4 shrink-0 text-orange-500" />
+              {h}
+            </li>
+          ))
+        }
+      </ul>
+
+      <div
+        class="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center"
+        data-reveal
+        style="--reveal-delay:360ms"
+      >
+        <Button href={whatsappUrl} variant="primary" size="lg" external>
+          <Icon name="whatsapp" class="h-5 w-5" />
+          Solicitar Orçamento
+          <Icon
+            name="arrow-right"
+            class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+          />
+        </Button>
+
+        <Button href="#servicos" variant="outline" size="lg">Conheça os serviços</Button>
+      </div>
+
+      <p class="mt-8 text-sm text-white/50" data-reveal style="--reveal-delay:440ms">
+        {site.tagline}
+      </p>
+    </div>
+  </div>
+
+  <!-- Indicador de rolagem -->
+  <a
+    href="#servicos"
+    class="absolute bottom-24 left-1/2 hidden -translate-x-1/2 cursor-pointer flex-col items-center gap-2 text-white/45 transition-colors hover:text-white sm:flex"
+    aria-label="Rolar para os serviços"
+  >
+    <span class="text-[0.625rem] font-semibold uppercase tracking-[0.2em]">Role</span>
+    <Icon name="chevron-down" class="h-5 w-5 motion-safe:animate-bounce" />
+  </a>
+</section>

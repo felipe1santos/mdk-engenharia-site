@@ -1,0 +1,166 @@
+@import 'tailwindcss';
+
+@import '@fontsource-variable/montserrat/index.css';
+@import '@fontsource-variable/inter/index.css';
+
+/*
+ * Design tokens da MDK.
+ * Cores amostradas diretamente da arte oficial do manual de marca.
+ */
+@theme {
+  --color-navy-900: #061225;
+  --color-navy-800: #0a1c38;
+  --color-navy-700: #12294f;
+  --color-navy-600: #1c3a6b;
+
+  --color-orange-600: #c44d00;
+  --color-orange-500: #e85c00;
+  --color-orange-400: #ff6b0a;
+
+  --color-offwhite: #f5f6f8;
+
+  --font-display: 'Montserrat Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-card: 0 4px 24px -6px rgb(6 18 37 / 0.12);
+  --shadow-card-hover: 0 18px 40px -12px rgb(6 18 37 / 0.28);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Compensa a navbar fixa ao pular para uma ancora. */
+    scroll-padding-top: 5.5rem;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    color: var(--color-navy-900);
+    background-color: #fff;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  /* Foco visivel em toda navegacao por teclado. */
+  :focus-visible {
+    outline: 3px solid var(--color-orange-500);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+}
+
+@layer components {
+  /*
+   * Marcador de conteudo pendente.
+   *
+   * Envolve dados que ainda sao placeholder (numeros, depoimentos, fotos de
+   * portfolio) com um contorno tracejado e uma etiqueta. Existe para que
+   * ninguem publique o site achando que o conteudo e real. Remover a flag
+   * `placeholder` no arquivo de src/data/ faz o marcador sumir sozinho.
+   */
+  .ph {
+    position: relative;
+    outline: 1px dashed color-mix(in srgb, var(--color-navy-800) 45%, transparent);
+    outline-offset: 10px;
+    border-radius: 4px;
+  }
+
+  /* Azul-marinho em vez de laranja: o marcador precisa ser legivel tambem sobre
+     a faixa laranja, onde laranja-sobre-laranja desaparece. */
+  .ph::after {
+    content: 'conteúdo a confirmar';
+    position: absolute;
+    top: -1.55rem;
+    left: 0;
+    z-index: 5;
+    padding: 0.1rem 0.5rem;
+    font-family: var(--font-sans);
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--color-navy-800);
+    border-radius: 999px;
+    pointer-events: none;
+  }
+}
+
+@layer utilities {
+  /* Recorte diagonal da faixa de numeros, como na referencia do cliente. */
+  .clip-slant {
+    clip-path: polygon(0 3.5rem, 100% 0, 100% 100%, 0 100%);
+  }
+
+  @media (max-width: 48rem) {
+    .clip-slant {
+      clip-path: polygon(0 1.75rem, 100% 0, 100% 100%, 0 100%);
+    }
+  }
+
+  /* Textura de pontos herdada da identidade visual da marca. */
+  .bg-dots {
+    background-image: radial-gradient(currentColor 1px, transparent 1px);
+    background-size: 18px 18px;
+  }
+}
+
+/*
+ * Estado inicial das animacoes de rolagem.
+ *
+ * Fica no CSS (e nao no JS) para que o elemento ja nasca invisivel e nao pisque
+ * antes do observer entrar em acao. `no-js` garante que, sem JavaScript, todo o
+ * conteudo continue visivel — requisito de acessibilidade e de indexacao.
+ */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+html.no-js [data-reveal] {
+  opacity: 1;
+  transform: none;
+}
+
+/*
+ * Respeita quem pediu menos movimento no sistema operacional. Movimento
+ * involuntario pode causar enjoo e crise vestibular; a regra abaixo desliga
+ * transicoes, parallax e contadores animados.
+ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

@@ -1,0 +1,42 @@
+---
+/**
+ * Demais servicos, em grid compacto. Sao secundarios no foco comercial atual,
+ * mas precisam existir na pagina: quem busca "impermeabilizacao" ou "reforma"
+ * tambem e cliente, e o texto amplia a cobertura semantica da home.
+ */
+import { secondaryServices } from '../../data/services';
+import Section from '../ui/Section.astro';
+import SectionTitle from '../ui/SectionTitle.astro';
+import Icon from '../ui/Icon.astro';
+---
+
+<Section tone="white" space="md" width="wide">
+  <SectionTitle
+    eyebrow="Também atendemos"
+    title="Outras frentes de atuação"
+    subtitle="Da estrutura ao acabamento, com a mesma responsabilidade técnica."
+    as="h2"
+  />
+
+  <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    {
+      secondaryServices.map((service, i) => (
+        <article
+          class="group relative overflow-hidden rounded-xl border border-navy-900/10 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:border-orange-500/40 hover:shadow-card"
+          data-reveal
+          style={`--reveal-delay:${i * 90}ms`}
+        >
+          <span
+            class="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-orange-500 transition-transform duration-400 ease-out group-hover:scale-x-100"
+            aria-hidden="true"
+          />
+          <span class="flex h-11 w-11 items-center justify-center rounded-lg bg-navy-800/5 text-navy-800 transition-colors duration-300 group-hover:bg-orange-500 group-hover:text-white">
+            <Icon name={service.icon} class="h-5 w-5" />
+          </span>
+          <h3 class="mt-4 text-base leading-snug text-navy-900">{service.title}</h3>
+          <p class="mt-2 text-sm leading-relaxed text-navy-900/60">{service.summary}</p>
+        </article>
+      ))
+    }
+  </div>
+</Section>

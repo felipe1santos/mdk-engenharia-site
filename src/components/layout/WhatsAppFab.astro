@@ -1,0 +1,53 @@
+---
+/**
+ * Botao flutuante do WhatsApp.
+ *
+ * Aparece so depois que o visitante rola um pouco, para nao cobrir o hero na
+ * primeira impressao — reveal.ts alterna a classe `is-visible`.
+ */
+import { whatsappUrl } from '../../data/site';
+import Icon from '../ui/Icon.astro';
+---
+
+<a
+  href={whatsappUrl}
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="Falar com a MDK Engenharia pelo WhatsApp"
+  class="group fixed bottom-5 right-5 z-40 flex h-14 w-14 translate-y-4 cursor-pointer items-center justify-center rounded-full bg-[#25D366] text-white opacity-0 shadow-xl shadow-black/25 transition-all duration-300 ease-out hover:bg-[#20bd5a] sm:bottom-7 sm:right-7 sm:h-16 sm:w-16"
+  data-whatsapp-fab
+>
+  <span
+    class="absolute inset-0 -z-10 animate-ping rounded-full bg-[#25D366]/40 [animation-duration:2.6s]"
+    aria-hidden="true"></span>
+  <Icon name="whatsapp" class="h-7 w-7 sm:h-8 sm:w-8" />
+
+  <span
+    class="pointer-events-none absolute right-full mr-3 hidden whitespace-nowrap rounded-lg bg-navy-900 px-3 py-2 text-sm font-semibold text-white opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100 lg:block"
+  >
+    Fale conosco
+  </span>
+</a>
+
+<style>
+  /* Mesma armadilha da navbar: `translate-y-4` do Tailwind 4 escreve em
+     `translate`, entao e `translate` que precisa ser zerado aqui. */
+  [data-whatsapp-fab].is-visible {
+    opacity: 1;
+    translate: none;
+  }
+
+  [data-whatsapp-fab].is-visible:hover {
+    scale: 1.06;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-whatsapp-fab] {
+      opacity: 1;
+      translate: none;
+    }
+    [data-whatsapp-fab] span[aria-hidden='true'] {
+      animation: none;
+    }
+  }
+</style>

@@ -1,0 +1,74 @@
+---
+/**
+ * Cidades atendidas — bloco de SEO local, posicionado logo acima do rodape.
+ *
+ * Cada cartao traz uma frase natural que combina servico e cidade. Sao catorze,
+ * de proposito: despejar todas as combinacoes possiveis de servico x cidade
+ * configura doorway content e e penalizado pelo Google. A mesma lista alimenta
+ * `areaServed` no JSON-LD, entao o dado estruturado e o texto visivel nunca
+ * divergem.
+ */
+import { cities } from '../../data/cities';
+import { site } from '../../data/site';
+import Section from '../ui/Section.astro';
+import SectionTitle from '../ui/SectionTitle.astro';
+import Icon from '../ui/Icon.astro';
+---
+
+<Section id="areas-de-atuacao" tone="navy" width="wide" class="relative overflow-hidden">
+  <div
+    class="bg-dots pointer-events-none absolute inset-0 text-white/[0.06]"
+    aria-hidden="true"
+  >
+  </div>
+  <div
+    class="pointer-events-none absolute -bottom-32 -left-32 h-96 w-96 rounded-full bg-orange-500/10 blur-3xl"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="relative">
+    <SectionTitle
+      eyebrow="Onde atendemos"
+      title="Áreas de <span class='text-orange-500'>atuação</span>"
+      subtitle="Projetos, documentação e acompanhamento técnico em São Paulo e em toda a Região Metropolitana."
+      tone="light"
+    />
+
+    <ul class="mt-14 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        cities.map((city, i) => (
+          <li data-reveal style={`--reveal-delay:${(i % 3) * 80}ms`}>
+            <div
+              class:list={[
+                'group flex h-full items-start gap-3 rounded-xl border p-4 transition-all duration-300 hover:-translate-y-0.5',
+                city.featured
+                  ? 'border-orange-500/45 bg-orange-500/10 hover:bg-orange-500/15'
+                  : 'border-white/10 bg-white/[0.04] hover:border-white/25 hover:bg-white/[0.07]',
+              ]}
+            >
+              <Icon
+                name="pin"
+                class="mt-0.5 h-4 w-4 shrink-0 text-orange-500 transition-transform duration-300 group-hover:scale-115"
+              />
+              <div>
+                <h3 class="font-display text-sm font-bold text-white">{city.name}</h3>
+                <p class="mt-1 text-sm leading-snug text-white/60">{city.phrase}</p>
+              </div>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="mt-10 text-center text-sm text-white/50" data-reveal>
+      Não encontrou sua cidade? A {site.name} avalia atendimento em toda a Grande São Paulo —
+      <a
+        href="#contato"
+        class="cursor-pointer font-semibold text-orange-400 underline-offset-4 transition-colors hover:text-orange-500 hover:underline"
+      >
+        fale com a gente
+      </a>.
+    </p>
+  </div>
+</Section>

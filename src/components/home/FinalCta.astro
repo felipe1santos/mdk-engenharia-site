@@ -1,0 +1,63 @@
+---
+/**
+ * Chamada final antes do rodape. Fecha a pagina com a acao que interessa:
+ * abrir conversa no WhatsApp.
+ */
+import { Image } from 'astro:assets';
+import { site, whatsappUrl } from '../../data/site';
+import { getImage } from '../../lib/images';
+import Button from '../ui/Button.astro';
+import Icon from '../ui/Icon.astro';
+
+const bg = getImage('cta');
+---
+
+<section class="relative overflow-hidden bg-navy-800">
+  <Image
+    src={bg.src}
+    alt=""
+    widths={[900, 1400, 1920]}
+    sizes="100vw"
+    class="absolute inset-0 h-full w-full object-cover opacity-20"
+    loading="lazy"
+    aria-hidden="true"
+  />
+  <div
+    class="absolute inset-0 bg-gradient-to-r from-navy-900 via-navy-800/90 to-navy-800/60"
+    aria-hidden="true"
+  >
+  </div>
+  <div
+    class="absolute inset-y-0 right-0 w-1/3 -skew-x-12 bg-orange-500/10"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div
+    class="relative mx-auto flex w-full max-w-6xl flex-col gap-10 px-5 py-20 sm:px-8 sm:py-24 lg:flex-row lg:items-center lg:justify-between"
+  >
+    <div class="max-w-2xl" data-reveal>
+      <p class="text-xs font-bold uppercase tracking-[0.22em] text-orange-500">
+        Vamos começar
+      </p>
+      <h2 class="mt-4 text-3xl leading-tight text-white sm:text-4xl lg:text-[2.75rem]">
+        Precisa de projeto, documentação ou regularização?
+      </h2>
+      <p class="mt-5 text-lg leading-relaxed text-white/70">
+        Envie os dados da sua obra e receba um orçamento com escopo detalhado e prazo definido.
+      </p>
+      <p class="mt-4 text-sm text-white/45">{site.contact.hours}</p>
+    </div>
+
+    <div class="flex shrink-0 flex-col gap-4 sm:flex-row lg:flex-col" data-reveal style="--reveal-delay:120ms">
+      <Button href={whatsappUrl} variant="primary" size="lg" external>
+        <Icon name="whatsapp" class="h-5 w-5" />
+        Falar no WhatsApp
+      </Button>
+      <Button href={`tel:${site.contact.phoneE164}`} variant="outline" size="lg">
+        <Icon name="phone" class="h-5 w-5" />
+        {site.contact.phoneDisplay}
+      </Button>
+    </div>
+  </div>
+</section>

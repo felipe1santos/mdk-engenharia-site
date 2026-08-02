@@ -1,0 +1,189 @@
+---
+/**
+ * Rodape institucional.
+ *
+ * Quatro colunas (marca, servicos, institucional, contato) e barra inferior com
+ * razao social e CNPJ. O bloco de contato usa microdata basica e os mesmos dados
+ * do JSON-LD, vindos de src/data/site.ts.
+ *
+ * Nao ha simbolo de marca registrada: o pedido no INPI (no 941017087) ainda esta
+ * em exame, entao usar "R" ou "Marca Registrada" seria declaracao falsa.
+ */
+import { Image } from 'astro:assets';
+import { site, fullAddress, whatsappUrl, mapDirectionsUrl } from '../../data/site';
+import { footerNav } from '../../data/navigation';
+import logoFull from '../../assets/logo/mdk-logo-full-light.png';
+import Icon from '../ui/Icon.astro';
+
+// Ano fixo: `new Date()` num build estatico congela o ano do momento do build e
+// passa a mentir na virada. Atualizar aqui a cada ano, ou trocar por um script
+// no cliente se o cliente preferir.
+const year = 2026;
+
+const socials = [
+  { name: 'instagram', label: 'Instagram', href: site.social.instagram },
+  { name: 'facebook', label: 'Facebook', href: site.social.facebook },
+  { name: 'linkedin', label: 'LinkedIn', href: site.social.linkedin },
+] as const;
+---
+
+<footer id="contato" class="relative overflow-hidden bg-navy-900 text-white">
+  <div
+    class="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-orange-500/10 blur-3xl"
+    aria-hidden="true"
+  >
+  </div>
+  <div
+    class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-orange-500/60 to-transparent"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8 sm:py-20">
+    <div class="grid gap-12 md:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+      <!-- Marca -->
+      <div class="lg:pr-6" data-reveal>
+        <Image
+          src={logoFull}
+          alt={`Logo da ${site.legalName}`}
+          widths={[240, 413]}
+          sizes="220px"
+          class="h-auto w-52"
+          loading="lazy"
+        />
+        <p class="mt-6 text-sm leading-relaxed text-white/60">
+          {site.shortDescription}
+        </p>
+
+        <div class="mt-6 flex gap-3">
+          {
+            socials.map((s) => (
+              <a
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${site.name} no ${s.label}`}
+                class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/15 text-white/70 transition-all duration-300 hover:-translate-y-0.5 hover:border-orange-500 hover:bg-orange-500 hover:text-white"
+              >
+                <Icon name={s.name} class="h-4 w-4" />
+              </a>
+            ))
+          }
+        </div>
+      </div>
+
+      <!-- Servicos -->
+      <nav aria-labelledby="footer-servicos" data-reveal style="--reveal-delay:80ms">
+        <h2 id="footer-servicos" class="text-sm font-bold uppercase tracking-[0.16em] text-white">
+          Serviços
+        </h2>
+        <span class="mt-3 block h-0.5 w-9 bg-orange-500" aria-hidden="true"></span>
+        <ul class="mt-5 space-y-3">
+          {
+            footerNav.servicos.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  class="group inline-flex cursor-pointer items-center gap-2 text-sm text-white/60 transition-colors hover:text-orange-400"
+                >
+                  <span class="h-px w-0 bg-orange-400 transition-all duration-300 group-hover:w-3" />
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <!-- Institucional -->
+      <nav aria-labelledby="footer-institucional" data-reveal style="--reveal-delay:160ms">
+        <h2
+          id="footer-institucional"
+          class="text-sm font-bold uppercase tracking-[0.16em] text-white"
+        >
+          Institucional
+        </h2>
+        <span class="mt-3 block h-0.5 w-9 bg-orange-500" aria-hidden="true"></span>
+        <ul class="mt-5 space-y-3">
+          {
+            footerNav.institucional.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  class="group inline-flex cursor-pointer items-center gap-2 text-sm text-white/60 transition-colors hover:text-orange-400"
+                >
+                  <span class="h-px w-0 bg-orange-400 transition-all duration-300 group-hover:w-3" />
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <!-- Contato -->
+      <div data-reveal style="--reveal-delay:240ms">
+        <h2 class="text-sm font-bold uppercase tracking-[0.16em] text-white">Contato</h2>
+        <span class="mt-3 block h-0.5 w-9 bg-orange-500" aria-hidden="true"></span>
+
+        <ul class="mt-5 space-y-4 text-sm text-white/60">
+          <li>
+            <a
+              href={mapDirectionsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex cursor-pointer gap-3 transition-colors hover:text-orange-400"
+            >
+              <Icon name="pin" class="mt-0.5 h-4 w-4 shrink-0 text-orange-500" />
+              <address class="not-italic leading-relaxed">{fullAddress}</address>
+            </a>
+          </li>
+          <li>
+            <a
+              href={`tel:${site.contact.phoneE164}`}
+              class="flex cursor-pointer items-center gap-3 transition-colors hover:text-orange-400"
+            >
+              <Icon name="phone" class="h-4 w-4 shrink-0 text-orange-500" />
+              {site.contact.phoneDisplay}
+            </a>
+          </li>
+          <li>
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex cursor-pointer items-center gap-3 transition-colors hover:text-orange-400"
+            >
+              <Icon name="whatsapp" class="h-4 w-4 shrink-0 text-orange-500" />
+              WhatsApp
+            </a>
+          </li>
+          <li>
+            <a
+              href={`mailto:${site.contact.email}`}
+              class="flex cursor-pointer items-center gap-3 break-all transition-colors hover:text-orange-400"
+            >
+              <Icon name="mail" class="h-4 w-4 shrink-0 text-orange-500" />
+              {site.contact.email}
+            </a>
+          </li>
+          <li class="flex items-center gap-3">
+            <Icon name="clock" class="h-4 w-4 shrink-0 text-orange-500" />
+            {site.contact.hours}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="border-t border-white/10">
+    <div
+      class="mx-auto flex w-full max-w-6xl flex-col gap-3 px-5 pb-24 pt-6 text-xs text-white/55 sm:px-8 md:flex-row md:items-center md:justify-between md:pb-6"
+    >
+      <p>
+        © {year} {site.legalName} — CNPJ {site.cnpj}. Todos os direitos reservados.
+      </p>
+      <p class="md:text-right">Imagens ilustrativas de banco (Pexels).</p>
+    </div>
+  </div>
+</footer>

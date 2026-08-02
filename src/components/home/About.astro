@@ -1,0 +1,107 @@
+---
+/**
+ * Secao institucional.
+ *
+ * Traz o significado do simbolo direto do manual de marca — o K invertido
+ * representa a rigidez estrutural e a coluna de armacao representa estabilidade.
+ * Contar isso e o que separa um "sobre nos" generico de uma pagina que constroi
+ * autoridade.
+ */
+import { Image } from 'astro:assets';
+import { site } from '../../data/site';
+import { getImage } from '../../lib/images';
+import Section from '../ui/Section.astro';
+import SectionTitle from '../ui/SectionTitle.astro';
+import Icon from '../ui/Icon.astro';
+import logoSymbol from '../../assets/logo/mdk-symbol-light.png';
+
+const about = getImage('about');
+
+const values = [
+  { title: 'Segurança', text: 'Normas técnicas seguidas à risca em cada projeto.' },
+  { title: 'Qualidade', text: 'Detalhamento executivo que evita retrabalho na obra.' },
+  { title: 'Prazo', text: 'Cronograma definido e cumprido, da entrega à aprovação.' },
+  { title: 'Resultados', text: 'Projeto aprovado e obra regularizada, sem pendências.' },
+];
+---
+
+<Section id="sobre" tone="white" width="wide">
+  <div class="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
+    <!-- Imagem. `isolate` mantem a textura de pontos com z-index negativo dentro
+         deste contexto de empilhamento, em vez de deixa-la cair atras do fundo
+         da secao. -->
+    <div class="relative isolate" data-reveal>
+      <div class="relative overflow-hidden rounded-2xl shadow-card-hover">
+        <Image
+          src={about.src}
+          alt={about.alt}
+          widths={[500, 800, 1100]}
+          sizes="(min-width: 1024px) 520px, 92vw"
+          class="aspect-4/3 w-full object-cover"
+          loading="lazy"
+        />
+      </div>
+
+      <!-- Cartao do simbolo, sobreposto -->
+      <div
+        class="absolute -bottom-7 -right-4 hidden w-56 rounded-2xl bg-navy-800 p-6 shadow-xl sm:block lg:-right-8"
+      >
+        <Image
+          src={logoSymbol}
+          alt="Símbolo da MDK: coluna de armação com o K invertido"
+          widths={[120, 173]}
+          class="h-14 w-auto"
+          loading="lazy"
+        />
+        <p class="mt-4 text-xs leading-relaxed text-white/65">
+          O <strong class="text-white">K invertido</strong> representa a rigidez estrutural — a força
+          necessária para deformar uma estrutura.
+        </p>
+      </div>
+
+      <div
+        class="bg-dots absolute -left-6 -top-6 -z-10 h-32 w-32 text-orange-500/25"
+        aria-hidden="true"
+      >
+      </div>
+    </div>
+
+    <!-- Texto -->
+    <div>
+      <SectionTitle
+        eyebrow="Sobre a MDK"
+        title="Engenharia que sustenta <span class='text-orange-600'>grandes obras</span>"
+        align="left"
+      />
+
+      <div class="mt-6 space-y-5 text-base leading-relaxed text-navy-900/70" data-reveal>
+        <p>
+          A {site.legalName} atua em São Paulo e região metropolitana com projetos de instalações
+          hidráulicas e elétricas, documentação técnica e regularização de edificações. Cada
+          entrega sai com memorial de cálculo, detalhamento executivo e responsabilidade técnica
+          registrada.
+        </p>
+        <p>
+          A armação de coluna presente na marca não é enfeite: é o símbolo do que sustenta o
+          trabalho — estabilidade, solidez e resistência. É assim que tratamos projeto e obra.
+        </p>
+      </div>
+
+      <dl class="mt-9 grid gap-x-6 gap-y-5 sm:grid-cols-2">
+        {
+          values.map((v, i) => (
+            <div class="flex gap-3" data-reveal style={`--reveal-delay:${i * 90}ms`}>
+              <Icon name="check" class="mt-1 h-5 w-5 shrink-0 text-orange-500" />
+              <div>
+                <dt class="font-display text-sm font-bold uppercase tracking-[0.1em] text-navy-900">
+                  {v.title}
+                </dt>
+                <dd class="mt-1 text-sm leading-relaxed text-navy-900/60">{v.text}</dd>
+              </div>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+</Section>

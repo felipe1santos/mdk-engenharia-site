@@ -1,0 +1,86 @@
+{
+  "hero": {
+    "file": "hero.jpg",
+    "alt": "Engenheiro analisando plantas técnicas em canteiro de obras",
+    "photographer": "Thirdman",
+    "photographerUrl": "https://www.pexels.com/@thirdman",
+    "sourceUrl": "https://www.pexels.com/photo/a-man-wearing-a-hard-hat-and-a-face-mask-while-looking-at-a-blueprint-8482546/"
+  },
+  "service-hidraulico": {
+    "file": "service-hidraulico.jpg",
+    "alt": "Barrilete hidráulico com registros e manômetro instalado em obra",
+    "photographer": "Pavel Danilyuk",
+    "photographerUrl": "https://www.pexels.com/@pavel-danilyuk",
+    "sourceUrl": "https://www.pexels.com/photo/steel-pipes-with-pressure-gauge-7937300/"
+  },
+  "service-eletrico": {
+    "file": "service-eletrico.jpg",
+    "alt": "Eletricistas instalando eletrodutos em alvenaria",
+    "photographer": "Mikael Blomkvist",
+    "photographerUrl": "https://www.pexels.com/@mikael-blomkvist",
+    "sourceUrl": "https://www.pexels.com/photo/a-man-and-a-woman-wearing-goggles-holding-red-pipes-8961701/"
+  },
+  "service-documentacao": {
+    "file": "service-documentacao.jpg",
+    "alt": "Documentação técnica e plantas sobre a mesa de projeto",
+    "photographer": "Yaroslav Shuraev",
+    "photographerUrl": "https://www.pexels.com/@yaroslav-shuraev",
+    "sourceUrl": "https://www.pexels.com/photo/a-person-holding-a-pencil-6281167/"
+  },
+  "about": {
+    "file": "about.jpg",
+    "alt": "Equipe de engenharia civil em visita técnica à obra",
+    "photographer": "Mikael Blomkvist",
+    "photographerUrl": "https://www.pexels.com/@mikael-blomkvist",
+    "sourceUrl": "https://www.pexels.com/photo/a-two-engineer-talking-together-8961073/"
+  },
+  "cta": {
+    "file": "cta.jpg",
+    "alt": "Edificação moderna em fase de construção",
+    "photographer": "Tito Zzzz",
+    "photographerUrl": "https://www.pexels.com/@tizzy",
+    "sourceUrl": "https://www.pexels.com/photo/construction-cranes-over-park-24506242/"
+  },
+  "portfolio-1": {
+    "file": "portfolio-1.jpg",
+    "alt": "Projeto hidráulico residencial executado",
+    "photographer": "Arshad Khan",
+    "photographerUrl": "https://www.pexels.com/@arshad-khan-1370011891",
+    "sourceUrl": "https://www.pexels.com/photo/modern-minimalist-bathroom-interior-design-35868666/"
+  },
+  "portfolio-2": {
+    "file": "portfolio-2.jpg",
+    "alt": "Instalações elétricas prediais em execução",
+    "photographer": "Pavel Danilyuk",
+    "photographerUrl": "https://www.pexels.com/@pavel-danilyuk",
+    "sourceUrl": "https://www.pexels.com/photo/close-up-of-wires-in-outlets-7937305/"
+  },
+  "portfolio-3": {
+    "file": "portfolio-3.jpg",
+    "alt": "Edificação regularizada junto à prefeitura",
+    "photographer": "Jorge Maciel",
+    "photographerUrl": "https://www.pexels.com/@jorge-maciel-1464608166",
+    "sourceUrl": "https://www.pexels.com/photo/apartment-building-next-to-modern-skyscraper-26821383/"
+  },
+  "portfolio-4": {
+    "file": "portfolio-4.jpg",
+    "alt": "Estrutura em concreto armado com armação de pilar",
+    "photographer": "sumit kumar",
+    "photographerUrl": "https://www.pexels.com/@sumitkumar8",
+    "sourceUrl": "https://www.pexels.com/photo/construction-workers-building-concrete-columns-14546924/"
+  },
+  "portfolio-5": {
+    "file": "portfolio-5.jpg",
+    "alt": "Reforma de ambiente comercial concluída",
+    "photographer": "Anastasia  Shuraeva",
+    "photographerUrl": "https://www.pexels.com/@anastasia-shuraeva",
+    "sourceUrl": "https://www.pexels.com/photo/overhead-shot-of-home-improvement-materials-5481512/"
+  },
+  "portfolio-6": {
+    "file": "portfolio-6.jpg",
+    "alt": "Supervisão técnica de obra em andamento",
+    "photographer": "Mikael Blomkvist",
+    "photographerUrl": "https://www.pexels.com/@mikael-blomkvist",
+    "sourceUrl": "https://www.pexels.com/photo/an-engineer-using-a-digital-tablet-8961008/"
+  }
+}

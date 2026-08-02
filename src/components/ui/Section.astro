@@ -1,0 +1,50 @@
+---
+/**
+ * Envelope de secao: cuida do id de ancora, do fundo e do espacamento vertical.
+ * Existe para que as secoes da home nao repitam a mesma pilha de classes de
+ * padding e container — e para que ajustar o ritmo vertical do site seja uma
+ * edicao em um arquivo so.
+ */
+interface Props {
+  id?: string;
+  tone?: 'white' | 'offwhite' | 'navy';
+  /** Espacamento vertical. 'none' para secoes que controlam o proprio padding. */
+  space?: 'none' | 'sm' | 'md' | 'lg';
+  /** Largura maxima do conteudo interno. */
+  width?: 'default' | 'wide' | 'full';
+  class?: string;
+}
+
+const {
+  id,
+  tone = 'white',
+  space = 'lg',
+  width = 'default',
+  class: className = '',
+} = Astro.props;
+
+const tones = {
+  white: 'bg-white text-navy-900',
+  offwhite: 'bg-offwhite text-navy-900',
+  navy: 'bg-navy-800 text-white',
+};
+
+const spaces = {
+  none: '',
+  sm: 'py-12 sm:py-16',
+  md: 'py-16 sm:py-20',
+  lg: 'py-20 sm:py-28',
+};
+
+const widths = {
+  default: 'mx-auto w-full max-w-6xl px-5 sm:px-8',
+  wide: 'mx-auto w-full max-w-7xl px-5 sm:px-8',
+  full: 'w-full',
+};
+---
+
+<section id={id} class:list={[tones[tone], spaces[space], className]}>
+  <div class={widths[width]}>
+    <slot />
+  </div>
+</section>

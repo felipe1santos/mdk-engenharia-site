@@ -1,0 +1,180 @@
+---
+/**
+ * Navbar fixa.
+ *
+ * Comeca transparente sobre o hero e ganha fundo azul-marinho solido ao rolar —
+ * a transicao e controlada pela classe `is-scrolled`, aplicada em reveal.ts.
+ * O logo e um link para a home, como pedido.
+ *
+ * O menu mobile e um drawer em tela cheia. Enquanto aberto, o scroll do body e
+ * travado e o foco fica confinado ao drawer; Esc fecha.
+ */
+import { Image } from 'astro:assets';
+import { mainNav } from '../../data/navigation';
+import { site, whatsappUrl } from '../../data/site';
+import logoLight from '../../assets/logo/mdk-logo-light.png';
+import Icon from '../ui/Icon.astro';
+---
+
+<header
+  id="site-header"
+  class="fixed inset-x-0 top-0 z-50 transition-all duration-300 ease-out"
+  data-header
+>
+  <div
+    class="absolute inset-0 -z-10 bg-navy-800/95 opacity-0 shadow-lg shadow-navy-900/20 backdrop-blur-md transition-opacity duration-300 ease-out"
+    data-header-bg
+    aria-hidden="true"
+  >
+  </div>
+
+  <nav
+    class="mx-auto flex w-full max-w-7xl items-center justify-between gap-6 px-5 py-4 transition-[padding] duration-300 sm:px-8"
+    aria-label="Navegação principal"
+    data-header-inner
+  >
+    <a
+      href="/"
+      class="shrink-0 cursor-pointer transition-transform duration-300 hover:scale-[1.03]"
+      aria-label={`${site.name} — ir para a página inicial`}
+    >
+      <Image
+        src={logoLight}
+        alt={`Logo da ${site.legalName}`}
+        widths={[220, 413]}
+        sizes="(min-width: 1024px) 190px, 150px"
+        class="h-9 w-auto sm:h-11"
+        loading="eager"
+        data-logo
+      />
+    </a>
+
+    <ul class="hidden items-center gap-1 lg:flex">
+      {
+        mainNav.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class="relative cursor-pointer rounded-full px-4 py-2 text-sm font-semibold text-white/85 transition-colors duration-200 hover:text-white"
+            >
+              <span
+                class="absolute inset-x-4 bottom-1 h-0.5 origin-left scale-x-0 bg-orange-500 transition-[scale] duration-300 ease-out"
+                aria-hidden="true"
+                data-underline
+              />
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="flex items-center gap-3">
+      <a
+        href={whatsappUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hidden cursor-pointer items-center gap-2 rounded-full bg-orange-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-orange-500/25 transition-all duration-300 hover:-translate-y-0.5 hover:bg-orange-400 hover:shadow-xl sm:inline-flex"
+      >
+        <Icon name="whatsapp" class="h-4 w-4" />
+        Solicitar Orçamento
+      </a>
+
+      <button
+        type="button"
+        class="inline-flex cursor-pointer items-center justify-center rounded-lg p-2 text-white transition-colors hover:bg-white/10 lg:hidden"
+        aria-label="Abrir menu"
+        aria-expanded="false"
+        aria-controls="mobile-drawer"
+        data-menu-open
+      >
+        <Icon name="menu" class="h-7 w-7" />
+      </button>
+    </div>
+  </nav>
+</header>
+
+<!-- Drawer mobile -->
+<div
+  id="mobile-drawer"
+  class="invisible fixed inset-0 z-[60] opacity-0 transition-[opacity,visibility] duration-300 lg:hidden"
+  data-drawer
+>
+  <div class="absolute inset-0 bg-navy-900/70 backdrop-blur-sm" data-drawer-backdrop></div>
+
+  <div
+    class="absolute inset-y-0 right-0 flex w-full max-w-sm translate-x-full flex-col bg-navy-800 shadow-2xl transition-[translate] duration-300 ease-out"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Menu de navegação"
+    data-drawer-panel
+  >
+    <div class="flex items-center justify-between border-b border-white/10 px-5 py-4">
+      <Image
+        src={logoLight}
+        alt={`Logo da ${site.legalName}`}
+        widths={[180]}
+        class="h-9 w-auto"
+        loading="eager"
+      />
+      <button
+        type="button"
+        class="cursor-pointer rounded-lg p-2 text-white transition-colors hover:bg-white/10"
+        aria-label="Fechar menu"
+        data-menu-close
+      >
+        <Icon name="close" class="h-6 w-6" />
+      </button>
+    </div>
+
+    <ul class="flex-1 overflow-y-auto px-3 py-4">
+      {
+        mainNav.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class="flex cursor-pointer items-center justify-between rounded-xl px-4 py-3.5 text-base font-semibold text-white/90 transition-colors hover:bg-white/10 hover:text-white"
+              data-drawer-link
+            >
+              {item.label}
+              <Icon name="arrow-right" class="h-4 w-4 text-orange-500" />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="border-t border-white/10 p-5">
+      <a
+        href={whatsappUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-orange-500 px-6 py-3.5 text-base font-bold text-white transition-colors hover:bg-orange-400"
+      >
+        <Icon name="whatsapp" class="h-5 w-5" />
+        Solicitar Orçamento
+      </a>
+      <p class="mt-4 text-center text-sm text-white/55">{site.contact.hours}</p>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* `scale`, nao `transform`: `scale-x-0` do Tailwind 4 escreve na propriedade
+     `scale`. Ver a mesma nota no painel do drawer. */
+  a:hover [data-underline] {
+    scale: 1 1;
+  }
+
+  [data-drawer].is-open {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  /* `translate`, nao `transform`: no Tailwind 4 a utilitaria `translate-x-full`
+     escreve na propriedade `translate`. Sobrescrever `transform` nao move nada e
+     o painel fica parado fora da tela. */
+  [data-drawer].is-open [data-drawer-panel] {
+    translate: none;
+  }
+</style>

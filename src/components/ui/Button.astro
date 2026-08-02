@@ -1,0 +1,44 @@
+---
+/**
+ * Botao/link de acao. Sempre renderiza <a> — no site institucional toda acao e
+ * navegacao ou abertura do WhatsApp, nunca submit.
+ */
+interface Props {
+  href: string;
+  variant?: 'primary' | 'outline' | 'ghost';
+  size?: 'md' | 'lg';
+  external?: boolean;
+  class?: string;
+}
+
+const { href, variant = 'primary', size = 'md', external = false, class: className = '' } = Astro.props;
+
+const base =
+  'group inline-flex cursor-pointer items-center justify-center gap-2 rounded-full font-semibold tracking-wide transition-all duration-300 ease-out';
+
+const variants = {
+  primary:
+    'bg-orange-500 text-white shadow-lg shadow-orange-500/25 hover:bg-orange-400 hover:shadow-xl hover:shadow-orange-500/35 hover:-translate-y-0.5',
+  outline:
+    'border-2 border-white/70 text-white hover:border-white hover:bg-white hover:text-navy-800 hover:-translate-y-0.5',
+  ghost:
+    'border-2 border-navy-800/15 text-navy-800 hover:border-orange-500 hover:text-orange-600 hover:-translate-y-0.5',
+};
+
+const sizes = {
+  md: 'px-6 py-3 text-sm',
+  lg: 'px-8 py-4 text-base',
+};
+
+const rel = external ? 'noopener noreferrer' : undefined;
+const target = external ? '_blank' : undefined;
+---
+
+<a
+  href={href}
+  rel={rel}
+  target={target}
+  class:list={[base, variants[variant], sizes[size], className]}
+>
+  <slot />
+</a>

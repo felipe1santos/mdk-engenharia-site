@@ -1,0 +1,87 @@
+---
+/**
+ * Os tres servicos em destaque — o foco comercial atual da MDK.
+ *
+ * Cada card lista itens concretos do escopo. Alem de informar, esses itens sao
+ * o conteudo que faz a pagina aparecer em buscas de cauda longa ("diagrama
+ * unifilar", "padrao de entrada", "Habite-se"), que e onde esta a intencao de
+ * contratacao real.
+ */
+import { Image } from 'astro:assets';
+import { primaryServices } from '../../data/services';
+import { whatsappUrl } from '../../data/site';
+import { getImage } from '../../lib/images';
+import Section from '../ui/Section.astro';
+import SectionTitle from '../ui/SectionTitle.astro';
+import Icon from '../ui/Icon.astro';
+---
+
+<Section id="servicos" tone="offwhite" width="wide">
+  <SectionTitle
+    eyebrow="O que fazemos"
+    title="Serviços <span class='text-orange-600'>principais</span>"
+    subtitle="Projeto técnico completo, com memorial de cálculo e responsabilidade técnica registrada, pronto para aprovação."
+  />
+
+  <div class="mt-14 grid gap-7 md:grid-cols-2 lg:grid-cols-3">
+    {
+      primaryServices.map((service, i) => {
+        const img = service.image ? getImage(service.image) : null;
+        return (
+          <article
+            class="group flex flex-col overflow-hidden rounded-2xl bg-white shadow-card transition-all duration-400 ease-out hover:-translate-y-2 hover:shadow-card-hover"
+            data-reveal
+            style={`--reveal-delay:${i * 130}ms`}
+          >
+            {img && (
+              <div class="relative aspect-[16/10] overflow-hidden">
+                <Image
+                  src={img.src}
+                  alt={img.alt}
+                  widths={[400, 700, 900]}
+                  sizes="(min-width: 1024px) 380px, (min-width: 768px) 45vw, 92vw"
+                  class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-107"
+                  loading="lazy"
+                />
+                <div
+                  class="absolute inset-0 bg-gradient-to-t from-navy-900/80 via-navy-900/15 to-transparent"
+                  aria-hidden="true"
+                />
+                <span class="absolute bottom-4 left-4 flex h-12 w-12 items-center justify-center rounded-xl bg-orange-500 text-white shadow-lg transition-transform duration-300 group-hover:scale-110">
+                  <Icon name={service.icon} class="h-6 w-6" />
+                </span>
+              </div>
+            )}
+
+            <div class="flex flex-1 flex-col p-7">
+              <h3 class="text-xl leading-snug text-navy-900">{service.title}</h3>
+              <p class="mt-3 text-sm leading-relaxed text-navy-900/60">{service.summary}</p>
+
+              <ul class="mt-5 space-y-2.5 border-t border-navy-900/8 pt-5">
+                {service.bullets.map((b) => (
+                  <li class="flex items-start gap-2.5 text-sm text-navy-900/75">
+                    <Icon name="check" class="mt-0.5 h-4 w-4 shrink-0 text-orange-500" />
+                    {b}
+                  </li>
+                ))}
+              </ul>
+
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="mt-6 inline-flex cursor-pointer items-center gap-2 self-start text-sm font-bold text-navy-800 transition-colors hover:text-orange-600"
+              >
+                Solicitar orçamento
+                <Icon
+                  name="arrow-right"
+                  class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                />
+              </a>
+            </div>
+          </article>
+        );
+      })
+    }
+  </div>
+</Section>
