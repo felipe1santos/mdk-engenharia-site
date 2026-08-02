@@ -38,19 +38,31 @@ const highlights = [
     />
   </div>
 
-  <!-- Overlays: escurecem o suficiente para o texto passar em contraste AA -->
+  {/* Overlays.
+
+      A partir de lg o degrade horizontal e opaco ate ~34% e cai rapido depois
+      disso: garante contraste no texto, que ocupa a metade esquerda, e deixa a
+      foto aparecer de verdade do lado direito. Os pontos de parada sao
+      explicitos porque as escalas prontas do Tailwind (via/to) nao controlam
+      onde a queda comeca.
+
+      Abaixo de lg o texto ocupa a largura inteira, entao o veu precisa cobrir
+      tudo — sem isso as ultimas palavras de cada linha caem sobre a parte clara
+      da foto e perdem contraste. */}
   <div
-    class="absolute inset-0 -z-10 bg-gradient-to-r from-navy-900 via-navy-900/85 to-navy-900/40"
+    class="absolute inset-0 -z-10 bg-[linear-gradient(90deg,var(--color-navy-900)_0%,var(--color-navy-900)_45%,color-mix(in_srgb,var(--color-navy-900)_88%,transparent)_75%,color-mix(in_srgb,var(--color-navy-900)_74%,transparent)_100%)] lg:bg-[linear-gradient(90deg,var(--color-navy-900)_0%,var(--color-navy-900)_34%,color-mix(in_srgb,var(--color-navy-900)_82%,transparent)_50%,color-mix(in_srgb,var(--color-navy-900)_34%,transparent)_70%,color-mix(in_srgb,var(--color-navy-900)_8%,transparent)_100%)]"
+    aria-hidden="true"
+  >
+  </div>
+  {/* Vertical: escurece o rodape (onde fica o indicador de rolagem) e o topo
+      (onde a navbar precisa de contraste), sem lavar o meio da foto. */}
+  <div
+    class="absolute inset-0 -z-10 bg-[linear-gradient(to_top,var(--color-navy-900)_0%,color-mix(in_srgb,var(--color-navy-900)_45%,transparent)_16%,transparent_42%,transparent_68%,color-mix(in_srgb,var(--color-navy-900)_38%,transparent)_100%)]"
     aria-hidden="true"
   >
   </div>
   <div
-    class="absolute inset-0 -z-10 bg-gradient-to-t from-navy-900 via-transparent to-navy-900/70"
-    aria-hidden="true"
-  >
-  </div>
-  <div
-    class="bg-dots absolute inset-y-0 right-0 -z-10 w-1/2 text-white/[0.07]"
+    class="bg-dots absolute inset-y-0 right-0 -z-10 w-1/2 text-white/[0.05]"
     aria-hidden="true"
   >
   </div>
@@ -119,6 +131,22 @@ const highlights = [
         {site.tagline}
       </p>
     </div>
+  </div>
+
+  {/* Detalhe grafico na borda direita: quadrado solido e um filete que se
+      dissolve. Geometria seca, no espirito das linhas do logotipo, sem competir
+      com a foto.
+
+      Ancorado no meio vertical, e nao no rodape: a altura do hero acompanha o
+      conteudo e passa de 100svh em telas baixas, o que jogava o detalhe para
+      fora da primeira dobra. Some abaixo de lg, onde nao ha margem lateral. */}
+  <div
+    class="pointer-events-none absolute right-8 top-1/2 hidden -translate-y-1/2 lg:block xl:right-12"
+    aria-hidden="true"
+  >
+    <span class="block h-2.5 w-2.5 bg-orange-500"></span>
+    <span class="mt-3 block h-28 w-px bg-gradient-to-b from-orange-500 via-orange-500/40 to-transparent"
+    ></span>
   </div>
 
   <!-- Indicador de rolagem -->
