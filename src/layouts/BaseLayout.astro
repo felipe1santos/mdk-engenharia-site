@@ -29,6 +29,18 @@ const {
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogUrl = new URL(ogImage, Astro.site).href;
 
+/**
+ * Bloqueio de indexacao.
+ *
+ * Ligado por padrao: este build serve um subdominio de preview, e um preview
+ * indexado vira conteudo duplicado competindo com o dominio definitivo, alem de
+ * colocar a marca do cliente num dominio de terceiro nos resultados de busca.
+ *
+ * Desligar apenas no lancamento, com PUBLIC_NOINDEX=false.
+ */
+const noindex = import.meta.env.PUBLIC_NOINDEX !== 'false';
+const robots = noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large';
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'ProfessionalService',
@@ -91,7 +103,8 @@ const jsonLd = {
     <link rel="canonical" href={canonical} />
 
     <meta name="author" content={site.legalName} />
-    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="robots" content={robots} />
+    {noindex && <meta name="googlebot" content="noindex, nofollow" />}
     <meta name="theme-color" content="#0a1c38" />
     <meta name="geo.region" content="BR-SP" />
     <meta name="geo.placename" content={`${site.address.district}, ${site.address.city}`} />

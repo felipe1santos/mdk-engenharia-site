@@ -75,6 +75,31 @@ Para trocar uma foto, edite a lista `WANTED` em `scripts/fetch-images.mjs`, apag
 correspondente em `src/assets/images/` e rode o comando de novo. O campo `pick` escolhe qual
 resultado da busca usar, já que o primeiro nem sempre é o melhor.
 
+## Ambientes
+
+| | Preview | Produção |
+|---|---|---|
+| Domínio | `mdk.nr1sistema.com.br` | `www.mdkengenharia.com.br` |
+| `PUBLIC_SITE_URL` | (padrão) | `https://www.mdkengenharia.com.br` |
+| `PUBLIC_NOINDEX` | (padrão: `true`) | `false` |
+| Indexação | bloqueada | liberada |
+
+O padrão do build é o **preview, com indexação bloqueada**. É deliberado: se as
+variáveis não chegarem ao build, o pior resultado possível é um preview
+corretamente marcado — nunca um site indexado por engano no domínio errado.
+
+Preview indexado é problema real: vira conteúdo duplicado competindo com o
+domínio definitivo e coloca a marca do cliente num domínio de terceiro nos
+resultados de busca.
+
+### Checklist de lançamento
+
+1. Apontar o DNS de `mdkengenharia.com.br` para a VPS
+2. No Coolify, definir as duas variáveis acima como **Build Variables**
+3. Trocar o domínio da aplicação no Coolify e emitir o certificado
+4. Redeploy e conferir `/robots.txt` e a meta `robots` no HTML
+5. Preencher o conteúdo pendente listado acima antes de divulgar
+
 ## Deploy (Coolify na VPS)
 
 O repositório traz `Dockerfile` e `nginx.conf` prontos. No Coolify:
@@ -94,8 +119,9 @@ docker build -t mdk-site .
 docker run --rm -p 8080:80 mdk-site
 ```
 
-Antes de publicar, trocar `SITE_URL` em `astro.config.mjs` e a linha `Sitemap:` em
-`public/robots.txt` pelo domínio real.
+O domínio e a indexação vêm das variáveis de ambiente descritas em
+[Ambientes](#ambientes) — não há URL fixa no código. O `robots.txt` é gerado no build
+por `src/pages/robots.txt.ts`.
 
 ## Estrutura
 

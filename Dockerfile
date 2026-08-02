@@ -15,6 +15,19 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY . .
+
+# Configuracao de ambiente do build. Os padroes sao os do preview: se as
+# variaveis nao chegarem do Coolify, o resultado e um preview com indexacao
+# bloqueada — nunca um site de producao exposto por engano.
+#
+# No lancamento, definir no Coolify como Build Variables:
+#   PUBLIC_SITE_URL=https://www.mdkengenharia.com.br
+#   PUBLIC_NOINDEX=false
+ARG PUBLIC_SITE_URL=https://mdk.nr1sistema.com.br
+ARG PUBLIC_NOINDEX=true
+ENV PUBLIC_SITE_URL=$PUBLIC_SITE_URL
+ENV PUBLIC_NOINDEX=$PUBLIC_NOINDEX
+
 RUN npm run build
 
 # ---------- runtime ----------
