@@ -22,3 +22,7 @@ pnpm-debug.log*
 .idea/
 .DS_Store
 Thumbs.db
+
+# Documentos com dados pessoais de terceiros (o protocolo INPI traz o CPF da
+# procuradora). Ficam locais, nunca no repositorio — que e publico.
+*.pdf
