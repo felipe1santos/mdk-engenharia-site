@@ -13,7 +13,7 @@ import { getImage } from '../../lib/images';
 import Section from '../ui/Section.astro';
 import SectionTitle from '../ui/SectionTitle.astro';
 import Icon from '../ui/Icon.astro';
-import logoFull from '../../assets/logo/mdk-logo-light.png';
+import logoSymbol from '../../assets/logo/mdk-symbol-light.png';
 
 const about = getImage('about');
 
@@ -44,14 +44,13 @@ const values = [
 
       <!-- Cartao do simbolo, sobreposto -->
       <div
-        class="absolute -bottom-7 -right-4 hidden w-64 rounded-2xl bg-navy-800 p-6 shadow-xl sm:block lg:-right-8"
+        class="absolute -bottom-7 -right-4 hidden w-56 rounded-2xl bg-navy-800 p-6 shadow-xl sm:block lg:-right-8"
       >
         <Image
-          src={logoFull}
-          alt="Logo da MDK Engenharia"
-          widths={[220, 413]}
-          sizes="200px"
-          class="h-auto w-full"
+          src={logoSymbol}
+          alt="Símbolo da MDK: coluna de armação com o K invertido"
+          widths={[120, 173]}
+          class="h-14 w-auto"
           loading="lazy"
         />
         <p class="mt-4 text-xs leading-relaxed text-white/65">
