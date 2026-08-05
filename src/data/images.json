@@ -1,32 +1,4 @@
 {
-  "hero": {
-    "file": "hero.jpg",
-    "alt": "Engenheiro analisando plantas técnicas em canteiro de obras",
-    "photographer": "Thirdman",
-    "photographerUrl": "https://www.pexels.com/@thirdman",
-    "sourceUrl": "https://www.pexels.com/photo/a-man-wearing-a-hard-hat-and-a-face-mask-while-looking-at-a-blueprint-8482546/"
-  },
-  "service-hidraulico": {
-    "file": "service-hidraulico.jpg",
-    "alt": "Barrilete hidráulico com registros e manômetro instalado em obra",
-    "photographer": "Pavel Danilyuk",
-    "photographerUrl": "https://www.pexels.com/@pavel-danilyuk",
-    "sourceUrl": "https://www.pexels.com/photo/steel-pipes-with-pressure-gauge-7937300/"
-  },
-  "service-eletrico": {
-    "file": "service-eletrico.jpg",
-    "alt": "Eletricistas instalando eletrodutos em alvenaria",
-    "photographer": "Mikael Blomkvist",
-    "photographerUrl": "https://www.pexels.com/@mikael-blomkvist",
-    "sourceUrl": "https://www.pexels.com/photo/a-man-and-a-woman-wearing-goggles-holding-red-pipes-8961701/"
-  },
-  "service-documentacao": {
-    "file": "service-documentacao.jpg",
-    "alt": "Documentação técnica e plantas sobre a mesa de projeto",
-    "photographer": "Yaroslav Shuraev",
-    "photographerUrl": "https://www.pexels.com/@yaroslav-shuraev",
-    "sourceUrl": "https://www.pexels.com/photo/a-person-holding-a-pencil-6281167/"
-  },
   "about": {
     "file": "about.jpg",
     "alt": "Equipe de engenharia civil em visita técnica à obra",
@@ -41,46 +13,214 @@
     "photographerUrl": "https://www.pexels.com/@tizzy",
     "sourceUrl": "https://www.pexels.com/photo/construction-cranes-over-park-24506242/"
   },
-  "portfolio-1": {
-    "file": "portfolio-1.jpg",
-    "alt": "Projeto hidráulico residencial executado",
-    "photographer": "Arshad Khan",
-    "photographerUrl": "https://www.pexels.com/@arshad-khan-1370011891",
-    "sourceUrl": "https://www.pexels.com/photo/modern-minimalist-bathroom-interior-design-35868666/"
+  "service-arquitetonico": {
+    "file": "service-arquitetonico.jpg",
+    "alt": "Modelo 3D de residência com estrutura em wireframe sobre pranchas de projeto",
+    "photographer": "Acervo MDK Engenharia",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/nossos-trabalhos/projetos"
   },
-  "portfolio-2": {
-    "file": "portfolio-2.jpg",
-    "alt": "Instalações elétricas prediais em execução",
-    "photographer": "Pavel Danilyuk",
-    "photographerUrl": "https://www.pexels.com/@pavel-danilyuk",
-    "sourceUrl": "https://www.pexels.com/photo/close-up-of-wires-in-outlets-7937305/"
+  "service-estrutural": {
+    "file": "service-estrutural.jpg",
+    "alt": "Maquete 3D de estrutura de alvenaria com guindastes sobre plantas estruturais",
+    "photographer": "Acervo MDK Engenharia",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/nossos-trabalhos/projetos"
   },
-  "portfolio-3": {
-    "file": "portfolio-3.jpg",
-    "alt": "Edificação regularizada junto à prefeitura",
-    "photographer": "Jorge Maciel",
-    "photographerUrl": "https://www.pexels.com/@jorge-maciel-1464608166",
-    "sourceUrl": "https://www.pexels.com/photo/apartment-building-next-to-modern-skyscraper-26821383/"
+  "service-hidraulico": {
+    "file": "service-hidraulico.jpg",
+    "alt": "Maquete de residência sobre planta hidráulica com conexões e tubulações",
+    "photographer": "Acervo MDK Engenharia",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/nossos-trabalhos/projetos"
   },
-  "portfolio-4": {
-    "file": "portfolio-4.jpg",
-    "alt": "Estrutura em concreto armado com armação de pilar",
-    "photographer": "sumit kumar",
-    "photographerUrl": "https://www.pexels.com/@sumitkumar8",
-    "sourceUrl": "https://www.pexels.com/photo/construction-workers-building-concrete-columns-14546924/"
+  "service-eletrico": {
+    "file": "service-eletrico.jpg",
+    "alt": "Perspectiva isométrica de projeto elétrico com eletrodutos, pontos e cargas cotadas",
+    "photographer": "Acervo MDK Engenharia",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/nossos-trabalhos/projetos"
   },
-  "portfolio-5": {
-    "file": "portfolio-5.jpg",
-    "alt": "Reforma de ambiente comercial concluída",
-    "photographer": "Anastasia  Shuraeva",
-    "photographerUrl": "https://www.pexels.com/@anastasia-shuraeva",
-    "sourceUrl": "https://www.pexels.com/photo/overhead-shot-of-home-improvement-materials-5481512/"
+  "service-spci": {
+    "file": "service-spci.jpg",
+    "alt": "Modelo 3D de casa de bombas de incêndio com barrilete e rede de sprinklers",
+    "photographer": "Acervo MDK Engenharia",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/nossos-trabalhos/projetos"
   },
-  "portfolio-6": {
-    "file": "portfolio-6.jpg",
-    "alt": "Supervisão técnica de obra em andamento",
-    "photographer": "Mikael Blomkvist",
-    "photographerUrl": "https://www.pexels.com/@mikael-blomkvist",
-    "sourceUrl": "https://www.pexels.com/photo/an-engineer-using-a-digital-tablet-8961008/"
+  "service-gases-medicinais": {
+    "file": "service-gases-medicinais.jpg",
+    "alt": "Esquema isométrico de rede de gases medicinais em edifício hospitalar",
+    "photographer": "Acervo MDK Engenharia",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/nossos-trabalhos/projetos"
+  },
+  "service-drenagem": {
+    "file": "service-drenagem.jpg",
+    "alt": "Corte de via mostrando redes enterradas de água, esgoto e águas pluviais",
+    "photographer": "Acervo MDK Engenharia",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/nossos-trabalhos/projetos"
+  },
+  "service-industrial": {
+    "file": "service-industrial.jpg",
+    "alt": "Planta industrial com torres de processo e tubulação aparente",
+    "photographer": "Acervo MDK Engenharia",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/nossos-trabalhos/projetos"
+  },
+  "service-documentacao": {
+    "file": "service-documentacao.jpg",
+    "alt": "Documentação técnica e plantas sobre a mesa de projeto",
+    "photographer": "Yaroslav Shuraev",
+    "photographerUrl": "https://www.pexels.com/@yaroslav-shuraev",
+    "sourceUrl": "https://www.pexels.com/photo/a-person-holding-a-pencil-6281167/"
+  },
+  "render-oficina-1": {
+    "file": "render-oficina-1.jpg",
+    "alt": "Render 3D da fachada de oficina automotiva com portas de enrolar e vitrine",
+    "photographer": "Acervo MDK Engenharia",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/"
+  },
+  "render-oficina-2": {
+    "file": "render-oficina-2.jpg",
+    "alt": "Render 3D da fachada da oficina em perspectiva, vista da calçada",
+    "photographer": "Acervo MDK Engenharia",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/"
+  },
+  "render-oficina-3": {
+    "file": "render-oficina-3.jpg",
+    "alt": "Render 3D do salão da oficina com elevadores automotivos e iluminação linear",
+    "photographer": "Acervo MDK Engenharia",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/"
+  },
+  "render-oficina-4": {
+    "file": "render-oficina-4.jpg",
+    "alt": "Render 3D em vista superior do salão de serviço com bancada e mezanino",
+    "photographer": "Acervo MDK Engenharia",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/"
+  },
+  "render-oficina-5": {
+    "file": "render-oficina-5.jpg",
+    "alt": "Render 3D do mezanino técnico e da recepção da oficina",
+    "photographer": "Acervo MDK Engenharia",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/"
+  },
+  "render-oficina-6": {
+    "file": "render-oficina-6.jpg",
+    "alt": "Render 3D da área de espera de clientes sob o mezanino",
+    "photographer": "Acervo MDK Engenharia",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/"
+  },
+  "equipe-miro": {
+    "file": "equipe-miro.jpg",
+    "alt": "Miro, Diretor Técnico da MDK Engenharia",
+    "photographer": "Acervo MDK Engenharia",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/"
+  },
+  "equipe-dayane": {
+    "file": "equipe-dayane.jpg",
+    "alt": "Dayane Kilma, Diretora Comercial da MDK Engenharia",
+    "photographer": "Acervo MDK Engenharia",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/"
+  },
+  "equipe-angelica": {
+    "file": "equipe-angelica.jpg",
+    "alt": "Angélica, Diretora Administrativa da MDK Engenharia",
+    "photographer": "Acervo MDK Engenharia",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/"
+  },
+  "equipe-hellen": {
+    "file": "equipe-hellen.jpg",
+    "alt": "Hellen Vargas, arquiteta da MDK Engenharia",
+    "photographer": "Acervo MDK Engenharia",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/"
+  },
+  "obra-frj": {
+    "file": "obra-frj.jpg",
+    "alt": "Obra residencial em bloco estrutural com armação de pilares e laje",
+    "photographer": "Acervo MDK Engenharia",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/em-andamento"
+  },
+  "obra-mb": {
+    "file": "obra-mb.jpg",
+    "alt": "Sobrado residencial em alvenaria com estrutura de concreto concluída",
+    "photographer": "Acervo MDK Engenharia",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/em-andamento"
+  },
+  "obra-nk": {
+    "file": "obra-nk.jpg",
+    "alt": "Residência contemporânea com jardim vertical e muro de pedra",
+    "photographer": "Acervo MDK Engenharia",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/concluidos"
+  },
+  "hero": {
+    "file": "hero.jpg",
+    "alt": "Edifício em construção com guindaste ao entardecer em área urbana",
+    "photographer": "Connor Scott McManus",
+    "photographerUrl": "https://www.pexels.com/@connorscottmcmanus",
+    "sourceUrl": "https://www.pexels.com/photo/aerial-photography-of-city-buildings-12181678/"
+  },
+  "orgao-prefeitura": {
+    "file": "orgao-prefeitura.jpg",
+    "alt": "Análise de projeto arquitetônico sobre a mesa, com planta de implantação",
+    "photographer": "Kampus Production",
+    "photographerUrl": "https://www.pexels.com/@kampus",
+    "sourceUrl": "https://www.pexels.com/photo/close-up-shot-of-two-people-holding-a-document-8729972/"
+  },
+  "orgao-bombeiros": {
+    "file": "orgao-bombeiros.jpg",
+    "alt": "Abrigo de extintor e mangotinho com sinalização de emergência em edificação",
+    "photographer": "Jan van der Wolf",
+    "photographerUrl": "https://www.pexels.com/@jan-van-der-wolf-11680885",
+    "sourceUrl": "https://www.pexels.com/photo/blue-wall-with-fire-safety-signs-38725738/"
+  },
+  "orgao-cetesb": {
+    "file": "orgao-cetesb.jpg",
+    "alt": "Vista aérea de planta industrial cercada por área verde preservada",
+    "photographer": "Volker Braun",
+    "photographerUrl": "https://www.pexels.com/@volker-braun-2149703592",
+    "sourceUrl": "https://www.pexels.com/photo/aerial-view-of-industrial-plant-in-lush-landscape-33363583/"
+  },
+  "projeto-layout-elevadores": {
+    "file": "projeto-layout-elevadores.jpg",
+    "alt": "Planta de layout de distribuição dos elevadores da oficina: em cinza claro o arranjo ortogonal dos veículos estudado antes, sobreposto em preto o arranjo em leque adotado, com os elevadores em vermelho",
+    "photographer": "Acervo MDK Engenharia",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/"
+  },
+  "projeto-detalhe-elevadores": {
+    "file": "projeto-detalhe-elevadores.jpg",
+    "alt": "Detalhamento dos elevadores automotivos em vista frontal, lateral e superior, com cotas",
+    "photographer": "Acervo MDK Engenharia",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/"
+  },
+  "projeto-corte-espera": {
+    "file": "projeto-corte-espera.jpg",
+    "alt": "Corte da sala de espera da oficina, com o playground suspenso",
+    "photographer": "Acervo MDK Engenharia",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/"
+  },
+  "projeto-prancha-completa": {
+    "file": "projeto-prancha-completa.jpg",
+    "alt": "Prancha ARQ 001 completa do projeto executivo da oficina, em formato A3, com planta, cortes, detalhes e carimbo",
+    "photographer": "Acervo MDK Engenharia",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/"
   }
 }

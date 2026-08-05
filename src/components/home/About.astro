@@ -2,30 +2,36 @@
 /**
  * Secao institucional.
  *
- * Traz o significado do simbolo direto do manual de marca — o K invertido
- * representa a rigidez estrutural e a coluna de armacao representa estabilidade.
- * Contar isso e o que separa um "sobre nos" generico de uma pagina que constroi
- * autoridade.
+ * Traz o significado do simbolo — a armacao de coluna representa estabilidade,
+ * solidez e resistencia. Contar isso e o que separa um "sobre nos" generico de
+ * uma pagina que constroi autoridade.
+ *
+ * NOTA SOBRE O "K": a orientacao do simbolo no site foi definida pelo cliente —
+ * chevron com a boca virada para o "D" e coluna de armacao a direita, servindo
+ * de haste. O espelhamento esta em scripts/extract-logo.mjs. Este texto fala so
+ * da coluna, de proposito: o manual atribui significado ao "K INVERTIDO", e
+ * repetir esse texto ao lado de um simbolo reorientado seria incoerente.
  */
 import { Image } from 'astro:assets';
-import { site } from '../../data/site';
 import { getImage } from '../../lib/images';
+import { institutional } from '../../data/institutional';
 import Section from '../ui/Section.astro';
 import SectionTitle from '../ui/SectionTitle.astro';
 import Icon from '../ui/Icon.astro';
 import logoSymbol from '../../assets/logo/mdk-symbol-light.png';
 
-const about = getImage('about');
+interface Props {
+  /** A home ancora em #sobre; a pagina /sobre ancora em #historia. */
+  id?: string;
+}
 
-const values = [
-  { title: 'Segurança', text: 'Normas técnicas seguidas à risca em cada projeto.' },
-  { title: 'Qualidade', text: 'Detalhamento executivo que evita retrabalho na obra.' },
-  { title: 'Prazo', text: 'Cronograma definido e cumprido, da entrega à aprovação.' },
-  { title: 'Resultados', text: 'Projeto aprovado e obra regularizada, sem pendências.' },
-];
+const { id = 'sobre' } = Astro.props;
+
+const about = getImage('about');
+const { intro, values, missionVisionValues } = institutional;
 ---
 
-<Section id="sobre" tone="white" width="wide">
+<Section id={id} tone="white" width="wide">
   <div class="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
     <!-- Imagem. `isolate` mantem a textura de pontos com z-index negativo dentro
          deste contexto de empilhamento, em vez de deixa-la cair atras do fundo
@@ -48,14 +54,14 @@ const values = [
       >
         <Image
           src={logoSymbol}
-          alt="Símbolo da MDK: coluna de armação com o K invertido"
+          alt="Símbolo da MDK: coluna de armação formando a haste do K"
           widths={[120, 173]}
           class="h-14 w-auto"
           loading="lazy"
         />
         <p class="mt-4 text-xs leading-relaxed text-white/65">
-          O <strong class="text-white">K invertido</strong> representa a rigidez estrutural — a força
-          necessária para deformar uma estrutura.
+          A <strong class="text-white">armação de coluna</strong> forma a haste do K — símbolo de
+          resistência, estabilidade e solidez.
         </p>
       </div>
 
@@ -75,16 +81,7 @@ const values = [
       />
 
       <div class="mt-6 space-y-5 text-base leading-relaxed text-navy-900/70" data-reveal>
-        <p>
-          A {site.legalName} atua em São Paulo e região metropolitana com projetos de instalações
-          hidráulicas e elétricas, documentação técnica e regularização de edificações. Cada
-          entrega sai com memorial de cálculo, detalhamento executivo e responsabilidade técnica
-          registrada.
-        </p>
-        <p>
-          A armação de coluna presente na marca não é enfeite: é o símbolo do que sustenta o
-          trabalho — estabilidade, solidez e resistência. É assim que tratamos projeto e obra.
-        </p>
+        {intro.map((p) => <p>{p}</p>)}
       </div>
 
       <dl class="mt-9 grid gap-x-6 gap-y-5 sm:grid-cols-2">
@@ -102,6 +99,38 @@ const values = [
           ))
         }
       </dl>
+    </div>
+  </div>
+
+  <!-- Missao, Visao e Valores. Ficam depois da dobra institucional, e nao na
+       faixa logo abaixo do hero: aquela faixa e elemento de conversao e texto
+       institucional ali derruba o inicio da leitura. -->
+  <div id="missao-visao-valores" class="mt-20 scroll-mt-28 border-t border-navy-900/8 pt-14">
+    <p
+      class="text-center text-xs font-bold uppercase tracking-[0.22em] text-orange-600"
+      data-reveal
+    >
+      Missão, Visão e Valores
+    </p>
+
+    <div class="mt-10 grid gap-6 md:grid-cols-3">
+      {
+        missionVisionValues.map((item, i) => (
+          <article
+            class="rounded-2xl border border-navy-900/10 bg-offwhite p-7 transition-colors duration-300 hover:border-orange-500/40"
+            data-reveal
+            style={`--reveal-delay:${i * 110}ms`}
+          >
+            <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-navy-800 text-orange-500">
+              <Icon name={item.icon} class="h-6 w-6" />
+            </span>
+            <h3 class="mt-5 font-display text-sm font-bold uppercase tracking-[0.12em] text-navy-900">
+              {item.title}
+            </h3>
+            <p class="mt-3 text-sm leading-relaxed text-navy-900/65">{item.text}</p>
+          </article>
+        ))
+      }
     </div>
   </div>
 </Section>

@@ -1,0 +1,391 @@
+---
+/**
+ * Pagina do projeto executivo da Oficina Mecanica Francisco.
+ *
+ * Existe porque a home nao comporta o material inteiro. O cliente enviou uma
+ * prancha A3 e uma apresentacao de catorze slides; jogar tudo na home poluiria
+ * a pagina de entrada e ainda assim mostraria mal. Aqui o projeto tem espaco
+ * para ser lido na ordem em que foi pensado: primeiro o desenho que decidiu o
+ * layout, depois os detalhes tecnicos, depois como ficou em 3D.
+ *
+ * Arquivo unico, sem getStaticPaths: ha um projeto so. Quando existir o segundo,
+ * isto vira /projetos/[slug].astro alimentado por renderProjects — a estrutura
+ * de dados ja esta pronta para isso.
+ *
+ * Todo texto vem de src/data/renders.ts. O dado estruturado sai como
+ * `CreativeWork`, que e o tipo que descreve uma obra de autoria (o projeto),
+ * distinta do `Service` das paginas de disciplina.
+ */
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/layout/PageHero.astro';
+import FinalCta from '../../components/home/FinalCta.astro';
+import Section from '../../components/ui/Section.astro';
+import SectionTitle from '../../components/ui/SectionTitle.astro';
+import Button from '../../components/ui/Button.astro';
+import Icon from '../../components/ui/Icon.astro';
+import { featuredProject } from '../../data/renders';
+import { site, whatsappUrl } from '../../data/site';
+import { getImage } from '../../lib/images';
+
+const project = featuredProject;
+
+const before = getImage(project.comparison.before.image);
+const after = getImage(project.comparison.after.image);
+
+/** O layout dos elevadores ja abre a pagina no bloco de comparacao. */
+const otherDrawings = project.drawings.filter(
+  (d) => d.image !== project.comparison.before.image,
+);
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+
+const projectLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  '@id': `${canonical}#projeto`,
+  name: project.title,
+  description: project.seo.description,
+  genre: 'Projeto executivo de arquitetura',
+  about: 'Oficina de manutenção automotiva',
+  dateCreated: '2026-03-11',
+  inLanguage: 'pt-BR',
+  url: canonical,
+  creator: { '@id': `${Astro.site}#organization` },
+  author: { '@type': 'Person', name: 'Miro Bergamo', jobTitle: 'Diretor Técnico' },
+  locationCreated: {
+    '@type': 'Place',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Guarulhos',
+      addressRegion: 'SP',
+      addressCountry: 'BR',
+    },
+  },
+  image: [...project.drawings.map((d) => d.image), ...project.images].map(
+    (key) => new URL(getImage(key).src.src, Astro.site).href,
+  ),
+};
+---
+
+<BaseLayout
+  title={project.seo.title}
+  description={project.seo.description}
+  keywords={project.seo.keywords}
+>
+  <PageHero
+    eyebrow="Projeto executivo"
+    title="Oficina Mecânica <span class='text-orange-500'>Francisco</span>"
+    subtitle="Projeto de arquitetura para uma oficina automotiva em Guarulhos/SP: da distribuição dos elevadores à sala de espera dos clientes."
+    crumbs={[
+      { label: 'Projetos', href: '/projetos' },
+      { label: 'Oficina Mecânica Francisco' },
+    ]}
+  >
+    <div class="mt-10 flex flex-col gap-4 sm:flex-row" data-reveal style="--reveal-delay:280ms">
+      <Button href={whatsappUrl} variant="primary" size="lg" external>
+        <Icon name="whatsapp" class="h-5 w-5" />
+        Quero um projeto assim
+      </Button>
+      <Button href="/projetos" variant="outline" size="lg">Ver todos os projetos</Button>
+    </div>
+  </PageHero>
+
+  <Section tone="white" width="wide">
+    <div class="grid gap-14 lg:grid-cols-[1.6fr_1fr] lg:gap-20">
+      <div>
+        <div class="space-y-5 text-lg leading-relaxed text-navy-900/75" data-reveal>
+          <p>
+            Projeto desenvolvido para uma oficina automotiva moderna, em Guarulhos. O escopo
+            cobre a edificação inteira — não apenas o salão de serviço — e foi entregue como
+            projeto executivo: planta, cortes e detalhamento cotado, o nível de desenho que
+            se leva para o canteiro.
+          </p>
+          <p>
+            A ideia que organiza o conjunto é a integração entre área técnica, atendimento e
+            administração: o veículo, o cliente e o escritório no mesmo edifício, sem que um
+            atrapalhe o outro. Daí vem o layout otimizado para circulação de veículos, que é
+            o problema central de qualquer oficina — quanto mais carro dentro, menos espaço
+            sobra para manobrar.
+          </p>
+          <p>
+            O resultado é um ambiente moderno, funcional e eficiente, com estrutura preparada
+            para múltiplos atendimentos simultâneos.
+          </p>
+        </div>
+
+        <div class="mt-12" data-reveal>
+          <h2
+            class="flex items-center gap-3 font-display text-sm font-bold uppercase tracking-[0.14em] text-navy-900"
+          >
+            <span class="h-px w-8 bg-orange-500" aria-hidden="true"></span>
+            Ambientes na planta
+          </h2>
+          <ul class="mt-5 grid gap-3 sm:grid-cols-2">
+            {
+              project.spaces.map((s) => (
+                <li class="flex items-start gap-2.5 text-[0.9375rem] leading-relaxed text-navy-900/70">
+                  <Icon name="check" class="mt-1 h-4 w-4 shrink-0 text-orange-500" />
+                  {s}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <div class="mt-12" data-reveal style="--reveal-delay:90ms">
+          <h2
+            class="flex items-center gap-3 font-display text-sm font-bold uppercase tracking-[0.14em] text-navy-900"
+          >
+            <span class="h-px w-8 bg-orange-500" aria-hidden="true"></span>
+            O que o projeto entrega
+          </h2>
+          <ul class="mt-5 grid gap-3 sm:grid-cols-2">
+            {
+              project.highlights.map((h) => (
+                <li class="flex items-start gap-2.5 text-[0.9375rem] leading-relaxed text-navy-900/70">
+                  <Icon name="check" class="mt-1 h-4 w-4 shrink-0 text-orange-500" />
+                  {h}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+
+      <aside class="lg:sticky lg:top-28 lg:self-start">
+        <div class="rounded-2xl bg-offwhite p-7" data-reveal>
+          <h2 class="font-display text-sm font-bold uppercase tracking-[0.14em] text-navy-900">
+            Ficha técnica
+          </h2>
+          <dl class="mt-5 divide-y divide-navy-900/10">
+            {
+              project.spec.map((item) => (
+                <div class="py-3 first:pt-0 last:pb-0">
+                  <dt class="text-xs font-semibold uppercase tracking-[0.1em] text-navy-900/45">
+                    {item.label}
+                  </dt>
+                  <dd class="mt-1 text-sm leading-relaxed text-navy-900/80">{item.value}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </div>
+
+        <div
+          class="mt-6 rounded-2xl border border-navy-900/10 p-7"
+          data-reveal
+          style="--reveal-delay:80ms"
+        >
+          <h2 class="font-display text-sm font-bold uppercase tracking-[0.14em] text-navy-900">
+            Cotas do detalhamento
+          </h2>
+          <ul class="mt-5 space-y-3 text-sm leading-relaxed text-navy-900/70">
+            {
+              project.dimensions.map((d) => (
+                <li class="border-l-2 border-orange-500/40 pl-3">
+                  <span class="font-semibold text-navy-900/85">{d.label}</span>
+                  <span class="block text-navy-900/60">{d.value}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <div
+          class="mt-6 rounded-2xl bg-navy-800 p-7 text-white"
+          data-reveal
+          style="--reveal-delay:160ms"
+        >
+          <h2 class="font-display text-lg leading-snug">Tem um projeto em vista?</h2>
+          <p class="mt-2.5 text-sm leading-relaxed text-white/65">
+            Oficina, comércio, galpão ou residência: conte o que você precisa e receba um
+            orçamento com escopo e prazo definidos.
+          </p>
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-5 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-orange-500 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-orange-400"
+          >
+            <Icon name="whatsapp" class="h-4 w-4" />
+            Falar no WhatsApp
+          </a>
+          <p class="mt-4 text-center text-xs text-white/45">{site.contact.phoneDisplay}</p>
+        </div>
+      </aside>
+    </div>
+  </Section>
+
+  {/* O antes e o depois pedido pelo cliente, aqui em tamanho de leitura: a
+      planta ocupa a largura toda, porque em miniatura o arranjo em cinza
+      simplesmente some. */}
+  <Section id="antes-e-depois" tone="offwhite" width="wide">
+    <SectionTitle
+      align="left"
+      eyebrow="Antes e depois"
+      title="A distribuição <span class='text-orange-600'>dos elevadores</span>"
+      subtitle={project.comparison.intro}
+    />
+
+    <figure class="mt-12" data-reveal>
+      <div class="overflow-hidden rounded-2xl border border-navy-900/10 bg-white">
+        <Image
+          src={before.src}
+          alt={before.alt}
+          widths={[700, 1200, 1800]}
+          sizes="(min-width: 1280px) 1200px, 92vw"
+          class="mx-auto w-full max-w-4xl object-contain p-3 sm:p-6"
+          loading="lazy"
+        />
+      </div>
+      <figcaption class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-5">
+        <span
+          class="inline-flex shrink-0 self-start rounded-full bg-navy-800 px-3 py-1 text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-white"
+        >
+          {project.comparison.before.label}
+        </span>
+        <p class="max-w-3xl text-sm leading-relaxed text-navy-900/60">
+          {project.comparison.before.caption}
+        </p>
+      </figcaption>
+    </figure>
+
+    <figure class="mt-12" data-reveal style="--reveal-delay:120ms">
+      <div class="overflow-hidden rounded-2xl shadow-card">
+        <Image
+          src={after.src}
+          alt={after.alt}
+          widths={[700, 1200, 1800]}
+          sizes="(min-width: 1280px) 1200px, 92vw"
+          class="aspect-[16/9] w-full object-cover"
+          loading="lazy"
+        />
+      </div>
+      <figcaption class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-5">
+        <span
+          class="inline-flex shrink-0 self-start rounded-full bg-orange-500 px-3 py-1 text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-white"
+        >
+          {project.comparison.after.label}
+        </span>
+        <p class="max-w-3xl text-sm leading-relaxed text-navy-900/60">
+          {project.comparison.after.caption}
+        </p>
+      </figcaption>
+    </figure>
+  </Section>
+
+  <Section id="desenhos" tone="white" width="wide">
+    <SectionTitle
+      align="left"
+      eyebrow="Prancha ARQ 001"
+      title="Os desenhos <span class='text-orange-600'>do projeto</span>"
+      subtitle="Além do layout acima, a prancha traz o detalhamento cotado dos elevadores e o corte da sala de espera. Tudo em uma folha A3, nas escalas 1:50 e 1:75."
+    />
+
+    <ul class="mt-12 grid gap-8 lg:grid-cols-2">
+      {
+        otherDrawings.map((drawing, i) => {
+          const img = getImage(drawing.image);
+          return (
+            <li data-reveal style={`--reveal-delay:${(i % 2) * 120}ms`}>
+              <figure>
+                <div class="overflow-hidden rounded-2xl border border-navy-900/10 bg-white">
+                  <Image
+                    src={img.src}
+                    alt={img.alt}
+                    widths={[500, 900, 1500]}
+                    sizes="(min-width: 1024px) 45vw, 92vw"
+                    class="aspect-[4/3] w-full object-contain p-3 sm:p-5"
+                    loading="lazy"
+                  />
+                </div>
+                <figcaption class="mt-4">
+                  <h3 class="flex flex-wrap items-center gap-x-3 gap-y-1 font-display text-lg leading-snug text-navy-900">
+                    {drawing.title}
+                    {drawing.scale && (
+                      <span class="rounded-full bg-navy-900/5 px-2.5 py-1 text-[0.6875rem] font-bold uppercase tracking-[0.1em] text-navy-900/50">
+                        esc. {drawing.scale}
+                      </span>
+                    )}
+                  </h3>
+                  <p class="mt-2 text-sm leading-relaxed text-navy-900/60">{drawing.caption}</p>
+                </figcaption>
+              </figure>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </Section>
+
+  <Section id="renders" tone="offwhite" width="wide">
+    <SectionTitle
+      align="left"
+      eyebrow="Do papel à imagem"
+      title="O projeto <span class='text-orange-600'>em 3D</span>"
+      subtitle="O modelo foi feito para o cliente decidir antes de a obra começar — cada ambiente da planta, visto como vai ficar."
+    />
+
+    <div class="mt-12 space-y-16 sm:space-y-20">
+      {
+        project.sections.map((block) => (
+          <article id={block.id}>
+            <div class="grid gap-8 lg:grid-cols-[1fr_1.6fr] lg:items-start lg:gap-14">
+              <div data-reveal>
+                <h3 class="font-display text-2xl leading-snug text-navy-900">{block.title}</h3>
+                <p class="mt-4 text-base leading-relaxed text-navy-900/65">{block.lead}</p>
+                <ul class="mt-6 space-y-2.5">
+                  {block.notes.map((note) => (
+                    <li class="flex items-start gap-2.5 text-sm leading-relaxed text-navy-900/70">
+                      <Icon name="check" class="mt-0.5 h-4 w-4 shrink-0 text-orange-500" />
+                      {note}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <ul
+                class:list={[
+                  'grid gap-5',
+                  block.images.length > 1 && 'sm:grid-cols-2',
+                ]}
+              >
+                {block.images.map((key, i) => {
+                  const img = getImage(key);
+                  return (
+                    <li
+                      class="overflow-hidden rounded-2xl shadow-card"
+                      data-reveal
+                      style={`--reveal-delay:${i * 120}ms`}
+                    >
+                      <Image
+                        src={img.src}
+                        alt={img.alt}
+                        widths={[500, 900, 1500]}
+                        sizes="(min-width: 1024px) 45vw, 92vw"
+                        class="aspect-[16/10] w-full object-cover"
+                        loading="lazy"
+                      />
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+    <p
+      class="mt-16 border-l-2 border-orange-500 pl-6 font-display text-xl leading-snug text-navy-900 sm:text-2xl"
+      data-reveal
+    >
+      {project.closing}
+    </p>
+  </Section>
+
+  <FinalCta />
+</BaseLayout>
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify(projectLd)} />

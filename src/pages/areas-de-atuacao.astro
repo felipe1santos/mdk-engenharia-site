@@ -1,0 +1,242 @@
+---
+/**
+ * Areas de atuacao.
+ *
+ * O cliente pediu no menu "Area de Atuacao – Brasil". Trocar a pagina para
+ * "Brasil" e so isso destruiria o SEO local, que e o que traz cliente hoje:
+ * cities.ts, o `areaServed` do JSON-LD e o LocalBusiness inteiro estao ancorados
+ * em Sao Paulo e Grande SP.
+ *
+ * A saida e separar as duas coisas, que sao mesmo diferentes — e o proprio site
+ * anterior da empresa afirma atuar "com projetos e construcao em todo o Brasil":
+ *
+ *   - obra e acompanhamento presencial: Sao Paulo e Regiao Metropolitana,
+ *     com as cidades listadas uma a uma (o que alimenta a busca local);
+ *   - projeto e consultoria: sem limite geografico, porque nao dependem de
+ *     presenca diaria no canteiro.
+ *
+ * PENDENTE (bloqueio B2 do plano): confirmar com o cliente se a atuacao nacional
+ * cobre execucao de obra ou apenas projeto. O texto abaixo assume apenas projeto
+ * e consultoria — a leitura conservadora, que nao promete o que talvez nao se
+ * cumpra.
+ *
+ * A pagina responde tambem "cobertura de que?": quem chega por "area de atuacao"
+ * quer saber o que a empresa atende, e nao so ate onde ela vai. Dai os grupos de
+ * servico e os tres orgaos entrarem aqui — resumidos, com link para /servicos.
+ * O escopo detalhado continua sendo daquela pagina; duplicar os cards grandes so
+ * criaria duas paginas competindo pela mesma busca.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/layout/PageHero.astro';
+import ServiceAreas from '../components/home/ServiceAreas.astro';
+import MapSection from '../components/home/MapSection.astro';
+import FinalCta from '../components/home/FinalCta.astro';
+import Agencies from '../components/home/Agencies.astro';
+import Section from '../components/ui/Section.astro';
+import SectionTitle from '../components/ui/SectionTitle.astro';
+import Icon from '../components/ui/Icon.astro';
+import Button from '../components/ui/Button.astro';
+import { cities } from '../data/cities';
+import { primaryServices, segments, getService } from '../data/services';
+import { site } from '../data/site';
+
+const coverage = [
+  {
+    icon: 'hammer',
+    scope: 'Obra e acompanhamento presencial',
+    area: 'São Paulo e Região Metropolitana',
+    text: `Execução, consultoria e fiscalização exigem presença no canteiro. Atendemos ${cities.length} cidades, com base em ${site.address.city}.`,
+    highlight: true,
+  },
+  {
+    icon: 'blueprint',
+    scope: 'Projeto e consultoria técnica',
+    area: 'Todo o Brasil',
+    text: 'Projeto, memorial de cálculo e análise técnica são entregues à distância, com reuniões remotas e visita quando o escopo pedir.',
+    highlight: false,
+  },
+] as const;
+
+/*
+ * Falha o build se um id sumir de services.ts. Sem isto, remover um servico la
+ * deixaria esta pagina com um card mudo em producao, sem ninguem perceber.
+ */
+function required(id: string) {
+  const service = getService(id);
+  if (!service) {
+    throw new Error(`areas-de-atuacao: servico "${id}" nao existe mais em services.ts`);
+  }
+  return service;
+}
+
+const execucao = required('execucao-obra');
+const consultoria = required('consultoria-obra');
+const regularizacao = required('regularizacao');
+const impermeabilizacao = required('impermeabilizacao');
+
+/*
+ * Os grandes grupos, montados a partir de services.ts em vez de reescritos aqui.
+ * A lista e proposital: titulo e itens curtos para varrer com o olho — o detalhe
+ * de cada frente e trabalho da pagina interna, nao desta.
+ */
+const groups = [
+  {
+    icon: 'compass',
+    title: 'Disciplinas de projeto',
+    text: 'Cada disciplina com escopo próprio e memorial de cálculo, compatibilizadas entre si antes de a obra começar.',
+    items: primaryServices.map((s) => s.title),
+    href: '/servicos#projetos',
+    cta: 'Ver as disciplinas',
+  },
+  {
+    icon: 'hammer',
+    title: execucao.title,
+    text: execucao.summary,
+    items: [...segments.map((s) => `Obra ${s.toLowerCase()}`), impermeabilizacao.title],
+    href: `/servicos/${execucao.id}`,
+    cta: 'Ver detalhes',
+  },
+  {
+    icon: 'clipboard',
+    title: consultoria.title,
+    text: consultoria.summary,
+    items: consultoria.bullets,
+    href: `/servicos/${consultoria.id}`,
+    cta: 'Ver detalhes',
+  },
+  {
+    icon: 'document',
+    title: regularizacao.title,
+    text: regularizacao.summary,
+    items: regularizacao.bullets,
+    href: `/servicos/${regularizacao.id}`,
+    cta: 'Ver detalhes',
+  },
+] as const;
+---
+
+<BaseLayout
+  title={`Áreas de Atuação | ${site.name}`}
+  description={`Obra e acompanhamento presencial em São Paulo e Região Metropolitana — ${cities.length} cidades atendidas. Projetos e consultoria técnica para todo o Brasil, com aprovação e regularização na Prefeitura, no Corpo de Bombeiros e na CETESB.`}
+>
+  <PageHero
+    eyebrow="Onde atendemos"
+    title="Áreas de <span class='text-orange-500'>atuação</span>"
+    subtitle="A cobertura muda conforme o serviço: obra pede canteiro, projeto não. Veja o que atendemos em cada caso."
+    crumbs={[{ label: 'Áreas de Atuação' }]}
+  />
+
+  <Section tone="white" width="wide">
+    <SectionTitle
+      eyebrow="Cobertura"
+      title="Duas frentes, <span class='text-orange-600'>dois alcances</span>"
+      subtitle="Ser honesto sobre isso evita a conversa mais desagradável de uma obra: descobrir no meio do caminho que o responsável técnico não consegue estar lá."
+    />
+
+    <div class="mt-14 grid gap-6 lg:grid-cols-2">
+      {
+        coverage.map((c, i) => (
+          <article
+            class:list={[
+              'rounded-2xl border p-8 transition-colors duration-300',
+              c.highlight
+                ? 'border-orange-500/40 bg-orange-500/[0.06]'
+                : 'border-navy-900/10 bg-offwhite',
+            ]}
+            data-reveal
+            style={`--reveal-delay:${i * 110}ms`}
+          >
+            <span
+              class:list={[
+                'flex h-12 w-12 items-center justify-center rounded-xl',
+                c.highlight ? 'bg-orange-500 text-white' : 'bg-navy-800 text-orange-500',
+              ]}
+            >
+              <Icon name={c.icon} class="h-6 w-6" />
+            </span>
+
+            <p class="mt-6 text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-navy-900/45">
+              {c.scope}
+            </p>
+            <h2 class="mt-2 font-display text-2xl leading-snug text-navy-900">{c.area}</h2>
+            <p class="mt-4 text-base leading-relaxed text-navy-900/65">{c.text}</p>
+          </article>
+        ))
+      }
+    </div>
+  </Section>
+
+  <Section id="o-que-atendemos" tone="offwhite" width="wide">
+    <SectionTitle
+      eyebrow="Cobertura de quê"
+      title="Os grupos que <span class='text-orange-600'>atendemos</span>"
+      subtitle={`Dentro da cobertura acima, o trabalho se divide nestas frentes — nos segmentos ${segments
+        .join(', ')
+        .toLowerCase()}.`}
+    />
+
+    <div class="mt-14 grid gap-6 lg:grid-cols-2">
+      {
+        groups.map((g, i) => (
+          <article
+            class="flex h-full flex-col rounded-2xl border border-navy-900/10 bg-white p-7 transition-all duration-300 hover:-translate-y-1 hover:border-orange-500/30 hover:shadow-card"
+            data-reveal
+            style={`--reveal-delay:${(i % 2) * 110}ms`}
+          >
+            <div class="flex items-center gap-4">
+              <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-navy-800 text-orange-500">
+                <Icon name={g.icon} class="h-5 w-5" />
+              </span>
+              <h3 class="text-lg leading-snug text-navy-900">{g.title}</h3>
+            </div>
+
+            <p class="mt-4 text-sm leading-relaxed text-navy-900/60">{g.text}</p>
+
+            <ul
+              class:list={[
+                'mt-5 grid flex-1 content-start gap-x-6 gap-y-2',
+                g.items.length > 5 && 'sm:grid-cols-2',
+              ]}
+            >
+              {g.items.map((item) => (
+                <li class="flex items-start gap-2 text-sm leading-snug text-navy-900/75">
+                  <Icon name="check" class="mt-0.5 h-4 w-4 shrink-0 text-orange-500" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+
+            <a
+              href={g.href}
+              class="group mt-6 inline-flex cursor-pointer items-center gap-2 self-start text-sm font-bold text-navy-800 transition-colors hover:text-orange-600"
+            >
+              {g.cta}
+              <Icon
+                name="arrow-right"
+                class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+              />
+            </a>
+          </article>
+        ))
+      }
+    </div>
+
+    <div class="mt-12 text-center" data-reveal style="--reveal-delay:110ms">
+      <Button href="/servicos" variant="ghost" size="md">
+        Ver todos os serviços
+        <Icon name="arrow-right" class="h-4 w-4" />
+      </Button>
+    </div>
+  </Section>
+
+  <Agencies
+    tone="white"
+    eyebrow="Órgãos atendidos"
+    title="Processos em <span class='text-orange-600'>três órgãos</span>"
+    subtitle="Aprovação e regularização não param no projeto: cada obra ainda passa por balcões diferentes. Atendemos os três, do protocolo à emissão do documento."
+  />
+
+  <ServiceAreas />
+  <MapSection />
+  <FinalCta />
+</BaseLayout>

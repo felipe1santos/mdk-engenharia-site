@@ -33,29 +33,53 @@ const FORCE = process.argv.includes('--force');
  */
 const WANTED = [
   {
+    /**
+     * A capa anterior era um trabalhador de mascara segurando planta impressa.
+     * O cliente pediu algo "mais tecnologico, mais atual" — e a mascara datava a
+     * foto. Esta troca por uma torre em construcao ao entardecer: escura o
+     * bastante para o texto passar em contraste, com a massa da imagem a direita
+     * e ceu livre a esquerda, onde fica o H1.
+     */
     key: 'hero',
-    query: 'construction engineer blueprint site',
-    alt: 'Engenheiro analisando plantas técnicas em canteiro de obras',
-    orientation: 'landscape',
-  },
-  {
-    key: 'service-hidraulico',
-    query: 'water pipes plumbing installation building',
-    pick: 5,
-    alt: 'Barrilete hidráulico com registros e manômetro instalado em obra',
-    orientation: 'landscape',
-  },
-  {
-    key: 'service-eletrico',
-    query: 'construction worker electrical installation ceiling',
-    pick: 2,
-    alt: 'Eletricistas instalando eletrodutos em alvenaria',
+    query: 'construction site drone aerial modern building',
+    pick: 1,
+    alt: 'Edifício em construção com guindaste ao entardecer em área urbana',
     orientation: 'landscape',
   },
   {
     key: 'service-documentacao',
     query: 'architect documents blueprint desk',
     alt: 'Documentação técnica e plantas sobre a mesa de projeto',
+    orientation: 'landscape',
+  },
+  {
+    key: 'orgao-prefeitura',
+    query: 'architect stamp approval blueprint documents',
+    pick: 3,
+    alt: 'Análise de projeto arquitetônico sobre a mesa, com planta de implantação',
+    orientation: 'landscape',
+  },
+  {
+    /*
+     * Sinalizacao e abrigo de equipamentos, nao brasao de corporacao.
+     *
+     * A referencia enviada pelo cliente trazia o emblema do "Corpo de Bombeiros
+     * Civil do Brasil" — associacao privada, que nao e o Corpo de Bombeiros da
+     * Policia Militar, o orgao que de fato emite o AVCB em Sao Paulo. Usar
+     * brasao de terceiro sugere vinculo inexistente e ainda apontaria para o
+     * orgao errado.
+     */
+    key: 'orgao-bombeiros',
+    query: 'fire hydrant hose reel building safety',
+    pick: 1,
+    alt: 'Abrigo de extintor e mangotinho com sinalização de emergência em edificação',
+    orientation: 'landscape',
+  },
+  {
+    key: 'orgao-cetesb',
+    query: 'industrial plant green trees environment',
+    pick: 3,
+    alt: 'Vista aérea de planta industrial cercada por área verde preservada',
     orientation: 'landscape',
   },
   {
@@ -70,43 +94,19 @@ const WANTED = [
     alt: 'Edificação moderna em fase de construção',
     orientation: 'landscape',
   },
-  {
-    key: 'portfolio-1',
-    query: 'bathroom plumbing renovation',
-    alt: 'Projeto hidráulico residencial executado',
-    orientation: 'landscape',
-  },
-  {
-    key: 'portfolio-2',
-    query: 'electrician installing building wiring',
-    alt: 'Instalações elétricas prediais em execução',
-    orientation: 'landscape',
-  },
-  {
-    key: 'portfolio-3',
-    query: 'residential building facade brazil',
-    alt: 'Edificação regularizada junto à prefeitura',
-    orientation: 'landscape',
-  },
-  {
-    key: 'portfolio-4',
-    query: 'concrete structure rebar column',
-    alt: 'Estrutura em concreto armado com armação de pilar',
-    orientation: 'landscape',
-  },
-  {
-    key: 'portfolio-5',
-    query: 'commercial interior renovation work',
-    alt: 'Reforma de ambiente comercial concluída',
-    orientation: 'landscape',
-  },
-  {
-    key: 'portfolio-6',
-    query: 'construction supervisor inspecting site',
-    alt: 'Supervisão técnica de obra em andamento',
-    orientation: 'landscape',
-  },
 ];
+
+/*
+ * As imagens de servico (`service-arquitetonico`, `service-estrutural`,
+ * `service-hidraulico`, `service-eletrico`, `service-spci`,
+ * `service-gases-medicinais`, `service-drenagem`, `service-industrial`), as de
+ * obra (`obra-*`) e as da equipe (`equipe-*`) NAO estao nesta lista de proposito:
+ * vieram do acervo da MDK, nao do Pexels. Se voltarem para o WANTED, um
+ * `--force` sobrescreve material do cliente por foto de banco.
+ *
+ * As antigas `portfolio-1..6` sairam quando o portfolio passou a usar fotos
+ * reais de obra. Estao no historico do git se um dia fizerem falta.
+ */
 
 function loadKey() {
   try {

@@ -1,0 +1,165 @@
+---
+/**
+ * Contato.
+ *
+ * Sem formulario, e de proposito. O site e estatico e nao ha backend nem serviço
+ * de envio contratado; um formulario que nao entrega a mensagem e pior que
+ * nenhum, porque o visitante acredita ter falado com a empresa e vai embora.
+ * Quando houver destino definido para as mensagens, o formulario entra aqui.
+ *
+ * Os tres e-mails vieram do site anterior da empresa: cada um tem finalidade
+ * distinta, e separar isso na pagina reduz a chance de o orcamento cair na caixa
+ * errada.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/layout/PageHero.astro';
+import MapSection from '../components/home/MapSection.astro';
+import Section from '../components/ui/Section.astro';
+import SectionTitle from '../components/ui/SectionTitle.astro';
+import Icon from '../components/ui/Icon.astro';
+import { site, whatsappUrl, fullAddress, mapDirectionsUrl } from '../data/site';
+
+const channels = [
+  {
+    icon: 'whatsapp',
+    label: 'WhatsApp',
+    value: site.contact.phoneDisplay,
+    note: 'Resposta mais rápida. Ideal para orçamento.',
+    href: whatsappUrl,
+    external: true,
+    highlight: true,
+  },
+  {
+    icon: 'phone',
+    label: 'Telefone',
+    value: site.contact.phoneDisplay,
+    note: site.contact.hours,
+    href: `tel:${site.contact.phoneE164}`,
+  },
+  {
+    icon: 'mail',
+    label: 'Orçamentos',
+    value: site.contact.emailOrcamento,
+    note: 'Envie plantas, fotos e o endereço da obra.',
+    href: `mailto:${site.contact.emailOrcamento}`,
+  },
+  {
+    icon: 'mail',
+    label: 'Contato geral',
+    value: site.contact.email,
+    note: 'Dúvidas, parcerias e assuntos administrativos.',
+    href: `mailto:${site.contact.email}`,
+  },
+  {
+    icon: 'clipboard',
+    label: 'Trabalhe conosco',
+    value: site.contact.emailRh,
+    note: 'Envio de currículo e cadastro de fornecedores.',
+    href: `mailto:${site.contact.emailRh}`,
+  },
+  {
+    icon: 'pin',
+    label: 'Endereço',
+    value: fullAddress,
+    note: 'Atendimento presencial mediante agendamento.',
+    href: mapDirectionsUrl,
+    external: true,
+  },
+] as const;
+
+const steps = [
+  {
+    title: 'Conte o que sua obra precisa',
+    text: 'Endereço, tipo de imóvel, o que já existe e o que você quer fazer. Plantas e fotos ajudam a acelerar.',
+  },
+  {
+    title: 'Recebemos e analisamos',
+    text: 'Verificamos as exigências aplicáveis ao seu caso e o que precisa entrar no escopo.',
+  },
+  {
+    title: 'Orçamento com escopo e prazo',
+    text: 'Você recebe o que está incluso, o que não está, o prazo e a forma de pagamento — por escrito.',
+  },
+];
+---
+
+<BaseLayout
+  title={`Contato | ${site.name}`}
+  description={`Fale com a ${site.name}: WhatsApp ${site.contact.phoneDisplay}, e-mail para orçamentos e endereço em ${site.address.district}, ${site.address.city}.`}
+>
+  <PageHero
+    eyebrow="Fale com a gente"
+    title="Vamos falar sobre a <span class='text-orange-500'>sua obra</span>"
+    subtitle="Escolha o canal que preferir. Para orçamento, o WhatsApp costuma ser o caminho mais rápido."
+    crumbs={[{ label: 'Contato' }]}
+  />
+
+  <Section tone="white" width="wide">
+    <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        channels.map((c, i) => (
+          <li data-reveal style={`--reveal-delay:${(i % 3) * 90}ms`}>
+            <a
+              href={c.href}
+              target={'external' in c && c.external ? '_blank' : undefined}
+              rel={'external' in c && c.external ? 'noopener noreferrer' : undefined}
+              class:list={[
+                'group flex h-full cursor-pointer flex-col rounded-2xl border p-7 transition-all duration-300 hover:-translate-y-1',
+                'highlight' in c && c.highlight
+                  ? 'border-orange-500/45 bg-orange-500/[0.07] hover:border-orange-500'
+                  : 'border-navy-900/10 bg-white hover:border-orange-500/40 hover:shadow-card',
+              ]}
+            >
+              <span
+                class:list={[
+                  'flex h-11 w-11 items-center justify-center rounded-xl transition-colors duration-300',
+                  'highlight' in c && c.highlight
+                    ? 'bg-orange-500 text-white'
+                    : 'bg-navy-800 text-orange-500 group-hover:bg-orange-500 group-hover:text-white',
+                ]}
+              >
+                <Icon name={c.icon} class="h-5 w-5" />
+              </span>
+
+              <p class="mt-5 text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-navy-900/45">
+                {c.label}
+              </p>
+              <p class="mt-1.5 break-words text-base font-bold leading-snug text-navy-900">
+                {c.value}
+              </p>
+              <p class="mt-2 flex-1 text-sm leading-relaxed text-navy-900/60">{c.note}</p>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  <Section tone="offwhite" width="wide">
+    <SectionTitle
+      eyebrow="Como funciona"
+      title="Do primeiro contato ao <span class='text-orange-600'>orçamento</span>"
+      subtitle="Sem etapa surpresa e sem número solto: o orçamento sai com escopo definido."
+    />
+
+    <ol class="mt-14 grid gap-6 md:grid-cols-3">
+      {
+        steps.map((s, i) => (
+          <li
+            class="relative rounded-2xl border border-navy-900/10 bg-white p-7"
+            data-reveal
+            style={`--reveal-delay:${i * 110}ms`}
+          >
+            <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-navy-800 font-display text-lg font-bold text-orange-500">
+              {i + 1}
+            </span>
+            <h3 class="mt-5 text-lg leading-snug text-navy-900">{s.title}</h3>
+            <p class="mt-3 text-sm leading-relaxed text-navy-900/60">{s.text}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </Section>
+
+  <MapSection />
+</BaseLayout>

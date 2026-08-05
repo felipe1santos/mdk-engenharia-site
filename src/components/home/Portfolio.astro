@@ -1,28 +1,47 @@
 ---
 /**
- * Grid de servicos realizados.
+ * Grid de obras.
  *
- * As fotos sao de banco e estao marcadas como placeholder — foto generica em
- * portfolio nao gera confianca local e, se o cliente reconhecer o banco, gera o
- * efeito contrario. Substituir por fotos reais de obra da MDK e remover a flag
- * em src/data/portfolio.ts.
+ * As fotos vieram do acervo da propria MDK (site anterior). O que ainda estiver
+ * marcado como placeholder em src/data/portfolio.ts aguarda confirmacao do
+ * cliente e aparece com o contorno tracejado — foto que nao e da empresa em
+ * portfolio gera o efeito contrario ao pretendido se for reconhecida.
  */
 import { Image } from 'astro:assets';
-import { portfolio } from '../../data/portfolio';
+import { portfolio as allItems, type PortfolioItem } from '../../data/portfolio';
 import { getImage } from '../../lib/images';
 import Section from '../ui/Section.astro';
 import SectionTitle from '../ui/SectionTitle.astro';
+import Button from '../ui/Button.astro';
 import Icon from '../ui/Icon.astro';
+
+interface Props {
+  /** Subconjunto a exibir. Sem isto, mostra todas — que e o uso da home. */
+  items?: PortfolioItem[];
+  id?: string;
+  tone?: 'white' | 'offwhite';
+  eyebrow?: string;
+  title?: string;
+  subtitle?: string;
+  /** Botao para /projetos. Ligado na home, desligado na propria /projetos. */
+  showAll?: boolean;
+}
+
+const {
+  items: portfolio = allItems,
+  id = 'projetos',
+  tone = 'offwhite',
+  eyebrow = 'Portfólio',
+  title = "Obras <span class='text-orange-600'>realizadas</span>",
+  subtitle = 'Obras executadas e acompanhadas pela equipe da MDK, do projeto à entrega.',
+  showAll = false,
+} = Astro.props;
 
 const anyPlaceholder = portfolio.some((p) => p.placeholder);
 ---
 
-<Section id="projetos" tone="offwhite" width="wide">
-  <SectionTitle
-    eyebrow="Portfólio"
-    title="Serviços <span class='text-orange-600'>realizados</span>"
-    subtitle="Projetos e obras acompanhados pela equipe da MDK em São Paulo e Grande SP."
-  />
+<Section id={id} tone={tone} width="wide">
+  <SectionTitle eyebrow={eyebrow} title={title} subtitle={subtitle} />
 
   <div
     class:list={['mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3', anyPlaceholder && 'ph']}
@@ -38,7 +57,7 @@ const anyPlaceholder = portfolio.some((p) => p.placeholder);
           >
             <Image
               src={img.src}
-              alt={`${item.title} — ${item.location}`}
+              alt={item.location ? `${item.title} — ${item.location}` : `${item.title} — ${img.alt}`}
               widths={[400, 700, 900]}
               sizes="(min-width: 1024px) 380px, (min-width: 640px) 45vw, 92vw"
               class="aspect-4/3 w-full object-cover opacity-80 transition-all duration-700 ease-out group-hover:scale-105 group-hover:opacity-55"
@@ -51,16 +70,23 @@ const anyPlaceholder = portfolio.some((p) => p.placeholder);
             />
 
             <div class="absolute inset-x-0 bottom-0 p-6">
-              <span class="inline-flex rounded-full bg-orange-500 px-3 py-1 text-[0.6875rem] font-bold uppercase tracking-[0.1em] text-white">
-                {item.category}
+              <span class="flex flex-wrap items-center gap-2">
+                <span class="inline-flex rounded-full bg-orange-500 px-3 py-1 text-[0.6875rem] font-bold uppercase tracking-[0.1em] text-white">
+                  {item.category}
+                </span>
+                <span class="inline-flex rounded-full border border-white/25 px-3 py-1 text-[0.6875rem] font-bold uppercase tracking-[0.1em] text-white/80">
+                  {item.status}
+                </span>
               </span>
 
               <h3 class="mt-3 text-lg leading-snug text-white">{item.title}</h3>
 
-              <p class="mt-1.5 flex items-center gap-1.5 text-sm text-white/65">
-                <Icon name="pin" class="h-3.5 w-3.5 text-orange-500" />
-                {item.location}
-              </p>
+              {item.location && (
+                <p class="mt-1.5 flex items-center gap-1.5 text-sm text-white/65">
+                  <Icon name="pin" class="h-3.5 w-3.5 text-orange-500" />
+                  {item.location}
+                </p>
+              )}
 
               <span
                 class="mt-4 flex h-9 w-9 translate-y-2 items-center justify-center rounded-full bg-white/12 text-white opacity-0 backdrop-blur-sm transition-all duration-400 group-hover:translate-y-0 group-hover:opacity-100"
@@ -74,4 +100,15 @@ const anyPlaceholder = portfolio.some((p) => p.placeholder);
       })
     }
   </div>
+
+  {
+    showAll && (
+      <div class="mt-14 text-center" data-reveal>
+        <Button href="/projetos" variant="outline" size="lg">
+          Ver todas as obras
+          <Icon name="arrow-right" class="h-4 w-4" />
+        </Button>
+      </div>
+    )
+  }
 </Section>

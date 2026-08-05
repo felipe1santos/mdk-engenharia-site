@@ -1,0 +1,125 @@
+---
+/**
+ * Faixa de topo das paginas internas.
+ *
+ * Substitui o hero de tela cheia da home, que so faz sentido na entrada do site.
+ * Aqui o objetivo e outro: situar o visitante (trilha), nomear a pagina (H1) e
+ * liberar a rolagem rapido.
+ *
+ * A trilha sai tambem como BreadcrumbList em JSON-LD — e o que faz o Google
+ * exibir o caminho no resultado de busca em vez da URL crua.
+ */
+import Icon from '../ui/Icon.astro';
+
+export interface Crumb {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  title: string;
+  subtitle?: string;
+  eyebrow?: string;
+  /** Sem o item "Home", que e adicionado aqui. */
+  crumbs?: Crumb[];
+}
+
+const { title, subtitle, eyebrow, crumbs = [] } = Astro.props;
+
+const trail: Crumb[] = [{ label: 'Home', href: '/' }, ...crumbs];
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: trail.map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: c.label,
+    ...(c.href ? { item: new URL(c.href, Astro.site).href } : {}),
+  })),
+};
+---
+
+<section class="relative isolate overflow-hidden bg-navy-900 pb-14 pt-32 sm:pb-20 sm:pt-40">
+  <div
+    class="absolute inset-0 -z-10 overflow-hidden"
+    style="mask-image: radial-gradient(120% 100% at 80% 40%, #000 20%, transparent 80%); -webkit-mask-image: radial-gradient(120% 100% at 80% 40%, #000 20%, transparent 80%);"
+    aria-hidden="true"
+  >
+    <div class="bg-grid animate-grid-drift absolute -inset-40 text-white/[0.06]"></div>
+  </div>
+
+  <div
+    class="bg-dots absolute inset-y-0 right-0 -z-10 w-1/2 text-white/[0.05]"
+    aria-hidden="true"
+  >
+  </div>
+  <div
+    class="pointer-events-none absolute -right-20 -top-24 -z-10 h-80 w-80 rounded-full bg-orange-500/10 blur-3xl"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="mx-auto w-full max-w-6xl px-5 sm:px-8">
+    <nav aria-label="Trilha de navegação" data-reveal>
+      <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-white/50">
+        {
+          trail.map((c, i) => (
+            <li class="flex items-center gap-2">
+              {i > 0 && (
+                <Icon name="chevron-down" class="h-3 w-3 -rotate-90 text-white/30" />
+              )}
+              {c.href ? (
+                <a href={c.href} class="cursor-pointer transition-colors hover:text-orange-400">
+                  {c.label}
+                </a>
+              ) : (
+                <span class="text-white/75">{c.label}</span>
+              )}
+            </li>
+          ))
+        }
+      </ol>
+    </nav>
+
+    {
+      eyebrow && (
+        <p
+          class="mt-8 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.22em] text-orange-400"
+          data-reveal
+          style="--reveal-delay:60ms"
+        >
+          <span class="h-px w-8 bg-current" aria-hidden="true" />
+          {eyebrow}
+        </p>
+      )
+    }
+
+    <h1
+      class:list={[
+        'max-w-4xl text-[2.25rem] leading-[1.1] text-white sm:text-5xl lg:text-[3.5rem]',
+        eyebrow ? 'mt-4' : 'mt-8',
+      ]}
+      data-reveal
+      style="--reveal-delay:120ms"
+    >
+      <Fragment set:html={title} />
+    </h1>
+
+    {
+      subtitle && (
+        <p
+          class="mt-6 max-w-3xl text-base leading-relaxed text-white/70 sm:text-lg"
+          data-reveal
+          style="--reveal-delay:200ms"
+        >
+          {subtitle}
+        </p>
+      )
+    }
+
+    <slot />
+  </div>
+</section>
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />

@@ -61,10 +61,15 @@
   /*
    * Marcador de conteudo pendente.
    *
-   * Envolve dados que ainda sao placeholder (numeros, depoimentos, fotos de
-   * portfolio) com um contorno tracejado e uma etiqueta. Existe para que
+   * Envolve dados que ainda sao placeholder (numeros, fotos de portfolio, nomes
+   * incompletos) com um contorno tracejado e uma etiqueta. Existe para que
    * ninguem publique o site achando que o conteudo e real. Remover a flag
    * `placeholder` no arquivo de src/data/ faz o marcador sumir sozinho.
+   *
+   * O texto da etiqueta pode ser trocado pela custom property `--ph-label`,
+   * para o mesmo tratamento visual servir de rotulo de secao onde o aviso nao
+   * se aplica. Sem a variavel, o padrao continua sendo o aviso — de proposito:
+   * o comportamento seguro nao pode depender de alguem lembrar de configurar.
    */
   .ph {
     position: relative;
@@ -76,7 +81,7 @@
   /* Azul-marinho em vez de laranja: o marcador precisa ser legivel tambem sobre
      a faixa laranja, onde laranja-sobre-laranja desaparece. */
   .ph::after {
-    content: 'conteúdo a confirmar';
+    content: var(--ph-label, 'conteúdo a confirmar');
     position: absolute;
     top: -1.55rem;
     left: 0;
@@ -110,6 +115,59 @@
   .bg-dots {
     background-image: radial-gradient(currentColor 1px, transparent 1px);
     background-size: 18px 18px;
+  }
+
+  /*
+   * Malha de prancha tecnica sobre o hero.
+   *
+   * O cliente pediu uma capa "mais tecnologica". A referencia que ele enviou era
+   * de holograma e circuito — visual de startup de software, que numa empresa de
+   * engenharia civil enfraquece a credibilidade em vez de reforca-la. Esta malha
+   * traduz o pedido para o vocabulario certo: o quadriculado do papel milimetrado,
+   * com marcacao mais forte a cada cinco divisoes, como numa prancha real.
+   */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, currentColor 1px, transparent 1px),
+      linear-gradient(to bottom, currentColor 1px, transparent 1px),
+      linear-gradient(to right, currentColor 1px, transparent 1px),
+      linear-gradient(to bottom, currentColor 1px, transparent 1px);
+    background-size:
+      160px 160px,
+      160px 160px,
+      32px 32px,
+      32px 32px;
+  }
+
+  /*
+   * Deriva lenta de uma divisao maior, para o laco ser imperceptivel.
+   *
+   * Anima `transform`, e nao `background-position`: `background-position` nao e
+   * compositavel, entao o navegador repinta a area inteira do hero a cada quadro
+   * — o suficiente para travar o renderizador em maquina modesta. Com `transform`
+   * a camada sobe para a GPU e a animacao sai de graca. Por isso o elemento
+   * precisa ser maior que a area visivel (ver `-inset-40` no Hero): ele se move,
+   * e nao pode deixar borda a mostra.
+   */
+  /* Sem `will-change`: o Chrome ja promove sozinho um `transform` animado, e
+     deixar a dica ligada mantem uma camada grande viva o tempo todo. */
+  .animate-grid-drift {
+    animation: grid-drift 40s linear infinite;
+  }
+
+  @keyframes grid-drift {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(160px, 160px, 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-grid-drift {
+      animation: none;
+    }
   }
 }
 

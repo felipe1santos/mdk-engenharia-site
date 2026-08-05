@@ -1,0 +1,108 @@
+---
+/**
+ * Obras, divididas em "Em andamento" e "Concluidos" — os dois subitens que o
+ * cliente pediu no menu, e a mesma divisao que o site anterior da empresa usava.
+ *
+ * Cada bloco so aparece se houver obra naquela fase. Secao com titulo e grade
+ * vazia comunica abandono; ausencia comunica nada, que e melhor.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/layout/PageHero.astro';
+import Portfolio from '../components/home/Portfolio.astro';
+import Renders from '../components/home/Renders.astro';
+import FinalCta from '../components/home/FinalCta.astro';
+import Section from '../components/ui/Section.astro';
+import Button from '../components/ui/Button.astro';
+import Icon from '../components/ui/Icon.astro';
+import { portfolio } from '../data/portfolio';
+import { site, whatsappUrl } from '../data/site';
+
+const emAndamento = portfolio.filter((p) => p.status === 'Em andamento');
+const concluidas = portfolio.filter((p) => p.status === 'Concluída');
+---
+
+<BaseLayout
+  title={`Obras e Projetos | ${site.name}`}
+  description="Obras executadas e acompanhadas pela MDK Engenharia: residenciais, comerciais e industriais, em andamento e concluídas."
+>
+  <PageHero
+    eyebrow="Portfólio"
+    title="Obras <span class='text-orange-500'>realizadas</span>"
+    subtitle="O que a equipe da MDK executou e acompanhou, do projeto à entrega."
+    crumbs={[{ label: 'Projetos' }]}
+  >
+    <div class="mt-10 flex flex-wrap gap-3" data-reveal style="--reveal-delay:280ms">
+      <a
+        href="#em-andamento"
+        class="cursor-pointer rounded-full border border-white/20 px-5 py-2.5 text-sm font-semibold text-white/85 transition-colors hover:border-orange-500 hover:text-white"
+      >
+        Em andamento ({emAndamento.length})
+      </a>
+      <a
+        href="#concluidos"
+        class="cursor-pointer rounded-full border border-white/20 px-5 py-2.5 text-sm font-semibold text-white/85 transition-colors hover:border-orange-500 hover:text-white"
+      >
+        Concluídos ({concluidas.length})
+      </a>
+      <a
+        href="#projetos-3d"
+        class="cursor-pointer rounded-full border border-white/20 px-5 py-2.5 text-sm font-semibold text-white/85 transition-colors hover:border-orange-500 hover:text-white"
+      >
+        Projeto executivo
+      </a>
+    </div>
+  </PageHero>
+
+  {
+    emAndamento.length > 0 && (
+      <Portfolio
+        id="em-andamento"
+        tone="white"
+        items={emAndamento}
+        eyebrow="Canteiro aberto"
+        title="Obras <span class='text-orange-600'>em andamento</span>"
+        subtitle="Obras em execução no momento, acompanhadas tecnicamente pela equipe."
+      />
+    )
+  }
+
+  {
+    concluidas.length > 0 && (
+      <Portfolio
+        id="concluidos"
+        tone="offwhite"
+        items={concluidas}
+        eyebrow="Entregue"
+        title="Obras <span class='text-orange-600'>concluídas</span>"
+        subtitle="Obras finalizadas e entregues."
+      />
+    )
+  }
+
+  {/* Aqui cabe mais imagem que na home: quem chegou nesta pagina veio ver
+      portfolio. Mesmo assim o botao para a pagina do projeto continua sendo o
+      destino — a galeria e amostra, nao substituto. */}
+  <Renders tone={concluidas.length > 0 ? 'white' : 'offwhite'} extraRenders={4} />
+
+  <Section tone="offwhite" space="md">
+    <div class="mx-auto max-w-2xl text-center" data-reveal>
+      <span class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-navy-800 text-orange-500">
+        <Icon name="hammer" class="h-6 w-6" />
+      </span>
+      <h2 class="mt-6 font-display text-2xl text-navy-900">Sua obra pode ser a próxima</h2>
+      <p class="mt-4 text-base leading-relaxed text-navy-900/65">
+        Projetamos, executamos e acompanhamos obras residenciais, comerciais e industriais.
+        Conte o que você precisa e receba um orçamento com escopo e prazo definidos.
+      </p>
+      <div class="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
+        <Button href={whatsappUrl} variant="primary" size="lg" external>
+          <Icon name="whatsapp" class="h-5 w-5" />
+          Solicitar orçamento
+        </Button>
+        <Button href="/servicos" variant="outline" size="lg">Ver os serviços</Button>
+      </div>
+    </div>
+  </Section>
+
+  <FinalCta />
+</BaseLayout>

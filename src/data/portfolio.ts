@@ -1,9 +1,14 @@
 /**
- * Servicos realizados.
+ * Obras da MDK.
  *
- * As fotos sao de banco de imagens (Pexels) e servem para validar o layout.
- * Substituir por fotos reais de obras da MDK antes de publicar — foto de banco
- * em portfolio passa a impressao errada e nao gera confianca local.
+ * As fotos e os identificadores (FRJ, MB, NK) vieram do site anterior da
+ * empresa, secoes "Em Andamento" e "Concluidos". As duas primeiras sao
+ * registros reais de canteiro; a terceira esta marcada como placeholder
+ * enquanto o cliente nao confirmar que a foto e de obra propria.
+ *
+ * `location` e opcional de proposito: o site anterior nao informava a cidade de
+ * nenhuma obra e inventar o dado prejudicaria justamente o SEO local, que
+ * depende de coerencia entre o que a pagina afirma e o que o Google verifica.
  *
  * `image` referencia a chave em src/data/images.json.
  */
@@ -11,52 +16,32 @@
 export interface PortfolioItem {
   title: string;
   category: string;
-  location: string;
+  /** Cidade/UF. Omitir quando nao confirmado — ver nota acima. */
+  location?: string;
+  /** Fase da obra, usada como etiqueta secundaria. */
+  status: 'Em andamento' | 'Concluída';
   image: string;
   placeholder?: boolean;
 }
 
 export const portfolio: PortfolioItem[] = [
   {
-    title: 'Projeto hidráulico residencial',
-    category: 'Instalações Hidráulicas',
-    location: 'São Paulo, SP',
-    image: 'portfolio-1',
-    placeholder: true,
+    title: 'Residência FRJ',
+    category: 'Execução de Obra',
+    status: 'Em andamento',
+    image: 'obra-frj',
   },
   {
-    title: 'Instalações elétricas prediais',
-    category: 'Instalações Elétricas',
-    location: 'Guarulhos, SP',
-    image: 'portfolio-2',
-    placeholder: true,
+    title: 'Residência MB',
+    category: 'Execução de Obra',
+    status: 'Em andamento',
+    image: 'obra-mb',
   },
   {
-    title: 'Regularização de edificação',
-    category: 'Documentação',
-    location: 'Osasco, SP',
-    image: 'portfolio-3',
-    placeholder: true,
-  },
-  {
-    title: 'Estrutura em concreto armado',
-    category: 'Execução',
-    location: 'Barueri, SP',
-    image: 'portfolio-4',
-    placeholder: true,
-  },
-  {
-    title: 'Reforma comercial',
-    category: 'Reforma',
-    location: 'São Paulo, SP',
-    image: 'portfolio-5',
-    placeholder: true,
-  },
-  {
-    title: 'Supervisão de obra',
-    category: 'Consultoria',
-    location: 'Santana de Parnaíba, SP',
-    image: 'portfolio-6',
+    title: 'Residência NK',
+    category: 'Execução de Obra',
+    status: 'Concluída',
+    image: 'obra-nk',
     placeholder: true,
   },
 ];

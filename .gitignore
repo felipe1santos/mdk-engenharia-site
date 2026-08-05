@@ -26,3 +26,9 @@ Thumbs.db
 # Documentos com dados pessoais de terceiros (o protocolo INPI traz o CPF da
 # procuradora). Ficam locais, nunca no repositorio — que e publico.
 *.pdf
+
+# Material bruto enviado pelo cliente: retratos originais da equipe e o documento
+# de ajustes com anotacoes internas. Mesma politica do PDF acima — o repositorio
+# e publico e isto e material de trabalho, nao do site. As versoes tratadas que o
+# site usa estao versionadas em src/assets/images/ (equipe-*.jpg).
+equipe/

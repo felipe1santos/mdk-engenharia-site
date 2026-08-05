@@ -1,0 +1,184 @@
+---
+/**
+ * Projetos executivos, em versao resumida.
+ *
+ * Esta secao ja foi uma galeria de seis renders. Era imagem demais para a home:
+ * seis vistas do mesmo salao dizem menos que duas, e nenhuma delas mostrava o
+ * que a MDK de fato vende, que e o desenho. Agora sobrou capa + o par
+ * "antes e depois" do layout dos elevadores; o resto foi para a pagina propria,
+ * que e o destino de todo o bloco.
+ *
+ * `extraRenders` existe porque /projetos aguenta mais imagem que a home — la o
+ * visitante ja veio ver portfolio. Na home o padrao e zero.
+ *
+ * Sem lightbox: seria mais JavaScript para resolver um problema que a pagina do
+ * projeto, com as imagens em tamanho generoso, ja resolve.
+ */
+import { Image } from 'astro:assets';
+import { renderProjects } from '../../data/renders';
+import { getImage } from '../../lib/images';
+import Section from '../ui/Section.astro';
+import SectionTitle from '../ui/SectionTitle.astro';
+import Button from '../ui/Button.astro';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  id?: string;
+  tone?: 'white' | 'offwhite';
+  eyebrow?: string;
+  title?: string;
+  subtitle?: string;
+  /** Renders extras na grade, alem da capa e do par de comparacao. */
+  extraRenders?: number;
+}
+
+const {
+  id = 'projetos-3d',
+  tone = 'white',
+  eyebrow = 'Do papel à imagem',
+  title = "Projeto <span class='text-orange-600'>executivo</span>",
+  subtitle = 'Antes de a obra começar, tudo é decidido no desenho: layout, circulação e acabamento — com o custo de mudar ainda perto de zero.',
+  extraRenders = 0,
+} = Astro.props;
+---
+
+<Section id={id} tone={tone} width="wide">
+  <SectionTitle eyebrow={eyebrow} title={title} subtitle={subtitle} />
+
+  {
+    renderProjects.map((project) => {
+      const cover = getImage(project.cover);
+      const before = getImage(project.comparison.before.image);
+      const after = getImage(project.comparison.after.image);
+
+      /** A capa e o render da comparacao ja aparecem; a grade nao os repete. */
+      const shown = new Set([project.cover, project.comparison.after.image]);
+      const extras = project.images
+        .filter((key) => !shown.has(key))
+        .slice(0, extraRenders)
+        .map(getImage);
+
+      return (
+        <article class="mt-14">
+          <div class="grid gap-10 lg:grid-cols-[1.5fr_1fr] lg:items-center lg:gap-14">
+            <div class="overflow-hidden rounded-2xl shadow-card" data-reveal>
+              <Image
+                src={cover.src}
+                alt={cover.alt}
+                widths={[600, 1000, 1600]}
+                sizes="(min-width: 1024px) 60vw, 92vw"
+                class="aspect-[16/9] w-full object-cover"
+                loading="lazy"
+              />
+            </div>
+
+            <div data-reveal style="--reveal-delay:120ms">
+              <h3 class="font-display text-2xl leading-snug text-navy-900">{project.title}</h3>
+              <p class="mt-2 text-sm font-semibold text-orange-600">{project.subtitle}</p>
+              <p class="mt-5 text-base leading-relaxed text-navy-900/65">{project.description}</p>
+
+              <ul class="mt-6 space-y-2.5">
+                {project.highlights.map((h) => (
+                  <li class="flex items-start gap-2.5 text-sm leading-relaxed text-navy-900/70">
+                    <Icon name="check" class="mt-0.5 h-4 w-4 shrink-0 text-orange-500" />
+                    {h}
+                  </li>
+                ))}
+              </ul>
+
+              <Button href={project.slug} variant="ghost" class="mt-8">
+                Ver o projeto completo
+                <Icon
+                  name="arrow-right"
+                  class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                />
+              </Button>
+            </div>
+          </div>
+
+          {/* O par que o cliente pediu: como foi desenhado e como ficou. */}
+          <div
+            class="mt-12 rounded-2xl border border-navy-900/10 p-6 sm:mt-16 sm:p-9"
+            data-reveal
+          >
+            <p class="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.22em] text-orange-600">
+              <span class="h-px w-8 bg-current" aria-hidden="true" />
+              Antes e depois
+            </p>
+            <h3 class="mt-3 font-display text-xl leading-snug text-navy-900 sm:text-2xl">
+              A distribuição dos elevadores
+            </h3>
+            <p class="mt-4 max-w-3xl text-base leading-relaxed text-navy-900/65">
+              {project.comparison.intro}
+            </p>
+
+            <div class="mt-8 grid gap-6 sm:grid-cols-2 sm:gap-8">
+              <figure data-reveal>
+                <div class="overflow-hidden rounded-xl border border-navy-900/10 bg-white">
+                  <Image
+                    src={before.src}
+                    alt={before.alt}
+                    widths={[500, 900, 1400]}
+                    sizes="(min-width: 640px) 45vw, 92vw"
+                    class="aspect-[4/3] w-full object-contain p-2"
+                    loading="lazy"
+                  />
+                </div>
+                <figcaption class="mt-3.5">
+                  <span class="inline-flex rounded-full bg-navy-800 px-3 py-1 text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-white">
+                    {project.comparison.before.label}
+                  </span>
+                  <p class="mt-2.5 text-sm leading-relaxed text-navy-900/60">
+                    {project.comparison.before.caption}
+                  </p>
+                </figcaption>
+              </figure>
+
+              <figure data-reveal style="--reveal-delay:120ms">
+                <div class="overflow-hidden rounded-xl border border-navy-900/10 bg-white">
+                  <Image
+                    src={after.src}
+                    alt={after.alt}
+                    widths={[500, 900, 1400]}
+                    sizes="(min-width: 640px) 45vw, 92vw"
+                    class="aspect-[4/3] w-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+                <figcaption class="mt-3.5">
+                  <span class="inline-flex rounded-full bg-orange-500 px-3 py-1 text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-white">
+                    {project.comparison.after.label}
+                  </span>
+                  <p class="mt-2.5 text-sm leading-relaxed text-navy-900/60">
+                    {project.comparison.after.caption}
+                  </p>
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+
+          {extras.length > 0 && (
+            <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {extras.map((img, i) => (
+                <li
+                  class="overflow-hidden rounded-xl shadow-card transition-shadow duration-300 hover:shadow-card-hover"
+                  data-reveal
+                  style={`--reveal-delay:${(i % 4) * 90}ms`}
+                >
+                  <Image
+                    src={img.src}
+                    alt={img.alt}
+                    widths={[400, 700, 1200]}
+                    sizes="(min-width: 1024px) 23vw, (min-width: 640px) 45vw, 92vw"
+                    class="aspect-[16/10] w-full object-cover transition-transform duration-700 ease-out hover:scale-105"
+                    loading="lazy"
+                  />
+                </li>
+              ))}
+            </ul>
+          )}
+        </article>
+      );
+    })
+  }
+</Section>

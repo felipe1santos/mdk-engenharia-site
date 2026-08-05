@@ -3,11 +3,25 @@
 Site da MDK Engenharia e Arquitetura LTDA - ME (São Paulo/SP). Astro 5 + Tailwind 4,
 saída estática.
 
-Nesta etapa existe apenas a **home**, para validar design, branding e estrutura de SEO
-antes de construir as páginas internas. A navbar já traz todos os links finais; enquanto as
-páginas não existem, apontam para âncoras da home.
+São 18 páginas: home, institucional, portfólio, áreas de atuação, contato e uma página por
+disciplina de serviço.
+
+| Rota | Conteúdo |
+|---|---|
+| `/` | Home |
+| `/sobre` | História, missão/visão/valores e direção técnica |
+| `/servicos` | Índice das frentes, divididas entre projeto e obra |
+| `/servicos/[slug]` | Uma página por disciplina — escopo, entregáveis, normas e FAQ |
+| `/servicos/regularizacao/[slug]` | Prefeitura, Corpo de Bombeiros e CETESB — o que resolvemos em cada órgão |
+| `/projetos` | Obras em andamento e concluídas |
+| `/areas-de-atuacao` | Cobertura presencial e remota, cidades atendidas e mapa |
+| `/contato` | Canais de contato, fluxo do orçamento e mapa |
+
+As páginas de serviço são geradas de `src/data/services.ts`. Serviço sem o campo `detail`
+não vira rota — é o mecanismo para publicar em etapas sem deixar link quebrado.
 
 Especificação: [`docs/superpowers/specs/2026-08-02-mdk-home-design.md`](docs/superpowers/specs/2026-08-02-mdk-home-design.md)
+Plano dos ajustes do cliente: [`docs/superpowers/plans/2026-08-05-ajustes-cliente.md`](docs/superpowers/plans/2026-08-05-ajustes-cliente.md)
 
 ## Rodar localmente
 
@@ -32,7 +46,11 @@ Nenhum componente contém texto de negócio. Tudo vive em `src/data/`:
 | Arquivo | Conteúdo |
 |---|---|
 | `site.ts` | Razão social, CNPJ, endereço, telefone, WhatsApp, e-mail, horário, redes, SEO |
-| `services.ts` | Serviços principais e secundários |
+| `services.ts` | Disciplinas de projeto e frentes de execução/consultoria |
+| `institutional.ts` | Missão, Visão, Valores e textos da seção "Sobre" |
+| `team.ts` | Direção técnica e equipe |
+| `renders.ts` | Estudos em 3D exibidos na home e em `/projetos` |
+| `agencies.ts` | Prefeitura, Corpo de Bombeiros e CETESB — serviços, etapas, base legal e FAQ |
 | `cities.ts` | Cidades atendidas (SEO local e `areaServed` do JSON-LD) |
 | `stats.ts` | Números da faixa laranja |
 | `testimonials.ts` | Depoimentos |
@@ -48,15 +66,34 @@ Está tudo marcado com `PLACEHOLDER` em `src/data/`. Blocos com dados fictícios
 site com um contorno tracejado e a etiqueta **conteúdo a confirmar** — o marcador some
 sozinho quando a flag `placeholder` sai do arquivo de dados.
 
+> ### ⚠️ Antes de tirar o `noindex` e divulgar
+>
+> **Os depoimentos em `src/data/testimonials.ts` são fictícios.** Foram escritos como
+> conteúdo de demonstração enquanto o perfil no Google Meu Negócio não existe. Publicar
+> depoimento fabricado em site comercial é publicidade enganosa (CDC, art. 37). Substituir
+> por avaliações reais antes de liberar a indexação. A flag `fictitious` marca cada item.
+
 Falta o cliente fornecer:
 
-- Telefone, WhatsApp, e-mail e horário de atendimento
-- Depoimentos reais autorizados
-- Números reais (projetos, obras, anos, m²)
-- Fotos reais de obras (hoje: banco de imagens)
+- Horário de atendimento real
+- **Depoimentos reais autorizados** (ver aviso acima)
+- Números reais de projetos, obras e m² (anos de mercado já sai da fundação em 2010)
+- Nome completo da Diretora Administrativa e o CREA/CAU dos responsáveis técnicos
+  (`src/data/team.ts`)
+- Confirmar se a foto da "Residência NK" é obra da MDK (`src/data/portfolio.ts`)
+- Quais disciplinas de projeto são assinadas com equipe própria e quais com parceiro
 - **Logo em vetor** (`.ai`, `.svg` ou `.pdf`). Só existe um JPEG de 802 px; o logo atual foi
   extraído dele e fica levemente suave em telas retina
+- **Decisão sobre o "K"**: na arte do manual o símbolo é `|<` — coluna de armação à esquerda,
+  chevron abrindo para a direita. O cliente pediu a orientação oposta, `>|`: chevron com a boca
+  virada para o "D" e a coluna à direita, servindo de haste. `scripts/extract-logo.mjs` espelha
+  o bloco inteiro (coluna + chevron) uma única vez, e navbar, rodapé, símbolo e favicon derivam
+  daí. Registrar essa versão como oficial junto ao designer, sobretudo porque o pedido no INPI
+  (nº 941017087) está em exame e o manual atribui significado ao "K INVERTIDO"
 - Confirmação das coordenadas do endereço (ver nota em `src/data/site.ts`)
+
+Plano dos ajustes pedidos pelo cliente:
+[`docs/superpowers/plans/2026-08-05-ajustes-cliente.md`](docs/superpowers/plans/2026-08-05-ajustes-cliente.md)
 
 ### Marca registrada
 
@@ -64,6 +101,15 @@ O pedido no INPI (nº 941017087) ainda está **em exame**. O site não pode usar
 expressão "Marca Registrada" — só o nome. Revisar quando o registro for concedido.
 
 ## Imagens
+
+Há três origens em `src/assets/images/`:
+
+| Prefixo | Origem | Observação |
+|---|---|---|
+| `service-*` | Acervo da MDK (site anterior) | Pranchas técnicas, exibidas com `object-contain` sobre fundo branco. Quatro delas vieram entre 301 px e 430 px e ficam suaves em tela retina — pedir os arquivos originais ao cliente |
+| `obra-*`, `equipe-*` | Acervo da MDK | Fotos reais. As da equipe são recortadas em 4:5 e uniformizadas por CSS em `Team.astro` |
+| `render-*` | Acervo da MDK | Renders 3D extraídos do PDF de apresentação enviado pelo cliente, em resolução original |
+| `hero`, `about`, `cta`, `portfolio-*` | Pexels | Banco de imagens, via `npm run fetch:images` |
 
 `npm run fetch:images` lê `PEXELS_API_KEY` de `.env` (copie de `.env.example`) e baixa as
 fotos para `src/assets/images/`.
@@ -130,11 +176,16 @@ src/
   data/          conteúdo do site (fonte única)
   layouts/       BaseLayout.astro — <head>, SEO, JSON-LD
   components/
-    layout/      Navbar, Footer, WhatsAppFab
-    home/        seções da home, na ordem de rolagem
+    layout/      Navbar, Footer, PageHero, WhatsAppFab
+    home/        seções da home, reaproveitadas nas páginas internas
     ui/          Section, SectionTitle, Button, Icon
   lib/images.ts  resolve chaves de imagem para os arquivos
   scripts/       reveal.ts — animações de rolagem
-  pages/         index.astro
+  pages/         index, sobre, servicos/, projetos, areas-de-atuacao, contato
 scripts/         fetch-images.mjs, extract-logo.mjs
 ```
+
+As seções em `components/home/` aceitam props e são reaproveitadas nas páginas internas
+(`About`, `Team`, `Portfolio`, `ServiceAreas`, `MapSection`, `FinalCta`). O objetivo é que
+a mesma informação nunca exista em dois markups diferentes — mudar o texto em `src/data/`
+atualiza todas as páginas que o exibem.

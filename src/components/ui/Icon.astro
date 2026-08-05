@@ -18,6 +18,14 @@ interface Props {
     | 'blueprint'
     | 'calendar'
     | 'ruler'
+    | 'compass'
+    | 'pillar'
+    | 'flame'
+    | 'medical'
+    | 'drain'
+    | 'factory'
+    | 'wind'
+    | 'leaf'
     | 'check'
     | 'arrow-right'
     | 'arrow-left'
@@ -34,9 +42,18 @@ interface Props {
     | 'menu'
     | 'close';
   class?: string;
+  /**
+   * Demais atributos (data-*, aria-*, style) sao repassados ao <svg>.
+   *
+   * Sem isto, `<Icon data-algo />` some silenciosamente: o Astro nao repassa
+   * atributos desconhecidos para componentes, e o seletor no script nunca acha
+   * o elemento. Foi exatamente o que aconteceu com o chevron do acordeao do
+   * menu mobile, que nunca girava.
+   */
+  [key: string]: unknown;
 }
 
-const { name, class: className = 'h-6 w-6' } = Astro.props;
+const { name, class: className = 'h-6 w-6', ...rest } = Astro.props;
 
 /** Icones de traco, herdam currentColor. */
 const stroke: Record<string, string> = {
@@ -57,6 +74,23 @@ const stroke: Record<string, string> = {
     '<path d="M4 5h16v16H4z"/><path d="M4 10h16M8 3v4M16 3v4"/>',
   ruler:
     '<rect x="1.7" y="8.2" width="20.6" height="7.6" rx="1.4" transform="rotate(-20 12 12)"/><path d="M6.6 9.6v2.2M10 8.3v3.2M13.4 7.1v2.2M16.8 5.8v3.2"/>',
+  compass:
+    '<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5.2-5.2 2 2-5.2 5.2-2Z"/>',
+  pillar:
+    '<path d="M4 21h16"/><path d="M4 3h16"/><path d="M8 3v18M16 3v18"/><path d="M8 9h8M8 15h8"/>',
+  flame:
+    '<path d="M12 22a6 6 0 0 0 6-6c0-4-3.5-6.4-4.7-10C11.5 8 10 8.6 10 11c0 1.3.6 2 .6 2S9 12 9 10c-1.9 1.7-3 3.6-3 6a6 6 0 0 0 6 6Z"/>',
+  /** Cilindro de gas com cruz — gases medicinais. */
+  medical:
+    '<rect x="8" y="6" width="8" height="15" rx="3"/><path d="M10.5 6V3.5h3V6"/><path d="M12 10.5v4M10 12.5h4"/>',
+  /** Grelha de captacao — drenagem. */
+  drain: '<circle cx="12" cy="12" r="9"/><path d="M8 6.5v11M12 4.5v15M16 6.5v11"/>',
+  factory:
+    '<path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M17 18h1M12 18h1M7 18h1"/>',
+  /** Fluxo de ar — climatizacao. */
+  wind: '<path d="M3 8h9a3 3 0 1 0-3-3"/><path d="M3 12h13a3 3 0 1 1-3 3"/><path d="M3 16h7a2.5 2.5 0 1 1-2.5 2.5"/>',
+  /** Folha — licenciamento ambiental. */
+  leaf: '<path d="M11 20A7 7 0 0 1 4 13c0-5 4.5-9.5 16-9-0.5 11-5 13-9 13Z"/><path d="M4.5 20.5C7 15 10 12.5 15 10.5"/>',
   check: '<path d="m4 12 5.5 5.5L20 7"/>',
   'arrow-right': '<path d="M4 12h15"/><path d="m13 6 6 6-6 6"/>',
   'arrow-left': '<path d="M20 12H5"/><path d="m11 6-6 6 6 6"/>',
@@ -98,5 +132,6 @@ const body = isFilled ? filled[name] : stroke[name];
   stroke-linejoin="round"
   aria-hidden="true"
   focusable="false"
+  {...rest}
   set:html={body}
 />

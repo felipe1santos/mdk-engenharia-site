@@ -16,6 +16,16 @@ import WhatsAppFab from '../components/layout/WhatsAppFab.astro';
 interface Props {
   title?: string;
   description?: string;
+  /**
+   * Palavras-chave da pagina.
+   *
+   * O Google ignora esta meta desde 2009; ela fica por dois motivos praticos:
+   * outros buscadores e agregadores ainda a leem, e ter a lista explicita por
+   * pagina obriga a decidir para que termo cada pagina existe — o que evita duas
+   * paginas competindo pela mesma busca. O trabalho de SEO de verdade continua
+   * sendo o texto, o title e o dado estruturado.
+   */
+  keywords?: readonly string[];
   /** Caminho da imagem de compartilhamento, relativo a raiz do site. */
   ogImage?: string;
 }
@@ -23,6 +33,7 @@ interface Props {
 const {
   title = site.seo.title,
   description = site.seo.description,
+  keywords = site.seo.keywords,
   ogImage = '/og-image.jpg',
 } = Astro.props;
 
@@ -100,6 +111,7 @@ const jsonLd = {
 
     <title>{title}</title>
     <meta name="description" content={description} />
+    {keywords.length > 0 && <meta name="keywords" content={keywords.join(', ')} />}
     <link rel="canonical" href={canonical} />
 
     <meta name="author" content={site.legalName} />

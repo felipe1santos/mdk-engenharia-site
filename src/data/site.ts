@@ -15,10 +15,24 @@ export const site = {
   legalName: 'MDK Engenharia e Arquitetura LTDA - ME',
   cnpj: '27.333.759/0001-42',
   tagline: 'Planejamento · Execução · Compromisso',
+  /** Ano de fundacao declarado pela empresa no site anterior. */
+  foundedYear: 2010,
   shortDescription:
-    'Projetos de instalações hidráulicas e elétricas, documentação e regularização de obras em São Paulo e Grande São Paulo.',
+    'Projetos de arquitetura, estrutura e instalações, execução e consultoria de obra, documentação e regularização em São Paulo e Grande São Paulo.',
 
-  /** Endereco conforme registro INPI no 941017087. */
+  /**
+   * Endereco conforme registro INPI no 941017087.
+   *
+   * DIVERGENCIA RESOLVIDA: o site anterior da empresa informava o numero 71,
+   * mas o carimbo da prancha executiva enviada pelo cliente
+   * (equipe/Drawing1-Model.pdf, projeto assinado em 11/03/2026) traz
+   * "RUA CARLOS DUARTE FERREIRA, 83 - JARDIM PERI - SP". Documento tecnico
+   * recente e assinado tem mais peso que a pagina antiga, e bate com o INPI —
+   * entao 83 fica.
+   *
+   * Falta so conferir o que consta no Google Meu Negocio quando o perfil for
+   * criado: NAP divergente entre site, perfil e registro derruba a busca local.
+   */
   address: {
     street: 'Rua Carlos Duarte Ferreira, 83',
     district: 'Jardim Peri',
@@ -45,16 +59,18 @@ export const site = {
     geoConfirmed: false,
   },
 
+  /** Telefone e e-mails conforme mdkengenharia.com.br/contrate-nos. */
   contact: {
-    /** PLACEHOLDER: telefone real do cliente. */
-    phoneDisplay: '(11) 0000-0000',
-    phoneE164: '+551100000000',
-    /** PLACEHOLDER: WhatsApp real do cliente. */
-    whatsappE164: '5511000000000',
+    phoneDisplay: '(11) 99347-1608',
+    phoneE164: '+5511993471608',
+    whatsappE164: '5511993471608',
     whatsappMessage:
       'Olá! Vim pelo site e gostaria de solicitar um orçamento com a MDK Engenharia.',
-    /** PLACEHOLDER: e-mail comercial. O do INPI e do escritorio de marcas, nao da MDK. */
     email: 'contato@mdkengenharia.com.br',
+    /** Caixa dedicada a pedidos de orcamento. */
+    emailOrcamento: 'orcamento@mdkengenharia.com.br',
+    /** Caixa usada para recrutamento. */
+    emailRh: 'mdkengenharia@mdkengenharia.com.br',
     /** PLACEHOLDER: horario de atendimento real. */
     hours: 'Segunda a sexta, das 8h às 18h',
     hoursSchema: 'Mo-Fr 08:00-18:00',
@@ -68,21 +84,30 @@ export const site = {
   },
 
   seo: {
-    title: 'MDK Engenharia | Projetos Hidráulicos, Elétricos e Regularização em São Paulo',
+    title: 'MDK Engenharia | Projetos, Execução e Regularização de Obras em São Paulo',
     description:
-      'MDK Engenharia e Arquitetura: projetos de instalações hidráulicas e elétricas, documentação e regularização de obras em São Paulo e Grande SP. Planejamento, execução e compromisso.',
+      'MDK Engenharia e Arquitetura: projetos de arquitetura, estrutura, instalações, SPCI, gases medicinais e drenagem, além de execução, consultoria e regularização de obras em São Paulo e Grande SP.',
     keywords: [
+      'projeto arquitetônico São Paulo',
+      'projeto estrutural São Paulo',
       'projeto hidráulico São Paulo',
       'projeto elétrico São Paulo',
+      'projeto de SPCI',
+      'projeto de gases medicinais',
+      'projeto de drenagem',
+      'projeto industrial',
       'regularização de obras',
-      'documentação para projeto',
       'aprovação de projeto prefeitura',
+      'AVCB Corpo de Bombeiros',
+      'licenciamento CETESB',
       'engenharia civil São Paulo',
-      'projeto de edificações',
       'construção civil São Paulo',
     ],
   },
 } as const;
+
+/** Anos de mercado, calculados a partir da fundacao — nunca escritos a mao. */
+export const yearsInBusiness = new Date().getFullYear() - site.foundedYear;
 
 /** Endereco em linha unica, usado no rodape e no card do mapa. */
 export const fullAddress = `${site.address.street} — ${site.address.district}, ${site.address.city}/${site.address.state}, CEP ${site.address.zip}`;

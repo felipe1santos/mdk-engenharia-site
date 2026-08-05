@@ -14,9 +14,15 @@ import Icon from '../ui/Icon.astro';
 
 const hero = getImage('hero');
 
+/**
+ * O H1 abriu para toda a gama de servicos a pedido do cliente, mas os termos
+ * especificos de maior intencao de compra ("projeto hidraulico", "projeto
+ * eletrico", "regularizacao") nao podem sumir da dobra: sao eles que trazem
+ * busca. Por isso migraram para o subtitulo e para os destaques abaixo.
+ */
 const highlights = [
-  'Projeto hidráulico e elétrico',
-  'Aprovação em prefeitura',
+  'Projeto e execução',
+  'Aprovação em prefeitura, bombeiros e CETESB',
   'Regularização de obras',
 ];
 ---
@@ -49,6 +55,21 @@ const highlights = [
     aria-hidden="true"
   >
   </div>
+  <!-- Malha de prancha tecnica: e o que da o ar "atual" pedido pelo cliente sem
+       recorrer ao visual de holograma, que nao combina com engenharia civil.
+
+       A mascara radial faz a malha sumir nas bordas para nao competir com o
+       texto. O wrapper existe porque a malha se move (translate) e precisa
+       sobrar area alem da visivel — a mascara fica no pai, parado, e a animacao
+       no filho, maior que ele. -->
+  <div
+    class="absolute inset-0 -z-10 overflow-hidden"
+    style="mask-image: radial-gradient(120% 90% at 78% 45%, #000 25%, transparent 78%); -webkit-mask-image: radial-gradient(120% 90% at 78% 45%, #000 25%, transparent 78%);"
+    aria-hidden="true"
+  >
+    <div class="bg-grid animate-grid-drift absolute -inset-40 text-white/[0.055]"></div>
+  </div>
+
   <div
     class="bg-dots absolute inset-y-0 right-0 -z-10 w-1/2 text-white/[0.07]"
     aria-hidden="true"
@@ -70,7 +91,7 @@ const highlights = [
         data-reveal
         style="--reveal-delay:100ms"
       >
-        Projetos de <span class="text-orange-500">instalações</span> e regularização de obras
+        Projetos e obras com <span class="text-orange-500">solução completa</span>
       </h1>
 
       <p
@@ -78,9 +99,9 @@ const highlights = [
         data-reveal
         style="--reveal-delay:200ms"
       >
-        Projetos hidráulicos, elétricos e toda a documentação técnica necessária para aprovar,
-        executar e regularizar sua obra em São Paulo e Grande SP — com responsabilidade técnica
-        do início ao Habite-se.
+        Arquitetura, estrutura, instalações hidráulicas e elétricas, SPCI, gases medicinais e
+        drenagem — mais execução, consultoria e toda a documentação para aprovar e regularizar
+        sua obra, com responsabilidade técnica do início ao Habite-se.
       </p>
 
       <ul
@@ -112,7 +133,7 @@ const highlights = [
           />
         </Button>
 
-        <Button href="#servicos" variant="outline" size="lg">Conheça os serviços</Button>
+        <Button href="/servicos" variant="outline" size="lg">Conheça os serviços</Button>
       </div>
 
       <p class="mt-8 text-sm text-white/50" data-reveal style="--reveal-delay:440ms">

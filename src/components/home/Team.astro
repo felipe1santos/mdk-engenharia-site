@@ -1,0 +1,117 @@
+---
+/**
+ * Direcao tecnica e equipe.
+ *
+ * O ponto delicado desta secao e que as quatro fotos vem de contextos
+ * diferentes: duas de ensaio no escritorio, uma externa e uma de celular em
+ * evento. Lado a lado, sem tratamento, a diferenca de luz e de temperatura de
+ * cor fica evidente e derruba a percepcao de profissionalismo da pagina inteira.
+ *
+ * A solucao e uniformizar por CSS, nao destruindo o arquivo: dessaturacao mais
+ * uma camada navy em `mix-blend-mode: color` deixam as quatro na mesma paleta.
+ * No hover a foto volta ao natural — vale como microinteracao e deixa o
+ * visitante ver a pessoa de verdade.
+ *
+ * Fazer isso no CSS e nao no JPEG e deliberado: quando o cliente enviar as duas
+ * fotos que faltam do mesmo ensaio, basta trocar os arquivos.
+ */
+import { Image } from 'astro:assets';
+import { team } from '../../data/team';
+import { getImage } from '../../lib/images';
+import Section from '../ui/Section.astro';
+import SectionTitle from '../ui/SectionTitle.astro';
+---
+
+<Section id="equipe" tone="white" width="wide">
+  <SectionTitle
+    eyebrow="Quem faz"
+    title="Direção <span class='text-orange-600'>técnica</span>"
+    subtitle="Projeto e obra têm nome e responsável. Estas são as pessoas que assinam o trabalho da MDK."
+    as="h2"
+  />
+
+  <ul class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    {
+      team.map((member, i) => {
+        const img = getImage(member.image);
+        return (
+          <li
+            class:list={['group relative', member.placeholder && 'ph']}
+            data-reveal
+            style={`--reveal-delay:${(i % 4) * 110}ms`}
+          >
+            <div class="relative overflow-hidden rounded-2xl bg-navy-900 shadow-card transition-all duration-400 ease-out group-hover:-translate-y-1.5 group-hover:shadow-card-hover">
+              <Image
+                src={img.src}
+                alt={img.alt}
+                widths={[320, 480, 800]}
+                sizes="(min-width: 1024px) 300px, (min-width: 640px) 45vw, 92vw"
+                class="team-photo aspect-4/5 w-full object-cover object-top transition-all duration-500 ease-out group-hover:scale-105"
+                loading="lazy"
+              />
+
+              {/* Camada que iguala a paleta das quatro fotos. */}
+              <div class="team-tint absolute inset-0" aria-hidden="true" />
+
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-navy-900 via-navy-900/25 to-transparent"
+                aria-hidden="true"
+              />
+
+              <div class="absolute inset-x-0 bottom-0 p-5">
+                <h3 class="text-base font-bold leading-snug text-white">{member.name}</h3>
+                <p class="mt-1 text-sm text-orange-400">{member.role}</p>
+                {member.registry && (
+                  <p class="mt-1 text-xs text-white/55">{member.registry}</p>
+                )}
+              </div>
+            </div>
+          </li>
+        );
+      })
+    }
+  </ul>
+</Section>
+
+<style>
+  /* `saturate` parcial em vez de `grayscale` total: preto e branco puro num time
+     de quatro pessoas fica frio demais para uma pagina que ja e azul-marinho.
+     O `sepia` seguido de `hue-rotate` joga o residuo de cor para o azul da marca,
+     que e o que faz fotos de temperaturas diferentes convergirem. */
+  .team-photo {
+    filter: saturate(0.2) sepia(0.25) hue-rotate(175deg) contrast(1.06) brightness(0.95);
+    transition: filter 500ms ease-out;
+  }
+
+  /*
+   * Vela navy por cima, em blend normal.
+   *
+   * A primeira versao usava `mix-blend-mode: color`, que e o modo "certo" para
+   * este efeito — troca matiz e saturacao preservando a luminosidade. Mas obriga
+   * o navegador a isolar um grupo de composicao por card e re-blendar a cada
+   * quadro; com quatro fotos grandes, o renderizador engasgou em teste. O par
+   * filtro + vela opaca chega visualmente no mesmo lugar e nao cria camada nova.
+   */
+  .team-tint {
+    background: var(--color-navy-800);
+    opacity: 0.3;
+    transition: opacity 500ms ease-out;
+  }
+
+  .group:hover .team-photo {
+    filter: none;
+  }
+
+  .group:hover .team-tint {
+    opacity: 0;
+  }
+
+  /* Sem transicao de cor para quem pede menos movimento. O tratamento continua:
+     ele existe para uniformizar as fotos, nao como efeito. */
+  @media (prefers-reduced-motion: reduce) {
+    .team-photo,
+    .team-tint {
+      transition: none;
+    }
+  }
+</style>

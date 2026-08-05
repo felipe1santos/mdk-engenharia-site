@@ -6,6 +6,12 @@
  * a transicao e controlada pela classe `is-scrolled`, aplicada em reveal.ts.
  * O logo e um link para a home, como pedido.
  *
+ * Itens com `children` viram dropdown no desktop e acordeao no drawer mobile.
+ * O dropdown abre no hover E no foco/clique: so hover exclui quem navega por
+ * teclado, e so clique irrita quem usa mouse. O `<button>` com aria-expanded
+ * existe para o leitor de tela anunciar o estado; o link do pai continua
+ * acessivel porque cada dropdown repete o destino como primeiro item.
+ *
  * O menu mobile e um drawer em tela cheia. Enquanto aberto, o scroll do body e
  * travado e o foco fica confinado ao drawer; Esc fecha.
  */
@@ -14,6 +20,20 @@ import { mainNav } from '../../data/navigation';
 import { site, whatsappUrl } from '../../data/site';
 import logoLight from '../../assets/logo/mdk-logo-light.png';
 import Icon from '../ui/Icon.astro';
+
+/**
+ * Marca o item ativo comparando a primeira parte do caminho.
+ *
+ * Link de ancora da home (`/#depoimentos`) nunca fica ativo: sem esta excecao
+ * ele perde a ancora na comparacao, vira "/" e acende junto com o Home.
+ */
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (href: string) => {
+  const [base, anchor] = href.split('#');
+  const clean = base.replace(/\/$/, '') || '/';
+  if (clean === '/') return anchor ? false : path === '/';
+  return path === clean || path.startsWith(`${clean}/`);
+};
 ---
 
 <header
@@ -29,7 +49,7 @@ import Icon from '../ui/Icon.astro';
   </div>
 
   <nav
-    class="mx-auto flex w-full max-w-7xl items-center justify-between gap-6 px-5 py-4 transition-[padding] duration-300 sm:px-8"
+    class="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-5 py-4 transition-[padding] duration-300 sm:px-8"
     aria-label="Navegação principal"
     data-header-inner
   >
@@ -49,21 +69,83 @@ import Icon from '../ui/Icon.astro';
       />
     </a>
 
-    <ul class="hidden items-center gap-1 lg:flex">
+    <ul class="hidden items-center gap-0.5 lg:flex">
       {
         mainNav.map((item) => (
-          <li>
-            <a
-              href={item.href}
-              class="relative cursor-pointer rounded-full px-4 py-2 text-sm font-semibold text-white/85 transition-colors duration-200 hover:text-white"
-            >
-              <span
-                class="absolute inset-x-4 bottom-1 h-0.5 origin-left scale-x-0 bg-orange-500 transition-[scale] duration-300 ease-out"
-                aria-hidden="true"
-                data-underline
-              />
-              {item.label}
-            </a>
+          <li class="group relative" data-nav-item>
+            {item.children ? (
+              <>
+                <button
+                  type="button"
+                  class:list={[
+                    'flex cursor-pointer items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold transition-colors duration-200 hover:text-white',
+                    isActive(item.href) ? 'text-white' : 'text-white/85',
+                  ]}
+                  aria-expanded="false"
+                  aria-haspopup="true"
+                  data-submenu-toggle
+                >
+                  {item.label}
+                  <Icon
+                    name="chevron-down"
+                    class="h-3.5 w-3.5 transition-transform duration-200 group-hover:rotate-180"
+                  />
+                  {isActive(item.href) && (
+                    <span
+                      class="absolute inset-x-3.5 bottom-1 h-0.5 bg-orange-500"
+                      aria-hidden="true"
+                    />
+                  )}
+                </button>
+
+                <div
+                  class="invisible absolute left-0 top-full z-10 min-w-56 translate-y-1 pt-2 opacity-0 transition-[opacity,translate,visibility] duration-200 ease-out group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100"
+                  data-submenu
+                >
+                  <ul class="overflow-hidden rounded-xl border border-white/10 bg-navy-800 py-2 shadow-2xl shadow-navy-900/40">
+                    <li>
+                      <a
+                        href={item.href}
+                        class="block cursor-pointer px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+                      >
+                        {item.label}
+                      </a>
+                    </li>
+                    <li aria-hidden="true">
+                      <span class="my-1 block h-px bg-white/10" />
+                    </li>
+                    {item.children.map((child) => (
+                      <li>
+                        <a
+                          href={child.href}
+                          class="block cursor-pointer px-4 py-2.5 text-sm text-white/70 transition-colors hover:bg-white/10 hover:text-orange-400"
+                        >
+                          {child.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </>
+            ) : (
+              <a
+                href={item.href}
+                class:list={[
+                  'relative block cursor-pointer rounded-full px-3.5 py-2 text-sm font-semibold transition-colors duration-200 hover:text-white',
+                  isActive(item.href) ? 'text-white' : 'text-white/85',
+                ]}
+              >
+                <span
+                  class:list={[
+                    'absolute inset-x-3.5 bottom-1 h-0.5 origin-left bg-orange-500 transition-[scale] duration-300 ease-out',
+                    isActive(item.href) ? 'scale-x-100' : 'scale-x-0',
+                  ]}
+                  aria-hidden="true"
+                  data-underline
+                />
+                {item.label}
+              </a>
+            )}
           </li>
         ))
       }
@@ -131,14 +213,56 @@ import Icon from '../ui/Icon.astro';
       {
         mainNav.map((item) => (
           <li>
-            <a
-              href={item.href}
-              class="flex cursor-pointer items-center justify-between rounded-xl px-4 py-3.5 text-base font-semibold text-white/90 transition-colors hover:bg-white/10 hover:text-white"
-              data-drawer-link
-            >
-              {item.label}
-              <Icon name="arrow-right" class="h-4 w-4 text-orange-500" />
-            </a>
+            {item.children ? (
+              <div data-accordion>
+                <div class="flex items-center">
+                  <a
+                    href={item.href}
+                    class="flex-1 cursor-pointer rounded-xl px-4 py-3.5 text-base font-semibold text-white/90 transition-colors hover:bg-white/10 hover:text-white"
+                    data-drawer-link
+                  >
+                    {item.label}
+                  </a>
+                  <button
+                    type="button"
+                    class="cursor-pointer rounded-xl p-3 text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+                    aria-expanded="false"
+                    aria-label={`Abrir submenu de ${item.label}`}
+                    data-accordion-toggle
+                  >
+                    <Icon
+                      name="chevron-down"
+                      class="h-5 w-5 transition-transform duration-300"
+                      data-accordion-icon
+                    />
+                  </button>
+                </div>
+
+                <ul class="hidden pb-2 pl-4" data-accordion-panel>
+                  {item.children.map((child) => (
+                    <li>
+                      <a
+                        href={child.href}
+                        class="flex cursor-pointer items-center gap-2.5 rounded-lg px-4 py-2.5 text-sm text-white/65 transition-colors hover:bg-white/10 hover:text-orange-400"
+                        data-drawer-link
+                      >
+                        <span class="h-px w-3 bg-orange-500/70" aria-hidden="true" />
+                        {child.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <a
+                href={item.href}
+                class="flex cursor-pointer items-center justify-between rounded-xl px-4 py-3.5 text-base font-semibold text-white/90 transition-colors hover:bg-white/10 hover:text-white"
+                data-drawer-link
+              >
+                {item.label}
+                <Icon name="arrow-right" class="h-4 w-4 text-orange-500" />
+              </a>
+            )}
           </li>
         ))
       }
@@ -159,13 +283,58 @@ import Icon from '../ui/Icon.astro';
   </div>
 </div>
 
-<style>
-  /* `scale`, nao `transform`: `scale-x-0` do Tailwind 4 escreve na propriedade
-     `scale`. Ver a mesma nota no painel do drawer. */
-  a:hover [data-underline] {
-    scale: 1 1;
+<script>
+  /**
+   * Acordeao do drawer mobile e estado do dropdown do desktop.
+   *
+   * O dropdown em si abre por CSS (hover e focus-within), que funciona sem
+   * JavaScript. Este script apenas mantem `aria-expanded` coerente com o que
+   * esta visivel — sem isso o leitor de tela anuncia "recolhido" com o menu
+   * aberto na tela.
+   */
+  const accordions = document.querySelectorAll<HTMLElement>('[data-accordion]');
+
+  for (const accordion of accordions) {
+    const toggle = accordion.querySelector<HTMLButtonElement>('[data-accordion-toggle]');
+    const panel = accordion.querySelector<HTMLElement>('[data-accordion-panel]');
+    const icon = accordion.querySelector<HTMLElement>('[data-accordion-icon]');
+    if (!toggle || !panel) continue;
+
+    toggle.addEventListener('click', () => {
+      const open = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!open));
+      panel.classList.toggle('hidden', open);
+      icon?.classList.toggle('rotate-180', !open);
+    });
   }
 
+  const submenuItems = document.querySelectorAll<HTMLElement>('[data-nav-item]');
+
+  for (const item of submenuItems) {
+    const toggle = item.querySelector<HTMLButtonElement>('[data-submenu-toggle]');
+    if (!toggle) continue;
+
+    const setState = (open: boolean) => toggle.setAttribute('aria-expanded', String(open));
+
+    item.addEventListener('pointerenter', () => setState(true));
+    item.addEventListener('pointerleave', () => setState(false));
+    item.addEventListener('focusin', () => setState(true));
+    item.addEventListener('focusout', (event) => {
+      if (!item.contains(event.relatedTarget as Node)) setState(false);
+    });
+
+    // Esc devolve o foco ao gatilho e fecha, que e o comportamento esperado de
+    // menu com submenu.
+    item.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        setState(false);
+        toggle.focus();
+      }
+    });
+  }
+</script>
+
+<style>
   [data-drawer].is-open {
     visibility: visible;
     opacity: 1;
