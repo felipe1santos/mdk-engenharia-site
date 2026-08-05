@@ -66,12 +66,20 @@ Está tudo marcado com `PLACEHOLDER` em `src/data/`. Blocos com dados fictícios
 site com um contorno tracejado e a etiqueta **conteúdo a confirmar** — o marcador some
 sozinho quando a flag `placeholder` sai do arquivo de dados.
 
-> ### ⚠️ Antes de tirar o `noindex` e divulgar
+> ### 🔴 O site está indexável com depoimentos fictícios
 >
 > **Os depoimentos em `src/data/testimonials.ts` são fictícios.** Foram escritos como
-> conteúdo de demonstração enquanto o perfil no Google Meu Negócio não existe. Publicar
-> depoimento fabricado em site comercial é publicidade enganosa (CDC, art. 37). Substituir
-> por avaliações reais antes de liberar a indexação. A flag `fictitious` marca cada item.
+> conteúdo de demonstração enquanto o perfil no Google Meu Negócio não existe. A flag
+> `fictitious` marca cada item.
+>
+> Em 05/08/2026 o `PUBLIC_NOINDEX` foi para `false` em produção, a pedido do cliente,
+> **com os depoimentos ainda fictícios**. O risco foi apontado e a decisão de publicar
+> assim mesmo é dele. Publicar depoimento fabricado em site comercial é publicidade
+> enganosa (CDC, art. 37), e a exposição é da MDK, não de quem hospeda.
+>
+> Substituir por avaliações reais e autorizadas é a pendência mais urgente do projeto.
+> Enquanto não houver, o caminho reversível é voltar `PUBLIC_NOINDEX=true` no Coolify e
+> redeployar — leva um minuto e tira o conteúdo do índice.
 
 Falta o cliente fornecer:
 
@@ -140,20 +148,42 @@ resultados de busca.
 
 ### Checklist de lançamento
 
-1. Apontar o DNS de `mdkengenharia.com.br` para a VPS
-2. No Coolify, definir as duas variáveis acima como **Build Variables**
-3. Trocar o domínio da aplicação no Coolify e emitir o certificado
-4. Redeploy e conferir `/robots.txt` e a meta `robots` no HTML
-5. Preencher o conteúdo pendente listado acima antes de divulgar
+Estado em 05/08/2026:
+
+- [x] Variáveis definidas no Coolify como Build Variables, ambas com **Available at
+      Buildtime** marcado — sem isso elas não chegam aos `ARG` do `Dockerfile`
+- [x] `PUBLIC_SITE_URL=https://www.mdkengenharia.com.br` e `PUBLIC_NOINDEX=false`
+- [x] Domínio final adicionado no Coolify, ao lado do de preview
+- [x] `/robots.txt`, a meta `robots`, o canonical e o sitemap conferidos no ar
+- [ ] **Apontar o DNS** de `mdkengenharia.com.br` para a VPS (`187.77.34.112`, registros
+      `A` para a raiz e para `www`). Até isso acontecer, o domínio serve o Google Sites
+      antigo e o certificado do Let's Encrypt não tem como ser emitido
+- [ ] Depois que o DNS propagar: remover `https://mdk.nr1sistema.com.br` do campo Domains
+      e mudar Direction para **Redirect to www**. Enquanto os dois domínios coexistem,
+      o site responde nos dois — o canonical aponta para o definitivo e o buscador
+      consolida, mas manter os dois indefinidamente é hospedar conteúdo duplicado
+- [ ] Substituir os depoimentos fictícios (ver o aviso em [Conteúdo pendente](#conteúdo-pendente))
 
 ## Deploy (Coolify na VPS)
 
-O repositório traz `Dockerfile` e `nginx.conf` prontos. No Coolify:
+O repositório traz `Dockerfile` e `nginx.conf` prontos. A aplicação já existe no Coolify
+como `mdk-engenharia-site`, no projeto *My first project* → ambiente *production*, com:
 
-1. Nova aplicação → origem GitHub → este repositório
-2. Build pack: **Dockerfile**
-3. Porta exposta: **80**
-4. Domínio: apontar o DNS e deixar o Coolify emitir o certificado
+- Build pack **Dockerfile**, porta **80**
+- Origem **Public GitHub**, `felipe1santos/mdk-engenharia-site`, branch `main`, `HEAD`
+- **Inject Build Args to Dockerfile** ligado — é o que faz as variáveis virarem `ARG`
+- Auto Deploy ligado no Coolify, mas **sem webhook no GitHub**: na prática todo deploy é
+  manual. A URL de webhook que o Coolify expõe é `http://` sem TLS, então o segredo
+  trafegaria em texto claro; configurar isso só depois de pôr o painel atrás de HTTPS
+
+Duas armadilhas que já custaram tempo:
+
+- **Mudar variável exige rebuild sem cache.** A imagem é marcada como `uuid:commit-sha`;
+  com o mesmo commit, um redeploy comum reaproveita a imagem e os novos build args nunca
+  entram. Usar *Advanced → Force deploy (without cache)*.
+- **Os campos do painel são Livewire.** Preencher por script sem disparar evento de
+  teclado não salva, e a tela continua mostrando o valor digitado como se tivesse salvo.
+  Conferir recarregando a página antes de deployar.
 
 O build roda `npm ci && npm run build` em `node:22-alpine` e a imagem final é um
 `nginx:alpine` servindo só os arquivos estáticos — sem Node em produção.
