@@ -14,6 +14,17 @@
  *
  * Fazer isso no CSS e nao no JPEG e deliberado: quando o cliente enviar as duas
  * fotos que faltam do mesmo ensaio, basta trocar os arquivos.
+ *
+ * SOBRE O CONTORNO PONTILHADO: ele nao e mais o marcador `.ph` de conteudo por
+ * confirmar. Aqui virou microinteracao — aparece no hover, junto de uma etiqueta
+ * com a funcao da pessoa. A etiqueta e decorativa: repete o cargo que ja esta
+ * escrito no card, entao leva `aria-hidden` para o leitor de tela nao anunciar
+ * duas vezes.
+ *
+ * Consequencia a registrar: o card da Angelica deixou de exibir "conteudo a
+ * confirmar". O `placeholder: true` continua em team.ts e a pendencia (sobrenome
+ * e registro profissional) segue listada no README — o que sumiu foi o aviso
+ * visual, a pedido do cliente, nao a pendencia.
  */
 import { Image } from 'astro:assets';
 import { team } from '../../data/team';
@@ -35,35 +46,40 @@ import SectionTitle from '../ui/SectionTitle.astro';
       team.map((member, i) => {
         const img = getImage(member.image);
         return (
-          <li
-            class:list={['group relative', member.placeholder && 'ph']}
-            data-reveal
-            style={`--reveal-delay:${(i % 4) * 110}ms`}
-          >
-            <div class="relative overflow-hidden rounded-2xl bg-navy-900 shadow-card transition-all duration-400 ease-out group-hover:-translate-y-1.5 group-hover:shadow-card-hover">
-              <Image
-                src={img.src}
-                alt={img.alt}
-                widths={[320, 480, 800]}
-                sizes="(min-width: 1024px) 300px, (min-width: 640px) 45vw, 92vw"
-                class="team-photo aspect-4/5 w-full object-cover object-top transition-all duration-500 ease-out group-hover:scale-105"
-                loading="lazy"
-              />
+          <li class="group relative" data-reveal style={`--reveal-delay:${(i % 4) * 110}ms`}>
+            {/* O contorno e a etiqueta ficam no mesmo elemento que sobe no hover,
+                e nao no <li>, senao a moldura ficaria parada enquanto o card
+                desliza para cima. */}
+            <div class="team-card relative rounded-2xl transition-all duration-400 ease-out group-hover:-translate-y-1.5">
+              <span class="team-role" aria-hidden="true">
+                {member.role}
+              </span>
 
-              {/* Camada que iguala a paleta das quatro fotos. */}
-              <div class="team-tint absolute inset-0" aria-hidden="true" />
+              <div class="relative overflow-hidden rounded-2xl bg-navy-900 shadow-card transition-shadow duration-400 ease-out group-hover:shadow-card-hover">
+                <Image
+                  src={img.src}
+                  alt={img.alt}
+                  widths={[320, 480, 800]}
+                  sizes="(min-width: 1024px) 300px, (min-width: 640px) 45vw, 92vw"
+                  class="team-photo aspect-4/5 w-full object-cover object-top transition-all duration-500 ease-out group-hover:scale-105"
+                  loading="lazy"
+                />
 
-              <div
-                class="absolute inset-0 bg-gradient-to-t from-navy-900 via-navy-900/25 to-transparent"
-                aria-hidden="true"
-              />
+                {/* Camada que iguala a paleta das quatro fotos. */}
+                <div class="team-tint absolute inset-0" aria-hidden="true" />
 
-              <div class="absolute inset-x-0 bottom-0 p-5">
-                <h3 class="text-base font-bold leading-snug text-white">{member.name}</h3>
-                <p class="mt-1 text-sm text-orange-400">{member.role}</p>
-                {member.registry && (
-                  <p class="mt-1 text-xs text-white/55">{member.registry}</p>
-                )}
+                <div
+                  class="absolute inset-0 bg-gradient-to-t from-navy-900 via-navy-900/25 to-transparent"
+                  aria-hidden="true"
+                />
+
+                <div class="absolute inset-x-0 bottom-0 p-5">
+                  <h3 class="text-base font-bold leading-snug text-white">{member.name}</h3>
+                  <p class="mt-1 text-sm text-orange-400">{member.role}</p>
+                  {member.registry && (
+                    <p class="mt-1 text-xs text-white/55">{member.registry}</p>
+                  )}
+                </div>
               </div>
             </div>
           </li>
@@ -106,12 +122,69 @@ import SectionTitle from '../ui/SectionTitle.astro';
     opacity: 0;
   }
 
+  /*
+   * Moldura pontilhada, mesma espessura, cor e afastamento do marcador `.ph`
+   * original — o cliente aprovou aquele desenho, muda so quando aparece.
+   *
+   * `outline` e nao `border`: borda entraria no box e empurraria o layout ao
+   * surgir. Outline e desenhada fora do fluxo, entao o card nao se mexe.
+   *
+   * A cor vai de transparente a visivel em vez de `outline-style: none` para a
+   * transicao ter o que interpolar; trocar o estilo faria a moldura piscar.
+   */
+  .team-card {
+    outline: 1px dashed transparent;
+    outline-offset: 10px;
+    transition:
+      transform 400ms ease-out,
+      outline-color 300ms ease-out;
+  }
+
+  .group:hover .team-card {
+    outline-color: color-mix(in srgb, var(--color-navy-800) 45%, transparent);
+  }
+
+  /* A etiqueta ocupa a folga de 10px da outline, acima do card. */
+  .team-role {
+    position: absolute;
+    top: -1.55rem;
+    left: 0;
+    z-index: 5;
+    padding: 0.1rem 0.5rem;
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: #fff;
+    background: var(--color-navy-800);
+    border-radius: 999px;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(0.25rem);
+    transition:
+      opacity 300ms ease-out,
+      transform 300ms ease-out;
+  }
+
+  .group:hover .team-role {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
   /* Sem transicao de cor para quem pede menos movimento. O tratamento continua:
-     ele existe para uniformizar as fotos, nao como efeito. */
+     ele existe para uniformizar as fotos, nao como efeito. A etiqueta tambem
+     continua aparecendo — so deixa de deslizar. */
   @media (prefers-reduced-motion: reduce) {
     .team-photo,
-    .team-tint {
+    .team-tint,
+    .team-card,
+    .team-role {
       transition: none;
+    }
+
+    .team-role {
+      transform: none;
     }
   }
 </style>
