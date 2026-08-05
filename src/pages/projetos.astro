@@ -99,7 +99,9 @@ const concluidas = portfolio.filter((p) => p.status === 'Concluída');
           <Icon name="whatsapp" class="h-5 w-5" />
           Solicitar orçamento
         </Button>
-        <Button href="/servicos" variant="outline" size="lg">Ver os serviços</Button>
+        {/* `ghost` e nao `primary`: divide a linha com o CTA de orcamento, e dois
+            botoes laranja lado a lado anulam a hierarquia entre eles. */}
+        <Button href="/servicos" variant="ghost" size="lg">Ver os serviços</Button>
       </div>
     </div>
   </Section>

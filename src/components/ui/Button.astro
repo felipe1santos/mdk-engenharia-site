@@ -2,9 +2,22 @@
 /**
  * Botao/link de acao. Sempre renderiza <a> — no site institucional toda acao e
  * navegacao ou abertura do WhatsApp, nunca submit.
+ *
+ * ATENCAO AO FUNDO. As variantes nao sao intercambiaveis:
+ *
+ *   primary  qualquer fundo. Laranja preenchido, e a acao principal.
+ *   outline  SO EM FUNDO ESCURO. E branco sobre transparente; em secao clara
+ *            vira branco no branco e o botao some.
+ *   ghost    so em fundo claro. Contorno azul-marinho que vira laranja no hover,
+ *            para acao secundaria ao lado de um `primary`.
+ *
+ * Tres botoes ja tinham nascido com `outline` sobre `tone="white"` /
+ * `tone="offwhite"` e ficaram praticamente invisiveis ate alguem reparar. Se
+ * um botao parecer apagado, conferir esta tabela antes de mexer na cor.
  */
 interface Props {
   href: string;
+  /** Ver a tabela de fundos no topo do arquivo antes de escolher. */
   variant?: 'primary' | 'outline' | 'ghost';
   size?: 'md' | 'lg';
   external?: boolean;
