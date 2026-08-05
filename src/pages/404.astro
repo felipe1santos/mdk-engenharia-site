@@ -1,0 +1,84 @@
+---
+/**
+ * Pagina de erro 404.
+ *
+ * Existe por dois motivos, e o segundo importa mais que o primeiro.
+ *
+ * O nginx servia `/index.html` para qualquer rota inexistente, com status 200.
+ * Para o visitante parecia um clique errado; para o buscador, cada URL invalida
+ * era uma copia valida da home — soft-404, que dilui a home em N duplicatas.
+ * O `try_files` agora termina em `=404` e cai aqui, com o status certo.
+ *
+ * Sem `noindex` proprio: o BaseLayout ja cuida disso via PUBLIC_NOINDEX, e uma
+ * pagina que responde 404 nao e indexada de qualquer forma.
+ *
+ * Os atalhos abaixo cobrem os destinos que uma URL quebrada costuma estar
+ * tentando alcancar. Deixar so "voltar para a home" empurra o trabalho de achar
+ * o caminho de volta para o visitante.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/ui/Section.astro';
+import Button from '../components/ui/Button.astro';
+import Icon from '../components/ui/Icon.astro';
+import { site, whatsappUrl } from '../data/site';
+
+const shortcuts = [
+  { icon: 'blueprint', label: 'Serviços', href: '/servicos', note: 'Projeto, obra e regularização.' },
+  { icon: 'hammer', label: 'Obras e projetos', href: '/projetos', note: 'O que a equipe executou.' },
+  { icon: 'pin', label: 'Áreas de atuação', href: '/areas-de-atuacao', note: 'Onde atendemos.' },
+  { icon: 'phone', label: 'Contato', href: '/contato', note: 'Telefone, e-mail e endereço.' },
+] as const;
+---
+
+<BaseLayout
+  title={`Página não encontrada | ${site.name}`}
+  description="A página que você procurou não existe ou foi movida."
+>
+  <Section tone="navy" space="lg">
+    <div class="mx-auto max-w-2xl text-center" data-reveal>
+      <p class="font-display text-6xl leading-none text-orange-500 sm:text-7xl">404</p>
+
+      <h1 class="mt-6 font-display text-3xl leading-snug text-white sm:text-4xl">
+        Esta página <span class="text-orange-500">não existe</span>
+      </h1>
+
+      <p class="mx-auto mt-5 max-w-lg text-base leading-relaxed text-white/65">
+        O endereço pode ter mudado ou o link estar incompleto. Abaixo estão os caminhos
+        mais procurados do site.
+      </p>
+
+      <div class="mt-9 flex flex-col justify-center gap-4 sm:flex-row">
+        <Button href="/" variant="primary" size="lg">Voltar para a home</Button>
+        <Button href={whatsappUrl} variant="outline" size="lg" external>
+          <Icon name="whatsapp" class="h-5 w-5" />
+          Falar no WhatsApp
+        </Button>
+      </div>
+    </div>
+
+    <ul class="mx-auto mt-14 grid max-w-4xl gap-4 sm:grid-cols-2">
+      {
+        shortcuts.map((s, i) => (
+          <li data-reveal style={`--reveal-delay:${(i % 2) * 110}ms`}>
+            <a
+              href={s.href}
+              class="group flex h-full cursor-pointer items-start gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-orange-500/40 hover:bg-white/[0.06]"
+            >
+              <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-navy-800 text-orange-500">
+                <Icon name={s.icon} class="h-5 w-5" />
+              </span>
+              <span>
+                <span class="block font-bold text-white">{s.label}</span>
+                <span class="mt-1 block text-sm leading-relaxed text-white/55">{s.note}</span>
+              </span>
+              <Icon
+                name="arrow-right"
+                class="ml-auto mt-3 h-4 w-4 shrink-0 text-white/30 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-orange-500"
+              />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+</BaseLayout>
