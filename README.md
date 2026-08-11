@@ -90,6 +90,8 @@ Falta o cliente fornecer:
   (`src/data/team.ts`)
 - Confirmar se a foto da "Residência NK" é obra da MDK (`src/data/portfolio.ts`)
 - Quais disciplinas de projeto são assinadas com equipe própria e quais com parceiro
+- **Fotos de obra em resolução original**, para os banners das páginas internas (ver
+  [Ressalvas do lote](#ressalvas-do-lote-enviado-em-11082026))
 - **Logo em vetor** (`.ai`, `.svg` ou `.pdf`). Só existe um JPEG de 802 px; o logo atual foi
   extraído dele e fica levemente suave em telas retina
 - **Decisão sobre o "K"**: na arte do manual o símbolo é `|<` — coluna de armação à esquerda,
@@ -110,14 +112,36 @@ expressão "Marca Registrada" — só o nome. Revisar quando o registro for conc
 
 ## Imagens
 
-Há três origens em `src/assets/images/`:
+Há quatro origens em `src/assets/images/`:
 
 | Prefixo | Origem | Observação |
 |---|---|---|
 | `service-*` | Acervo da MDK (site anterior) | Pranchas técnicas, exibidas com `object-contain` sobre fundo branco. Quatro delas vieram entre 301 px e 430 px e ficam suaves em tela retina — pedir os arquivos originais ao cliente |
 | `obra-*`, `equipe-*` | Acervo da MDK | Fotos reais. As da equipe são recortadas em 4:5 e uniformizadas por CSS em `Team.astro` |
 | `render-*` | Acervo da MDK | Renders 3D extraídos do PDF de apresentação enviado pelo cliente, em resolução original |
+| `banner-*`, `apoio-*`, `servico-projetos` | Enviadas pelo cliente (ajustes R01) | Já em `.webp`. Fotos de banco de terceiro, com resolução baixa — ver ressalva abaixo |
 | `hero`, `about`, `cta`, `portfolio-*` | Pexels | Banco de imagens, via `npm run fetch:images` |
+
+`src/lib/images.ts` aceita `.jpg` e `.webp` no mesmo diretório. O acervo antigo é JPEG; material
+novo entra direto em WebP. A chave é o nome do arquivo sem extensão, então os dois convivem.
+
+### Ressalvas do lote enviado em 11/08/2026
+
+Três imagens da pasta `ajustesMDK` **não foram usadas**, e o motivo importa:
+
+- **Marca d'água.** Uma das fotos (`18fa34f9…jpg`) traz a faixa "Adobe Stock #851644146" impressa.
+  É arquivo de comparação, não licenciado. Publicar assim é uso indevido de obra protegida.
+- **Arte com texto falso.** `PREFEITURA.jpg` é ilustração gerada por IA com texto ilegível
+  inventado ("JUBOR", "LEGICI", "LABOR LAW") e tema de direito trabalhista, não de prefeitura.
+- **Insígnia oficial.** `BOMBEIRO.jpg` é o brasão do Corpo de Bombeiros da PM-SP e `CETESB.jpg`
+  é o logo da CETESB. Usar a marca de um órgão público como capa de card de serviço sugere
+  credenciamento ou vínculo que a MDK não tem. Os cards usam fotografia de contexto — a mesma
+  decisão já registrada no topo de `src/data/agencies.ts`.
+
+As demais fotos do lote são utilizáveis, mas vieram entre 626 px e 1199 px de largura. Como
+banner de primeira dobra elas são ampliadas e ficam suaves em tela retina. **Pedir ao cliente os
+arquivos em resolução original**, ou fotos reais de obra da própria MDK, que resolveriam
+resolução e identidade de uma vez.
 
 `npm run fetch:images` lê `PEXELS_API_KEY` de `.env` (copie de `.env.example`) e baixa as
 fotos para `src/assets/images/`.
