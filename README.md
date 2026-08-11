@@ -127,16 +127,26 @@ novo entra direto em WebP. A chave é o nome do arquivo sem extensão, então os
 
 ### Ressalvas do lote enviado em 11/08/2026
 
-Três imagens da pasta `ajustesMDK` **não foram usadas**, e o motivo importa:
+**Uma imagem não foi usada.** `18fa34f9…jpg` traz a faixa "Adobe Stock #851644146" impressa na
+lateral. É arquivo de comparação, não licenciado; publicar assim é uso indevido de obra
+protegida.
 
-- **Marca d'água.** Uma das fotos (`18fa34f9…jpg`) traz a faixa "Adobe Stock #851644146" impressa.
-  É arquivo de comparação, não licenciado. Publicar assim é uso indevido de obra protegida.
-- **Arte com texto falso.** `PREFEITURA.jpg` é ilustração gerada por IA com texto ilegível
-  inventado ("JUBOR", "LEGICI", "LABOR LAW") e tema de direito trabalhista, não de prefeitura.
-- **Insígnia oficial.** `BOMBEIRO.jpg` é o brasão do Corpo de Bombeiros da PM-SP e `CETESB.jpg`
-  é o logo da CETESB. Usar a marca de um órgão público como capa de card de serviço sugere
-  credenciamento ou vínculo que a MDK não tem. Os cards usam fotografia de contexto — a mesma
-  decisão já registrada no topo de `src/data/agencies.ts`.
+**Três imagens foram usadas por decisão expressa do cliente, com ressalva registrada.** Elas
+são as capas dos cards de órgão em "O que fazemos" (`agency.cover` em `src/data/agencies.ts`):
+
+- `BOMBEIRO.jpg` é o brasão do Corpo de Bombeiros da PM-SP e `CETESB.jpg` é o logotipo da
+  CETESB. **Exibir a marca de um órgão público num card de serviço sugere credenciamento ou
+  vínculo que a MDK não tem.** A ressalva foi apresentada duas vezes — inclusive com a
+  alternativa em fotografia já implementada e no ar — e o cliente confirmou os arquivos em
+  11/08/2026. A decisão é dele. Trocar de volta é editar `cover` e `coverFit` de cada órgão:
+  as fotos de contexto continuam no acervo, em `agency.image`, usadas pela seção `Agencies`
+  das páginas internas.
+- `PREFEITURA.jpg` é ilustração gerada por IA com texto inventado e ilegível ("JUBOR",
+  "LEGICI", "LABOR LAW") e tema de direito trabalhista, não de prefeitura. Idem: apontado e
+  confirmado.
+
+Brasão e logotipo entram com `object-contain` sobre fundo claro, não `object-cover` — recortar
+um logo decepa justamente o desenho que identifica o órgão.
 
 As demais fotos do lote são utilizáveis, mas vieram entre 626 px e 1199 px de largura. Como
 banner de primeira dobra elas são ampliadas e ficam suaves em tela retina. **Pedir ao cliente os

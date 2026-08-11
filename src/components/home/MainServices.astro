@@ -13,15 +13,22 @@
  *
  * Os tres cards de orgao vem de `agencies` — a mesma fonte da secao Agencies
  * usada nas paginas internas. Nao ha texto duplicado entre os dois componentes,
- * so markup diferente para contextos diferentes: aqui o card carrega o escopo
- * item a item, la ele e compacto.
+ * so markup diferente para contextos diferentes.
  *
- * AS CAPAS SAO FOTOGRAFIAS, e nao pranchas tecnicas — dai `object-cover` com
- * gradiente, e nao o `object-contain` sobre branco que o acervo de desenhos
- * exigia. As capas dos orgaos sao deliberadamente fotos de contexto, e nao os
- * brasoes oficiais: exibir a insignia do Corpo de Bombeiros ou o logo da CETESB
- * num card de servico sugere credenciamento ou vinculo que a MDK nao tem. Ver a
- * nota no topo de src/data/agencies.ts.
+ * TRES DECISOES DE FORMA, todas pedidas na revisao de 11/08/2026:
+ *
+ * 1. O card estava alto demais. A capa subiu para 4:3 e o bloco de texto exibe
+ *    so o essencial — titulo, linha de apoio e os primeiros itens do escopo.
+ *
+ * 2. O resto do escopo fica atras de um "Ver tudo". E um <details> nativo, sem
+ *    JavaScript: funciona com o teclado, funciona antes de qualquer script
+ *    carregar e o conteudo escondido continua no HTML, entao o buscador le tudo.
+ *
+ * 3. O card inteiro leva para a pagina — capa, titulo, area vazia. Feito com
+ *    link esticado (o ::after do ancora cobre o article) em vez de envolver tudo
+ *    num <a>, porque um <details> dentro de um link e HTML invalido e o clique
+ *    para expandir acabaria navegando. O <details> sobe em z-index e fica acima
+ *    dessa camada, que e o que separa "expandir" de "abrir a pagina".
  */
 import { Image } from 'astro:assets';
 import { agencies, type Agency } from '../../data/agencies';
@@ -38,9 +45,14 @@ interface Card {
   summary: string;
   bullets: string[];
   image: string;
+  fit: 'cover' | 'contain';
   icon: 'blueprint' | Agency['icon'];
   href: string;
 }
+
+/* Quantos itens do escopo aparecem antes do "Ver tudo". Tres cabem sem alongar
+   o card e ja dizem do que a frente trata. */
+const VISIVEIS = 3;
 
 /* O card de projetos lista as disciplinas a partir de `primaryServices`, e nao
    de uma lista escrita a mao: quando uma disciplina entra ou sai de services.ts,
@@ -54,6 +66,7 @@ const cards: Card[] = [
       'Projeto técnico completo, com memorial de cálculo e detalhamento executivo, compatibilizado entre as disciplinas antes de ir para a obra.',
     bullets: primaryServices.map((s) => s.title),
     image: 'servico-projetos',
+    fit: 'cover',
     icon: 'blueprint',
     href: '/servicos#projetos',
   },
@@ -62,7 +75,8 @@ const cards: Card[] = [
     tagline: agency.tagline,
     summary: agency.summary,
     bullets: agency.bullets,
-    image: agency.image,
+    image: agency.cover,
+    fit: agency.coverFit,
     icon: agency.icon,
     href: `/servicos/regularizacao/${agency.id}`,
   })),
@@ -80,27 +94,46 @@ const cards: Card[] = [
     {
       cards.map((card, i) => {
         const img = getImage(card.image);
+        const visiveis = card.bullets.slice(0, VISIVEIS);
+        const ocultos = card.bullets.slice(VISIVEIS);
+
         return (
           <article
-            class="group flex flex-col overflow-hidden rounded-2xl bg-white shadow-card transition-all duration-400 ease-out hover:-translate-y-2 hover:shadow-card-hover"
+            class="group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-card transition-all duration-400 ease-out hover:-translate-y-2 hover:shadow-card-hover"
             data-reveal
             style={`--reveal-delay:${i * 110}ms`}
           >
-            <div class="relative aspect-[16/10] overflow-hidden bg-navy-900">
+            <div
+              class:list={[
+                'relative aspect-[4/3] overflow-hidden',
+                /* Capa com logo precisa de fundo proprio e de uma divisa: sobre
+                   branco puro ela se funde ao corpo do card e o cartao parece
+                   ter perdido a imagem. `pb-16` reserva a faixa do selo do
+                   icone, para o brasao centralizado nao encostar nele. */
+                card.fit === 'contain'
+                  ? 'border-b border-navy-900/10 bg-navy-900/[0.04] p-6 pb-16'
+                  : 'bg-navy-900',
+              ]}
+            >
               <Image
                 src={img.src}
                 alt={img.alt}
                 widths={[400, 700, 1100]}
                 sizes="(min-width: 1024px) 300px, (min-width: 640px) 46vw, 92vw"
-                class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                class:list={[
+                  'h-full w-full transition-transform duration-700 ease-out group-hover:scale-105',
+                  card.fit === 'contain' ? 'object-contain' : 'object-cover',
+                ]}
                 loading="lazy"
               />
-              {/* Gradiente curto so na base: assenta o cartao sem apagar a foto,
-                  que aqui e o que diferencia um card do outro. */}
-              <div
-                class="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-navy-900/70 to-transparent"
-                aria-hidden="true"
-              />
+
+              {card.fit === 'cover' && (
+                <div
+                  class="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-navy-900/70 to-transparent"
+                  aria-hidden="true"
+                />
+              )}
+
               <span class="absolute bottom-4 left-4 flex h-12 w-12 items-center justify-center rounded-xl bg-orange-500 text-white shadow-lg transition-transform duration-300 group-hover:scale-110">
                 <Icon name={card.icon} class="h-6 w-6" />
               </span>
@@ -109,10 +142,9 @@ const cards: Card[] = [
             <div class="flex flex-1 flex-col p-6">
               <h3 class="text-xl leading-snug text-navy-900">{card.title}</h3>
               <p class="mt-1 text-sm font-semibold text-orange-600">{card.tagline}</p>
-              <p class="mt-3 text-sm leading-relaxed text-navy-900/60">{card.summary}</p>
 
-              <ul class="mt-5 space-y-2.5 border-t border-navy-900/8 pt-5">
-                {card.bullets.map((b) => (
+              <ul class="mt-4 space-y-2.5 border-t border-navy-900/8 pt-4">
+                {visiveis.map((b) => (
                   <li class="flex items-start gap-2.5 text-[0.8125rem] leading-snug text-navy-900/75">
                     <Icon name="check" class="mt-0.5 h-4 w-4 shrink-0 text-orange-500" />
                     {b}
@@ -120,11 +152,39 @@ const cards: Card[] = [
                 ))}
               </ul>
 
-              {/* `mt-auto` cola o link na base mesmo com listas de tamanhos
-                  diferentes — sao 9 disciplinas contra 3 itens da CETESB. */}
+              {/* `relative z-10` tira o <details> de baixo da camada clicavel do
+                  link esticado. Sem isso, expandir navegaria. */}
+              <details class="group/exp relative z-10 mt-3">
+                <summary class="inline-flex cursor-pointer list-none items-center gap-1.5 rounded text-[0.8125rem] font-bold text-navy-800 transition-colors hover:text-orange-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500 [&::-webkit-details-marker]:hidden">
+                  <span class="group-open/exp:hidden">Ver tudo</span>
+                  <span class="hidden group-open/exp:inline">Ver menos</span>
+                  <Icon
+                    name="chevron-down"
+                    class="h-3.5 w-3.5 transition-transform duration-300 group-open/exp:rotate-180"
+                  />
+                </summary>
+
+                {ocultos.length > 0 && (
+                  <ul class="mt-3 space-y-2.5">
+                    {ocultos.map((b) => (
+                      <li class="flex items-start gap-2.5 text-[0.8125rem] leading-snug text-navy-900/75">
+                        <Icon name="check" class="mt-0.5 h-4 w-4 shrink-0 text-orange-500" />
+                        {b}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                <p class="mt-4 border-t border-navy-900/8 pt-4 text-sm leading-relaxed text-navy-900/60">
+                  {card.summary}
+                </p>
+              </details>
+
+              {/* Link esticado: o ::after nao tem `relative` no proprio ancora,
+                  entao ele se ancora no <article> e cobre o card inteiro. */}
               <a
                 href={card.href}
-                class="mt-auto inline-flex cursor-pointer items-center gap-2 self-start pt-6 text-sm font-bold text-navy-800 transition-colors hover:text-orange-600"
+                class="mt-auto inline-flex cursor-pointer items-center gap-2 self-start pt-5 text-sm font-bold text-navy-800 transition-colors hover:text-orange-600 after:absolute after:inset-0 after:content-['']"
               >
                 Ver detalhes
                 <Icon

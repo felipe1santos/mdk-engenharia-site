@@ -267,14 +267,42 @@
   },
   "banner-servico-interno": {
     "file": "banner-servico-interno.webp",
-    "alt": "Capacete apoiado sobre pranchas de projeto, com escavadeira e equipe ao fundo",
+    "alt": "Bota de segurança pisando sobre malha de armação em laje, com equipe trabalhando ao fundo",
     "photographer": "Enviada pelo cliente",
     "photographerUrl": "https://www.mdkengenharia.com.br/",
     "sourceUrl": "https://www.mdkengenharia.com.br/"
   },
   "apoio-execucao": {
     "file": "apoio-execucao.webp",
-    "alt": "Bota de segurança pisando sobre malha de armação em laje, com equipe trabalhando ao fundo",
+    "alt": "Capacete apoiado sobre pranchas de projeto, com escavadeira e equipe ao fundo",
+    "photographer": "Enviada pelo cliente",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/"
+  },
+  "banner-prefeitura": {
+    "file": "banner-prefeitura.webp",
+    "alt": "Dois engenheiros analisando plantas em frente a um edifício em obra",
+    "photographer": "Enviada pelo cliente",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/"
+  },
+  "card-prefeitura": {
+    "file": "card-prefeitura.webp",
+    "alt": "Ilustração de aprovação de projeto: balança, martelo de decisão e equipe técnica diante de um edifício público",
+    "photographer": "Enviada pelo cliente",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/"
+  },
+  "card-bombeiros": {
+    "file": "card-bombeiros.webp",
+    "alt": "Emblema do Corpo de Bombeiros da Polícia Militar do Estado de São Paulo",
+    "photographer": "Enviada pelo cliente",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/"
+  },
+  "card-cetesb": {
+    "file": "card-cetesb.webp",
+    "alt": "Logotipo da CETESB — Companhia Ambiental do Estado de São Paulo",
     "photographer": "Enviada pelo cliente",
     "photographerUrl": "https://www.mdkengenharia.com.br/",
     "sourceUrl": "https://www.mdkengenharia.com.br/"

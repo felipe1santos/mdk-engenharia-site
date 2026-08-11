@@ -46,7 +46,27 @@ export interface Agency {
    * `detail.services`.
    */
   bullets: string[];
+  /** Fotografia de contexto — cards da secao Agencies das paginas internas. */
   image: string;
+  /**
+   * Capa do card no bloco "O que fazemos" da home.
+   *
+   * SAO OS ARQUIVOS QUE O CLIENTE MANDOU E CONFIRMOU EM 11/08/2026, depois de
+   * ver a versao com fotografia: o brasao do Corpo de Bombeiros da PM-SP e o
+   * logotipo da CETESB. A ressalva de que exibir a marca de um orgao publico
+   * num card de servico sugere credenciamento inexistente foi apresentada duas
+   * vezes; a decisao de publicar assim e dele. Mantido separado de `image` para
+   * que a troca de volta seja de uma linha.
+   */
+  cover: string;
+  /** Foto de fundo do PageHero da pagina do orgao. Sem valor, cai em `image`. */
+  banner?: string;
+  /**
+   * Como a capa se encaixa no slot do card. Brasao e logotipo pedem `contain`
+   * sobre fundo claro — recortar um logo decepa justamente o desenho que
+   * identifica o orgao. Ilustracao e fotografia usam `cover`.
+   */
+  coverFit: 'cover' | 'contain';
   icon: 'building' | 'flame' | 'leaf';
   seo: { title: string; description: string; keywords: string[] };
   detail: {
@@ -77,6 +97,9 @@ export const agencies: Agency[] = [
       'Certificado de Acessibilidade',
     ],
     image: 'orgao-prefeitura',
+    cover: 'card-prefeitura',
+    coverFit: 'cover',
+    banner: 'banner-prefeitura',
     icon: 'building',
     seo: {
       title: 'Aprovação de Projeto e Habite-se na Prefeitura | MDK Engenharia',
@@ -195,6 +218,8 @@ export const agencies: Agency[] = [
       'Acompanhamento da vistoria',
     ],
     image: 'orgao-bombeiros',
+    cover: 'card-bombeiros',
+    coverFit: 'contain',
     icon: 'flame',
     seo: {
       title: 'AVCB, CLCB e Projeto de Incêndio no Corpo de Bombeiros | MDK Engenharia',
@@ -314,6 +339,8 @@ export const agencies: Agency[] = [
       'Licença prévia, de instalação e de operação',
     ],
     image: 'orgao-cetesb',
+    cover: 'card-cetesb',
+    coverFit: 'contain',
     icon: 'leaf',
     seo: {
       title: 'Licenciamento Ambiental e Dispensa de Licença na CETESB | MDK Engenharia',
