@@ -28,6 +28,11 @@ interface Props {
   keywords?: readonly string[];
   /** Caminho da imagem de compartilhamento, relativo a raiz do site. */
   ogImage?: string;
+  /**
+   * Link do WhatsApp do botao flutuante. Serve para a pagina de campanha usar a
+   * mensagem dela tambem no botao fixo, e nao so nos CTAs do corpo.
+   */
+  whatsappHref?: string;
 }
 
 const {
@@ -35,6 +40,7 @@ const {
   description = site.seo.description,
   keywords = site.seo.keywords,
   ogImage = '/og-image.jpg',
+  whatsappHref,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
@@ -162,7 +168,7 @@ const jsonLd = {
     </main>
 
     <Footer />
-    <WhatsAppFab />
+    <WhatsAppFab href={whatsappHref} />
 
     <script>
       import '../scripts/reveal';

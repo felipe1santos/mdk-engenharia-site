@@ -135,10 +135,24 @@ export const yearsInBusiness = new Date().getFullYear() - site.foundedYear;
 /** Endereco em linha unica, usado no rodape e no card do mapa. */
 export const fullAddress = `${site.address.street} — ${site.address.district}, ${site.address.city}/${site.address.state}, CEP ${site.address.zip}`;
 
-/** Link do WhatsApp com mensagem pre-preenchida. */
-export const whatsappUrl = `https://wa.me/${site.contact.whatsappE164}?text=${encodeURIComponent(
-  site.contact.whatsappMessage,
-)}`;
+/**
+ * Link do WhatsApp com uma mensagem propria ja escrita na conversa.
+ *
+ * A mensagem importa mais do que parece: ela chega junto no atendimento e diz de
+ * onde o contato veio. Numa pagina de campanha isso e o unico rastro que separa
+ * lead de trafego pago de lead organico, entao cada destino pode ter o seu texto.
+ */
+export function whatsappUrlFor(message: string): string {
+  return `https://wa.me/${site.contact.whatsappE164}?text=${encodeURIComponent(message)}`;
+}
+
+/** Link padrao, usado no rodape, no botao flutuante e nos CTAs gerais. */
+export const whatsappUrl = whatsappUrlFor(site.contact.whatsappMessage);
+
+/** Texto pedido pelo cliente para os botoes da pagina de campanha (/servicos). */
+export const whatsappOrcamentoUrl = whatsappUrlFor(
+  'Vim pelo site e eu gostaria de fazer um orçamento',
+);
 
 /** Consulta usada tanto no iframe do mapa quanto no botao "Como chegar". */
 export const mapsQuery = encodeURIComponent(

@@ -23,6 +23,17 @@ interface Props {
   eyebrow?: string;
   title?: string;
   subtitle?: string;
+  /**
+   * `photo` e o cartao cheio, com fotografia de contexto e texto sobreposto.
+   *
+   * `logo` troca a fotografia pelo brasao/logotipo de cada orgao (`agency.cover`)
+   * e vira cartao claro, com o texto abaixo da imagem. E obrigatorio que mude de
+   * layout junto: logo pede `object-contain` sobre fundo claro, e texto branco
+   * sobre um gradiente escuro por cima de um logotipo fica ilegivel dos dois
+   * lados. Usado hoje so em /servicos, a pedido do cliente. A ressalva sobre
+   * exibir insignia de orgao publico esta no topo de src/data/agencies.ts.
+   */
+  variant?: 'photo' | 'logo';
 }
 
 const {
@@ -31,6 +42,7 @@ const {
   eyebrow = 'Onde protocolamos',
   title = "Aprovação e <span class='text-orange-600'>regularização</span>",
   subtitle = 'Cada obra passa por balcões diferentes, com exigências próprias. Cuidamos dos três, do protocolo à emissão do documento.',
+  variant = 'photo',
 } = Astro.props;
 ---
 
@@ -40,7 +52,55 @@ const {
   <ul class="mt-14 grid gap-6 md:grid-cols-3">
     {
       agencies.map((agency, i) => {
-        const img = getImage(agency.image);
+        const img = getImage(variant === 'logo' ? agency.cover : agency.image);
+
+        if (variant === 'logo') {
+          return (
+            <li data-reveal style={`--reveal-delay:${i * 110}ms`}>
+              <a
+                href={`/servicos/regularizacao/${agency.id}`}
+                class="group flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl border border-navy-900/10 bg-white shadow-card transition-all duration-400 hover:-translate-y-1.5 hover:border-orange-500/40 hover:shadow-card-hover"
+              >
+                <div class="relative flex aspect-[16/9] items-center justify-center border-b border-navy-900/10 bg-navy-900/[0.04] p-8">
+                  <Image
+                    src={img.src}
+                    alt={img.alt}
+                    widths={[300, 600]}
+                    sizes="(min-width: 768px) 300px, 80vw"
+                    class="h-full w-full object-contain transition-transform duration-500 ease-out group-hover:scale-105"
+                    loading="lazy"
+                  />
+                  <span class="absolute bottom-4 left-4 flex h-11 w-11 items-center justify-center rounded-xl bg-orange-500 text-white shadow-lg transition-transform duration-300 group-hover:scale-110">
+                    <Icon name={agency.icon} class="h-5 w-5" />
+                  </span>
+                </div>
+
+                <div class="flex flex-1 flex-col p-7">
+                  <h3 class="text-xl leading-snug text-navy-900">{agency.name}</h3>
+                  <p class="mt-1 text-sm font-semibold text-orange-600">{agency.tagline}</p>
+
+                  <ul class="mt-5 space-y-2.5 border-t border-navy-900/8 pt-5">
+                    {agency.bullets.slice(0, 4).map((b) => (
+                      <li class="flex items-start gap-2.5 text-[0.8125rem] leading-snug text-navy-900/75">
+                        <Icon name="check" class="mt-0.5 h-4 w-4 shrink-0 text-orange-500" />
+                        {b}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <span class="mt-auto inline-flex items-center gap-2 pt-6 text-sm font-bold text-navy-800 transition-colors group-hover:text-orange-600">
+                    Ver detalhes
+                    <Icon
+                      name="arrow-right"
+                      class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                    />
+                  </span>
+                </div>
+              </a>
+            </li>
+          );
+        }
+
         return (
           <li data-reveal style={`--reveal-delay:${i * 110}ms`}>
             <a

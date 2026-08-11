@@ -7,10 +7,22 @@
  */
 import { whatsappUrl } from '../../data/site';
 import Icon from '../ui/Icon.astro';
+
+interface Props {
+  /**
+   * Link do WhatsApp. A pagina de campanha passa o dela para que o botao
+   * flutuante — o mais clicado da tela — leve a mesma mensagem dos CTAs do
+   * corpo. Sem isso, metade dos contatos vindos do anuncio chegaria sem o texto
+   * que identifica a origem.
+   */
+  href?: string;
+}
+
+const { href = whatsappUrl } = Astro.props;
 ---
 
 <a
-  href={whatsappUrl}
+  href={href}
   target="_blank"
   rel="noopener noreferrer"
   aria-label="Falar com a MDK Engenharia pelo WhatsApp"
