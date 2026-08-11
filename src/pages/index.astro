@@ -2,16 +2,16 @@
 /**
  * Home da MDK Engenharia.
  *
- * Unica pagina construida nesta etapa, para validar design, branding e estrutura
- * de SEO antes de partir para as internas. A navbar ja lista todos os links
- * finais; enquanto as paginas nao existem, apontam para ancoras desta home.
+ * A secao Agencies nao aparece mais aqui: os tres orgaos foram absorvidos pelo
+ * bloco "O que fazemos" (MainServices), como o cliente pediu no documento R01.
+ * Ela continua existindo e sendo usada nas paginas internas, onde o contexto
+ * ainda pede a divisao por balcao.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/home/Hero.astro';
 import TrustBar from '../components/home/TrustBar.astro';
 import MainServices from '../components/home/MainServices.astro';
 import SecondaryServices from '../components/home/SecondaryServices.astro';
-import Agencies from '../components/home/Agencies.astro';
 import About from '../components/home/About.astro';
 import Team from '../components/home/Team.astro';
 import StatsBand from '../components/home/StatsBand.astro';
@@ -28,7 +28,6 @@ import FinalCta from '../components/home/FinalCta.astro';
   <TrustBar />
   <MainServices />
   <SecondaryServices />
-  <Agencies />
   <About />
   <Team />
   <StatsBand />

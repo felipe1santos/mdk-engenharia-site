@@ -16,6 +16,12 @@
  *    compromisso editorial, e blog parado passa impressao de empresa inativa.
  *
  * `pending` marca destino que ainda e ancora provisoria da home.
+ *
+ * O submenu de Servicos segue a ordem do documento R01: Projetos, Prefeitura,
+ * Bombeiros, CETESB, Execucao e consultoria. "Documentacao e regularizacao" saiu
+ * do dropdown porque virou o guarda-chuva dos tres orgaos, e listar o pai junto
+ * dos filhos so gerava duvida sobre onde clicar. A pagina continua existindo e
+ * linkada no rodape e nas paginas dos orgaos.
  */
 
 export interface NavItem {
@@ -43,11 +49,10 @@ export const mainNav: NavItem[] = [
     href: '/servicos',
     children: [
       { label: 'Projetos', href: '/servicos#projetos' },
-      { label: 'Execução e consultoria', href: '/servicos#execucao' },
-      { label: 'Documentação e regularização', href: '/servicos/regularizacao' },
       { label: 'Prefeitura', href: '/servicos/regularizacao/prefeitura' },
-      { label: 'Corpo de Bombeiros', href: '/servicos/regularizacao/bombeiros' },
+      { label: 'Bombeiros', href: '/servicos/regularizacao/bombeiros' },
       { label: 'CETESB', href: '/servicos/regularizacao/cetesb' },
+      { label: 'Execução e consultoria', href: '/servicos#execucao' },
     ],
   },
   {

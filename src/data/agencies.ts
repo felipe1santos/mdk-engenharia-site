@@ -39,6 +39,13 @@ export interface Agency {
   /** Frase de uma linha exibida sob o nome no card. */
   tagline: string;
   summary: string;
+  /**
+   * Itens do escopo mostrados no card do bloco "O que fazemos" da home.
+   * A lista veio literal do documento de ajustes R01 do cliente — e o que ele
+   * quer ver no card, nao um resumo nosso. O detalhamento continua em
+   * `detail.services`.
+   */
+  bullets: string[];
   image: string;
   icon: 'building' | 'flame' | 'leaf';
   seo: { title: string; description: string; keywords: string[] };
@@ -61,6 +68,14 @@ export const agencies: Agency[] = [
     tagline: 'Aprovação, alvará, regularização e Habite-se',
     summary:
       'Aprovação de projeto, alvará de execução, regularização de construção existente, desdobro e Certificado de Conclusão.',
+    bullets: [
+      'Projetos e execução / regularização',
+      'Alvará de Aprovação e Execução',
+      'Desdobro de lote',
+      'Desmembramento e unificação de IPTU',
+      'Certificado de Conclusão (Habite-se)',
+      'Certificado de Acessibilidade',
+    ],
     image: 'orgao-prefeitura',
     icon: 'building',
     seo: {
@@ -173,6 +188,12 @@ export const agencies: Agency[] = [
     tagline: 'Projeto de incêndio, AVCB e CLCB',
     summary:
       'Projeto de prevenção e combate a incêndio, F.A.T., AVCB e CLCB — inclusive renovações — com acompanhamento até a vistoria.',
+    bullets: [
+      'Projetos de Prevenção e Combate a Incêndio (SPCI)',
+      'Formulário de Atendimento Técnico (F.A.T.)',
+      'AVCB e CLCB, inclusive renovações',
+      'Acompanhamento da vistoria',
+    ],
     image: 'orgao-bombeiros',
     icon: 'flame',
     seo: {
@@ -287,6 +308,11 @@ export const agencies: Agency[] = [
     tagline: 'Licenciamento e dispensa de licença ambiental',
     summary:
       'Dispensa de licença ambiental e licenciamento de atividades sujeitas a controle: licença prévia, de instalação e de operação.',
+    bullets: [
+      'Dispensa de Licença Ambiental',
+      'Licenciamento de atividades sujeitas a controle',
+      'Licença prévia, de instalação e de operação',
+    ],
     image: 'orgao-cetesb',
     icon: 'leaf',
     seo: {
