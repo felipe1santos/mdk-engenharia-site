@@ -12,7 +12,7 @@ import { getImage } from '../../lib/images';
 import Button from '../ui/Button.astro';
 import Icon from '../ui/Icon.astro';
 
-const hero = getImage('hero');
+const hero = getImage('hero-obra');
 
 /**
  * O H1 abriu para toda a gama de servicos a pedido do cliente, mas os termos
@@ -44,14 +44,21 @@ const highlights = [
     />
   </div>
 
-  <!-- Overlays: escurecem o suficiente para o texto passar em contraste AA -->
+  <!-- Overlays.
+       O texto ocupa a metade esquerda, entao e la que a cortina precisa ser
+       opaca — o suficiente para o branco passar em contraste AA sobre o ceu
+       claro da foto. A direita ela abre bem mais que antes: e onde estao os tres
+       profissionais, e apaga-los era justamente o que se queria evitar.
+
+       A vertical existe so para assentar o topo (atras da navbar) e a base (na
+       emenda com a secao seguinte). No miolo ela e transparente. -->
   <div
-    class="absolute inset-0 -z-10 bg-gradient-to-r from-navy-900 via-navy-900/85 to-navy-900/40"
+    class="absolute inset-0 -z-10 bg-gradient-to-r from-navy-900 via-navy-900/80 to-navy-900/15"
     aria-hidden="true"
   >
   </div>
   <div
-    class="absolute inset-0 -z-10 bg-gradient-to-t from-navy-900 via-transparent to-navy-900/70"
+    class="absolute inset-0 -z-10 bg-gradient-to-t from-navy-900/95 via-transparent to-navy-900/60"
     aria-hidden="true"
   >
   </div>
