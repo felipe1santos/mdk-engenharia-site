@@ -59,16 +59,39 @@ export const site = {
     geoConfirmed: false,
   },
 
-  /** Telefone e e-mails conforme mdkengenharia.com.br/contrate-nos. */
+  /**
+   * Telefone e e-mails. A base veio de mdkengenharia.com.br/contrate-nos; o
+   * numero corporativo e o e-mail da diretoria tecnica foram informados pelo
+   * cliente em 11/08/2026.
+   *
+   * `phoneDisplay`, `phoneE164` e `whatsappE164` sao o canal PRINCIPAL: e o que
+   * o rodape, o botao flutuante, os CTAs, o card do mapa e o `telephone` do
+   * JSON-LD usam. Trocar aqui troca em toda parte — nenhum componente escreve
+   * numero no corpo.
+   *
+   * O numero anterior continua atendendo e virou secundario (`phoneAlt*`).
+   * Aparece so na pagina de contato: manter dois numeros com o mesmo peso
+   * espalhados pelo site divide o atendimento e, para a busca local, NAP com
+   * telefone ambiguo e pior que um so telefone consistente.
+   */
   contact: {
-    phoneDisplay: '(11) 99347-1608',
-    phoneE164: '+5511993471608',
-    whatsappE164: '5511993471608',
+    phoneDisplay: '(11) 97647-9889',
+    phoneE164: '+5511976479889',
+    whatsappE164: '5511976479889',
+    /** Numero anterior, ainda em uso. Listado apenas em /contato. */
+    phoneAltDisplay: '(11) 99347-1608',
+    phoneAltE164: '+5511993471608',
     whatsappMessage:
       'Olá! Vim pelo site e gostaria de solicitar um orçamento com a MDK Engenharia.',
     email: 'contato@mdkengenharia.com.br',
     /** Caixa dedicada a pedidos de orcamento. */
     emailOrcamento: 'orcamento@mdkengenharia.com.br',
+    /**
+     * Caixa da diretoria tecnica — Miro Bergamo, Diretor Tecnico (team.ts).
+     * O rotulo foi deduzido do cargo dele; se a caixa tiver outra finalidade,
+     * corrigir o texto do canal em /contato.
+     */
+    emailTecnico: 'miro@mdkengenharia.com.br',
     /** Caixa usada para recrutamento. */
     emailRh: 'mdkengenharia@mdkengenharia.com.br',
     /** PLACEHOLDER: horario de atendimento real. */

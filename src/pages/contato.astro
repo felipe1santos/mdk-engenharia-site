@@ -36,6 +36,15 @@ const channels = [
     note: site.contact.hours,
     href: `tel:${site.contact.phoneE164}`,
   },
+  /* O numero antigo continua atendendo, mas so aparece aqui — no resto do site
+     o canal e um so, para nao dividir o atendimento nem baguncar o NAP. */
+  {
+    icon: 'phone',
+    label: 'Telefone alternativo',
+    value: site.contact.phoneAltDisplay,
+    note: 'Segunda linha, caso a principal esteja ocupada.',
+    href: `tel:${site.contact.phoneAltE164}`,
+  },
   {
     icon: 'mail',
     label: 'Orçamentos',
@@ -49,6 +58,13 @@ const channels = [
     value: site.contact.email,
     note: 'Dúvidas, parcerias e assuntos administrativos.',
     href: `mailto:${site.contact.email}`,
+  },
+  {
+    icon: 'compass',
+    label: 'Diretoria técnica',
+    value: site.contact.emailTecnico,
+    note: 'Assuntos técnicos de projeto, obra e responsabilidade técnica.',
+    href: `mailto:${site.contact.emailTecnico}`,
   },
   {
     icon: 'clipboard',
