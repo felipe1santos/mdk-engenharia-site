@@ -8,8 +8,19 @@
  *
  * A trilha sai tambem como BreadcrumbList em JSON-LD — e o que faz o Google
  * exibir o caminho no resultado de busca em vez da URL crua.
+ *
+ * `image` poe uma fotografia no fundo da faixa. E opcional de proposito: sem
+ * foto a faixa continua sendo o fundo navy com a grade, que e o que as paginas
+ * usavam antes. Com foto, a grade continua por cima — e ela que amarra o banner
+ * ao resto da identidade e impede que a faixa vire "foto de banco com texto".
+ *
+ * A foto entra em `loading="eager"` e `fetchpriority="high"` porque esta na
+ * primeira dobra: e o LCP dessas paginas, e deixar no lazy atrasaria a metrica
+ * exatamente onde ela e medida.
  */
+import { Image } from 'astro:assets';
 import Icon from '../ui/Icon.astro';
+import { getImage } from '../../lib/images';
 
 export interface Crumb {
   label: string;
@@ -22,9 +33,13 @@ interface Props {
   eyebrow?: string;
   /** Sem o item "Home", que e adicionado aqui. */
   crumbs?: Crumb[];
+  /** Chave de imagem (src/data/images.json) usada como fundo da faixa. */
+  image?: string;
 }
 
-const { title, subtitle, eyebrow, crumbs = [] } = Astro.props;
+const { title, subtitle, eyebrow, crumbs = [], image } = Astro.props;
+
+const banner = image ? getImage(image) : null;
 
 const trail: Crumb[] = [{ label: 'Home', href: '/' }, ...crumbs];
 
@@ -41,6 +56,37 @@ const breadcrumbLd = {
 ---
 
 <section class="relative isolate overflow-hidden bg-navy-900 pb-14 pt-32 sm:pb-20 sm:pt-40">
+  {
+    banner && (
+      <>
+        <Image
+          src={banner.src}
+          alt=""
+          widths={[640, 1024, 1600]}
+          sizes="100vw"
+          class="absolute inset-0 -z-20 h-full w-full object-cover"
+          loading="eager"
+          fetchpriority="high"
+          aria-hidden="true"
+        />
+        {/*
+          Duas camadas em vez de uma: a horizontal garante contraste do texto,
+          que comeca na esquerda, e a vertical fecha a emenda com a secao
+          seguinte. Uma cortina unica escura o bastante para o texto apagaria a
+          foto inteira — e ai nao valeria ter foto.
+        */}
+        <div
+          class="absolute inset-0 -z-10 bg-gradient-to-r from-navy-900 via-navy-900/90 to-navy-900/60"
+          aria-hidden="true"
+        />
+        <div
+          class="absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-navy-900 to-transparent"
+          aria-hidden="true"
+        />
+      </>
+    )
+  }
+
   <div
     class="absolute inset-0 -z-10 overflow-hidden"
     style="mask-image: radial-gradient(120% 100% at 80% 40%, #000 20%, transparent 80%); -webkit-mask-image: radial-gradient(120% 100% at 80% 40%, #000 20%, transparent 80%);"

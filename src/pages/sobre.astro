@@ -16,7 +16,7 @@ import FinalCta from '../components/home/FinalCta.astro';
 import Section from '../components/ui/Section.astro';
 import Icon from '../components/ui/Icon.astro';
 import { site, yearsInBusiness } from '../data/site';
-import { segments } from '../data/services';
+import { primaryServices, segments } from '../data/services';
 
 const marks = [
   {
@@ -32,7 +32,9 @@ const marks = [
   {
     icon: 'blueprint',
     title: 'Projeto completo',
-    text: 'Oito disciplinas de projeto compatibilizadas entre si.',
+    /* Contado a partir do dado: o texto dizia "Oito" com nove disciplinas
+       cadastradas em services.ts. */
+    text: `${primaryServices.length} disciplinas de projeto compatibilizadas entre si.`,
   },
   {
     icon: 'document',
@@ -51,6 +53,7 @@ const marks = [
     title="Engenharia que sustenta <span class='text-orange-500'>grandes obras</span>"
     subtitle={`Fundada em ${site.foundedYear}, a ${site.name} atua com projetos e construção, com qualidade e foco nas necessidades de cada cliente.`}
     crumbs={[{ label: 'Sobre nós' }]}
+    image="banner-sobre"
   >
     <ul class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {
