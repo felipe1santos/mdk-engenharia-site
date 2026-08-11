@@ -8,12 +8,18 @@
  *
  * O glob e `eager` para que o astro:assets receba ImageMetadata em build time e
  * consiga gerar WebP/AVIF com width e height corretos.
+ *
+ * Aceita `.jpg` e `.webp`. O acervo antigo veio em JPEG; o material novo entra
+ * ja em WebP, que e o formato que o build entrega de qualquer forma — guardar a
+ * origem em JPEG so pesaria o repositorio. A chave e o nome do arquivo sem
+ * extensao, entao os dois formatos convivem sem que nenhum componente saiba
+ * disso.
  */
 
 import type { ImageMetadata } from 'astro';
 import manifest from '../data/images.json';
 
-const files = import.meta.glob<{ default: ImageMetadata }>('../assets/images/*.jpg', {
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/images/*.{jpg,webp}', {
   eager: true,
 });
 
@@ -21,7 +27,7 @@ type ImageKey = keyof typeof manifest;
 
 const byKey = new Map<string, ImageMetadata>();
 for (const [path, mod] of Object.entries(files)) {
-  const key = path.split('/').pop()!.replace(/\.jpg$/, '');
+  const key = path.split('/').pop()!.replace(/\.(jpg|webp)$/, '');
   byKey.set(key, mod.default);
 }
 

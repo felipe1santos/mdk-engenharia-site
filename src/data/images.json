@@ -222,5 +222,61 @@
     "photographer": "Acervo MDK Engenharia",
     "photographerUrl": "https://www.mdkengenharia.com.br/",
     "sourceUrl": "https://www.mdkengenharia.com.br/"
+  },
+  "servico-projetos": {
+    "file": "servico-projetos.webp",
+    "alt": "Planta de projeto e capacete sobre a mesa, com canteiro de obras e guindastes ao fundo",
+    "photographer": "Enviada pelo cliente",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/"
+  },
+  "banner-servicos": {
+    "file": "banner-servicos.webp",
+    "alt": "Três profissionais de capacete observando a fachada de uma edificação em construção",
+    "photographer": "Enviada pelo cliente",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/"
+  },
+  "banner-sobre": {
+    "file": "banner-sobre.webp",
+    "alt": "Dois engenheiros analisando plantas em frente a um edifício em obra",
+    "photographer": "Enviada pelo cliente",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/"
+  },
+  "banner-projetos": {
+    "file": "banner-projetos.webp",
+    "alt": "Profissional com capacete e cinto de segurança sobre estrutura de obra, com a cidade ao fundo",
+    "photographer": "Enviada pelo cliente",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/"
+  },
+  "banner-contato": {
+    "file": "banner-contato.webp",
+    "alt": "Engenheiro e encarregado conversando no canteiro, apontando para a obra",
+    "photographer": "Enviada pelo cliente",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/"
+  },
+  "banner-areas": {
+    "file": "banner-areas.webp",
+    "alt": "Engenheiro de costas segurando plantas, com a silhueta da cidade sobreposta",
+    "photographer": "Enviada pelo cliente",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/"
+  },
+  "banner-servico-interno": {
+    "file": "banner-servico-interno.webp",
+    "alt": "Capacete apoiado sobre pranchas de projeto, com escavadeira e equipe ao fundo",
+    "photographer": "Enviada pelo cliente",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/"
+  },
+  "apoio-execucao": {
+    "file": "apoio-execucao.webp",
+    "alt": "Bota de segurança pisando sobre malha de armação em laje, com equipe trabalhando ao fundo",
+    "photographer": "Enviada pelo cliente",
+    "photographerUrl": "https://www.mdkengenharia.com.br/",
+    "sourceUrl": "https://www.mdkengenharia.com.br/"
   }
 }
