@@ -100,8 +100,46 @@ const passos = [
   description="Projetos de arquitetura, estrutura, instalações hidráulicas e elétricas, SPCI, gases medicinais, drenagem e industriais, além de execução, consultoria e regularização de obras."
   whatsappHref={whatsappOrcamentoUrl}
 >
-  {/* ─────────────────────────── HERO ─────────────────────────── */}
-  <section class="relative isolate overflow-hidden bg-navy-900 pb-16 pt-28 sm:pb-24 sm:pt-36">
+  {/* ─────────────────────────── HERO ───────────────────────────
+      A foto ocupa a secao inteira, como fundo. A versao anterior a punha num
+      painel ao lado do texto, e o cliente apontou o problema: virava uma imagem
+      pequena, solta, em vez de compor com a pagina.
+
+      `isolate` e obrigatorio: sem contexto de empilhamento proprio, os filhos
+      com z-index negativo escapam para a raiz e ficam atras do `bg-navy-900`
+      desta secao — a foto simplesmente some.
+
+      A cortina e assimetrica de proposito. Opaca a esquerda, onde fica o texto e
+      onde o branco precisa passar em contraste AA sobre o ceu claro da foto; e
+      quase transparente a direita, que e onde a obra aparece. Escurecer por
+      igual resolveria o contraste e mataria a imagem junto — que foi a queixa
+      original. */}
+  <section
+    class="relative isolate flex min-h-[88svh] items-center overflow-hidden bg-navy-900 pb-20 pt-32 sm:pb-28 sm:pt-40"
+  >
+    <Image
+      src={heroImg.src}
+      alt={heroImg.alt}
+      widths={[900, 1400, 1920]}
+      sizes="100vw"
+      class="absolute inset-0 -z-20 h-full w-full object-cover object-center"
+      loading="eager"
+      fetchpriority="high"
+    />
+
+    <div
+      class="absolute inset-0 -z-10 bg-gradient-to-r from-navy-900 via-navy-900/85 to-navy-900/25"
+      aria-hidden="true"
+    >
+    </div>
+    {/* Assenta o topo, atras da navbar, e a base, na emenda com a faixa de
+        provas. No miolo fica transparente para nao somar com a horizontal. */}
+    <div
+      class="absolute inset-0 -z-10 bg-gradient-to-t from-navy-900 via-transparent to-navy-900/70"
+      aria-hidden="true"
+    >
+    </div>
+
     <div
       class="absolute inset-0 -z-10 overflow-hidden"
       style="mask-image: radial-gradient(120% 100% at 20% 40%, #000 20%, transparent 80%); -webkit-mask-image: radial-gradient(120% 100% at 20% 40%, #000 20%, transparent 80%);"
@@ -110,7 +148,7 @@ const passos = [
       <div class="bg-grid animate-grid-drift absolute -inset-40 text-white/[0.06]"></div>
     </div>
     <div
-      class="pointer-events-none absolute -right-24 -top-24 -z-10 h-96 w-96 rounded-full bg-orange-500/15 blur-3xl"
+      class="bg-dots pointer-events-none absolute bottom-10 right-8 -z-10 hidden h-40 w-52 text-orange-500/35 lg:block"
       aria-hidden="true"
     >
     </div>
@@ -126,7 +164,9 @@ const passos = [
         </ol>
       </nav>
 
-      <div class="mt-10 grid items-center gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
+      {/* Coluna unica, limitada a metade da largura: e o que mantem o texto
+          sobre a parte opaca da cortina e deixa a obra respirando a direita. */}
+      <div class="mt-10 max-w-2xl">
         <div>
           <p
             class="inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/80"
@@ -186,38 +226,6 @@ const passos = [
           <p class="mt-6 text-sm text-white/45" data-reveal style="--reveal-delay:320ms">
             {site.contact.hours} · Resposta mais rápida pelo WhatsApp
           </p>
-        </div>
-
-        {/*
-          A foto em painel proprio resolve as duas queixas do cliente de uma vez:
-          nao ha cortina azul por cima dela, e o `aspect-ratio` sai dos metadados
-          do arquivo, entao `object-cover` nao tem o que cortar — a imagem aparece
-          inteira, em qualquer largura.
-        */}
-        <div class="relative" data-reveal style="--reveal-delay:180ms">
-          <div
-            class="bg-dots pointer-events-none absolute -bottom-6 -right-6 h-40 w-40 text-orange-500/45 sm:h-52 sm:w-52"
-            aria-hidden="true"
-          >
-          </div>
-          <div
-            class="pointer-events-none absolute -left-5 -top-5 h-24 w-24 rounded-full border-2 border-orange-500/35"
-            aria-hidden="true"
-          >
-          </div>
-
-          <div class="relative overflow-hidden rounded-3xl border border-white/10 shadow-2xl">
-            <Image
-              src={heroImg.src}
-              alt={heroImg.alt}
-              widths={[600, 900, 1400]}
-              sizes="(min-width: 1024px) 560px, 92vw"
-              class="w-full object-cover"
-              style={`aspect-ratio:${heroImg.src.width}/${heroImg.src.height}`}
-              loading="eager"
-              fetchpriority="high"
-            />
-          </div>
         </div>
       </div>
     </div>
