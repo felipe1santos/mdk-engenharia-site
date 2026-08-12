@@ -76,8 +76,6 @@ async function mount(host: HTMLElement): Promise<void> {
 
   const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
   renderer.setClearAlpha(0);
-  /* Teto em 2: acima disso o ganho visual nao paga o custo de preenchimento. */
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.domElement.setAttribute('aria-hidden', 'true');
   renderer.domElement.style.width = '100%';
   renderer.domElement.style.height = '100%';
@@ -149,24 +147,42 @@ async function mount(host: HTMLElement): Promise<void> {
   let progress = 0;
   let visible = false;
   let frame = 0;
-  let width = 0;
-  let height2 = 0;
 
+  /**
+   * Reconcilia o canvas com o tamanho real do host.
+   *
+   * A comparacao e feita contra o buffer do proprio canvas, e nao contra um par
+   * de medidas guardado em variavel. E deliberado: a versao com cache podia
+   * gravar um valor errado uma vez e nunca mais se corrigir, porque a guarda
+   * dava "nada mudou" para sempre. Foi o que aconteceu em producao — canvas de
+   * 337x168 num host de 480x416, com a trelica esticada.
+   *
+   * O `devicePixelRatio` tambem entra na conta a cada passada. Ele muda quando o
+   * visitante da zoom ou arrasta a janela para um monitor de outra densidade, e
+   * nesses casos o retangulo em CSS px pode continuar identico — so o buffer
+   * precisa mudar. Fixar a densidade uma vez na construcao deixava o desenho
+   * borrado ou serrilhado depois de qualquer zoom.
+   */
   function resize(): void {
     const rect = host.getBoundingClientRect();
     if (rect.width === 0 || rect.height === 0) return;
-    if (rect.width === width && rect.height === height2) return;
 
-    width = rect.width;
-    height2 = rect.height;
+    /* Teto em 2: acima disso o ganho visual nao paga o custo de preenchimento. */
+    const ratio = Math.min(window.devicePixelRatio, 2);
+    const canvas = renderer.domElement;
+    const alvoW = Math.round(rect.width * ratio);
+    const alvoH = Math.round(rect.height * ratio);
+    if (canvas.width === alvoW && canvas.height === alvoH) return;
 
-    const aspect = width / height2;
+    renderer.setPixelRatio(ratio);
+
+    const aspect = rect.width / rect.height;
     camera.left = -frustum * aspect;
     camera.right = frustum * aspect;
     camera.top = frustum;
     camera.bottom = -frustum;
     camera.updateProjectionMatrix();
-    renderer.setSize(width, height2, false);
+    renderer.setSize(rect.width, rect.height, false);
   }
 
   function render(): void {
