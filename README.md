@@ -3,8 +3,8 @@
 Site da MDK Engenharia e Arquitetura LTDA - ME (São Paulo/SP). Astro 5 + Tailwind 4,
 saída estática.
 
-São 18 páginas: home, institucional, portfólio, áreas de atuação, contato e uma página por
-disciplina de serviço.
+São 35 páginas: home, institucional, portfólio, áreas de atuação, contato, uma página por
+disciplina de serviço, quatro guias técnicos e sete recortes de SEO local.
 
 | Rota | Conteúdo |
 |---|---|
@@ -15,10 +15,48 @@ disciplina de serviço.
 | `/servicos/regularizacao/[slug]` | Prefeitura, Corpo de Bombeiros e CETESB — o que resolvemos em cada órgão |
 | `/projetos` | Obras em andamento e concluídas |
 | `/areas-de-atuacao` | Cobertura presencial e remota, cidades atendidas e mapa |
+| `/areas-de-atuacao/zona-norte-sp` | Hub do SEO local: sede, critério do recorte e regiões |
+| `/areas-de-atuacao/[slug]` | Bairro-sede e cinco subprefeituras da Zona Norte |
+| `/guias` | Índice dos guias técnicos |
+| `/guias/[slug]` | Conteúdo editorial de topo de funil (Habite-se, regularização, etc.) |
 | `/contato` | Canais de contato, fluxo do orçamento e mapa |
 
 As páginas de serviço são geradas de `src/data/services.ts`. Serviço sem o campo `detail`
 não vira rota — é o mecanismo para publicar em etapas sem deixar link quebrado.
+
+### SEO: guias e recortes locais
+
+Adicionados em 14/08/2026, a partir de consulta ao Planejador de Palavras-chave do Google
+(mercado Brasil, janela ago/2025 a jul/2026; o Google devolve faixa em vez de número porque
+a conta de anúncios está pausada):
+
+| Termo | Volume/mês | Concorrência | Onde é atendido |
+|---|---|---|---|
+| `habite-se` | 10 mil – 100 mil | baixa | `/guias/habite-se` |
+| `regularização de imóvel` | 1 mil – 10 mil | média | `/guias/regularizacao-de-imovel` |
+| `projeto elétrico` / `projeto elétrico residencial` | 1 mil – 10 mil | baixa | `/guias/projeto-eletrico-residencial` |
+| `planta elétrica` (+ variantes) | 1 mil – 10 mil | baixa | idem |
+| `aprovação de projeto na prefeitura` | 100 – 1 mil | baixa | `/guias/aprovacao-de-projeto-na-prefeitura` |
+| `projeto para AVCB` | 100 – 1 mil | média | `/servicos/regularizacao/bombeiros` (já existia) |
+
+**Sobre o SEO local, e por que ele não virou "serviço × bairro".** Os termos hiperlocais
+foram testados no mesmo dia, no formato pedido pelo cliente — `projeto elétrico jardim peri`,
+`regularização de imóvel na prefeitura de são paulo`, `engenheiro civil zona norte são paulo`.
+Todos voltaram em **0 – 10 buscas/mês**, com o próprio Google sugerindo trocar as palavras.
+Busca por bairro não existe em volume: quem está no Jardim Peri digita "projeto elétrico" e
+o Google ordena o resultado por proximidade. Essa disputa se ganha com **Google Meu Negócio,
+NAP consistente e avaliações** — não com uma página por bairro, que além de inútil configura
+*doorway content* e é penalizada (ressalva idêntica à que já constava em `src/data/cities.ts`).
+
+O recorte adotado foi por **subprefeitura**, que não é divisão de marketing: é onde o processo
+de aprovação e regularização é efetivamente analisado, e o perfil construtivo muda de fato
+entre elas. `/areas-de-atuacao/jardim-peri` é a exceção e existe por ser o endereço da sede.
+
+O critério completo está comentado em `src/data/districts.ts` e `src/data/guides.ts`.
+
+**Pendência de maior impacto para a busca local: criar o perfil no Google Meu Negócio.** Sem
+ele, nenhuma dessas páginas aparece no bloco de mapa, que é onde a busca por proximidade é
+decidida. Ao criar, o NAP precisa bater exatamente com `src/data/site.ts`.
 
 Especificação: [`docs/superpowers/specs/2026-08-02-mdk-home-design.md`](docs/superpowers/specs/2026-08-02-mdk-home-design.md)
 Plano dos ajustes do cliente: [`docs/superpowers/plans/2026-08-05-ajustes-cliente.md`](docs/superpowers/plans/2026-08-05-ajustes-cliente.md)
@@ -52,6 +90,8 @@ Nenhum componente contém texto de negócio. Tudo vive em `src/data/`:
 | `renders.ts` | Estudos em 3D exibidos na home e em `/projetos` |
 | `agencies.ts` | Prefeitura, Corpo de Bombeiros e CETESB — serviços, etapas, base legal e FAQ |
 | `cities.ts` | Cidades atendidas (SEO local e `areaServed` do JSON-LD) |
+| `districts.ts` | Recortes da Zona Norte — bairro-sede e subprefeituras (SEO local) |
+| `guides.ts` | Guias técnicos de `/guias` — conteúdo editorial de SEO |
 | `stats.ts` | Números da faixa laranja |
 | `testimonials.ts` | Depoimentos |
 | `portfolio.ts` | Obras realizadas |
