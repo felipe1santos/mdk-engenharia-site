@@ -1,0 +1,98 @@
+---
+/**
+ * Indice dos guias.
+ *
+ * Existe por dois motivos, e nenhum e "ter uma pagina de listagem": ela e o no
+ * que liga os guias ao resto do site — sem isso eles ficariam orfaos, so
+ * alcancaveis pelo sitemap — e e o destino natural da trilha de navegacao das
+ * paginas internas.
+ *
+ * O dado estruturado sai como `ItemList`, que descreve exatamente o que a pagina
+ * e: uma lista ordenada de conteudos. Marca-la como `Blog` seria impreciso —
+ * nao ha publicacao periodica, e o proprio README registra a decisao de nao
+ * criar blog (blog parado passa impressao de empresa inativa).
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/layout/PageHero.astro';
+import FinalCta from '../../components/home/FinalCta.astro';
+import Section from '../../components/ui/Section.astro';
+import SectionTitle from '../../components/ui/SectionTitle.astro';
+import Icon from '../../components/ui/Icon.astro';
+import { guides } from '../../data/guides';
+import { site } from '../../data/site';
+
+const listLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Guias técnicos da MDK Engenharia',
+  itemListElement: guides.map((g, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: g.name,
+    url: new URL(`/guias/${g.slug}`, Astro.site).href,
+  })),
+};
+---
+
+<BaseLayout
+  title={`Guias Técnicos de Engenharia e Regularização | ${site.name}`}
+  description="Guias sobre Habite-se, regularização de imóvel, projeto elétrico residencial e aprovação de projeto na Prefeitura, escritos por quem conduz esses processos todo dia."
+  keywords={[
+    'habite-se',
+    'regularização de imóvel',
+    'projeto elétrico residencial',
+    'aprovação de projeto na prefeitura',
+    'guia de engenharia civil',
+    'documentação de obra',
+  ]}
+>
+  <PageHero
+    eyebrow="Conteúdo técnico"
+    title="Guias <span class='text-orange-500'>técnicos</span>"
+    subtitle="As dúvidas que mais chegam aqui, respondidas por inteiro — sem o encurtamento que transforma resposta técnica em propaganda."
+    crumbs={[{ label: 'Guias' }]}
+    image="banner-prefeitura"
+  />
+
+  <Section tone="white" width="wide">
+    <SectionTitle
+      eyebrow="O que você encontra"
+      title="Processo explicado <span class='text-orange-600'>do começo ao fim</span>"
+      subtitle="Cada guia cobre um processo inteiro: o que é, o que o órgão verifica, quais documentos entram e onde o caminho costuma travar."
+    />
+
+    <ul class="mt-14 grid gap-6 md:grid-cols-2">
+      {
+        guides.map((g, i) => (
+          <li data-reveal style={`--reveal-delay:${(i % 2) * 110}ms`}>
+            <a
+              href={`/guias/${g.slug}`}
+              class="group flex h-full cursor-pointer flex-col rounded-2xl border border-navy-900/10 bg-white p-8 transition-all duration-300 hover:-translate-y-1 hover:border-orange-500/40 hover:shadow-card"
+            >
+              <p class="text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-navy-900/45">
+                {g.eyebrow}
+              </p>
+              <h2 class="mt-3 font-display text-2xl leading-snug text-navy-900 transition-colors group-hover:text-orange-600">
+                {g.name}
+              </h2>
+              <p class="mt-4 flex-1 text-[0.9375rem] leading-relaxed text-navy-900/65">
+                {g.summary}
+              </p>
+              <span class="mt-6 inline-flex items-center gap-2 text-sm font-bold text-navy-800 transition-colors group-hover:text-orange-600">
+                Ler o guia
+                <Icon
+                  name="arrow-right"
+                  class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                />
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  <FinalCta />
+</BaseLayout>
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify(listLd)} />

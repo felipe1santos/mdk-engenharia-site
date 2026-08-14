@@ -1,0 +1,234 @@
+---
+/**
+ * Pagina de guia.
+ *
+ * Gerada a partir de src/data/guides.ts, que documenta por que cada guia existe
+ * e de onde veio o volume de busca que justificou o tema.
+ *
+ * O dado estruturado sai como `Article` e, quando ha perguntas, tambem como
+ * `FAQPage` — e o que habilita o bloco de perguntas no resultado de busca. Nao
+ * sai como `Service`: guia e conteudo informacional, e marca-lo como servico
+ * concorreria com /servicos/[slug], que e a pagina de conversao do mesmo tema.
+ *
+ * O bloco final encaminha para os servicos relacionados. E o unico ponto de
+ * conversao da pagina, de proposito: guia cheio de CTA no meio do texto e lido
+ * como panfleto e perde a autoridade que faz o tema ranquear.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/layout/PageHero.astro';
+import FinalCta from '../../components/home/FinalCta.astro';
+import Section from '../../components/ui/Section.astro';
+import Button from '../../components/ui/Button.astro';
+import Icon from '../../components/ui/Icon.astro';
+import { guides } from '../../data/guides';
+import { getService } from '../../data/services';
+import { site, whatsappUrl } from '../../data/site';
+
+export function getStaticPaths() {
+  return guides.map((guide) => ({
+    params: { slug: guide.slug },
+    props: { guide },
+  }));
+}
+
+const { guide } = Astro.props;
+
+const related = guide.services.map((id) => getService(id)).filter((s) => s !== undefined);
+
+const otherGuides = guides.filter((g) => g.slug !== guide.slug);
+
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+
+const articleLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: guide.seo.title,
+  description: guide.seo.description,
+  inLanguage: 'pt-BR',
+  author: { '@id': `${Astro.site}#organization` },
+  publisher: { '@id': `${Astro.site}#organization` },
+  mainEntityOfPage: pageUrl,
+  url: pageUrl,
+  about: guide.name,
+};
+
+const faqLd = guide.faq.length
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: guide.faq.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    }
+  : null;
+---
+
+<BaseLayout
+  title={guide.seo.title}
+  description={guide.seo.description}
+  keywords={guide.seo.keywords}
+>
+  <PageHero
+    eyebrow={guide.eyebrow}
+    title={guide.heading}
+    subtitle={guide.summary}
+    crumbs={[{ label: 'Guias', href: '/guias' }, { label: guide.name }]}
+    image="banner-prefeitura"
+  />
+
+  <Section tone="white" width="wide">
+    <div class="grid gap-14 lg:grid-cols-[1.6fr_1fr] lg:gap-20">
+      <article>
+        <div class="space-y-5 text-lg leading-relaxed text-navy-900/75" data-reveal>
+          {guide.intro.map((p) => <p>{p}</p>)}
+        </div>
+
+        {
+          guide.sections.map((section, i) => (
+            <div class="mt-14" data-reveal style={`--reveal-delay:${(i % 3) * 90}ms`}>
+              <h2 class="flex items-center gap-3 font-display text-xl leading-snug text-navy-900">
+                <span class="h-px w-8 shrink-0 bg-orange-500" aria-hidden="true" />
+                {section.title}
+              </h2>
+
+              <div class="mt-5 space-y-4 text-[0.9375rem] leading-relaxed text-navy-900/70">
+                {section.body.map((p) => (
+                  <p>{p}</p>
+                ))}
+              </div>
+
+              {section.list && (
+                <ul class="mt-5 grid gap-3 sm:grid-cols-2">
+                  {section.list.map((item) => (
+                    <li class="flex items-start gap-2.5 text-[0.9375rem] leading-relaxed text-navy-900/70">
+                      <Icon name="check" class="mt-1 h-4 w-4 shrink-0 text-orange-500" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))
+        }
+
+        {
+          guide.faq.length > 0 && (
+            <div class="mt-16" data-reveal>
+              <h2 class="font-display text-2xl text-navy-900">Perguntas frequentes</h2>
+              <div class="mt-6 divide-y divide-navy-900/10 border-y border-navy-900/10">
+                {guide.faq.map((f) => (
+                  <details class="group py-5">
+                    <summary class="flex cursor-pointer list-none items-start justify-between gap-4 text-base font-bold text-navy-900 transition-colors hover:text-orange-600">
+                      {f.q}
+                      <Icon
+                        name="chevron-down"
+                        class="mt-1 h-4 w-4 shrink-0 text-orange-500 transition-transform duration-300 group-open:rotate-180"
+                      />
+                    </summary>
+                    <p class="mt-3 text-[0.9375rem] leading-relaxed text-navy-900/65">{f.a}</p>
+                  </details>
+                ))}
+              </div>
+            </div>
+          )
+        }
+      </article>
+
+      <aside class="lg:sticky lg:top-28 lg:self-start">
+        {
+          related.length > 0 && (
+            <div class="rounded-2xl bg-offwhite p-7" data-reveal>
+              <h2 class="font-display text-sm font-bold uppercase tracking-[0.14em] text-navy-900">
+                Como a MDK resolve
+              </h2>
+              <ul class="mt-5 space-y-4">
+                {related.map((s) => (
+                  <li>
+                    <a
+                      href={`/servicos/${s.id}`}
+                      class="group flex cursor-pointer items-start gap-3 transition-colors"
+                    >
+                      <span class="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-navy-800/5 text-navy-800 transition-colors group-hover:bg-orange-500 group-hover:text-white">
+                        <Icon name={s.icon} class="h-4 w-4" />
+                      </span>
+                      <span>
+                        <span class="block text-sm font-bold text-navy-900 transition-colors group-hover:text-orange-600">
+                          {s.title}
+                        </span>
+                        <span class="mt-1 block text-xs leading-relaxed text-navy-900/55">
+                          {s.summary}
+                        </span>
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+
+        <div class="mt-6 rounded-2xl bg-navy-800 p-7 text-white" data-reveal style="--reveal-delay:120ms">
+          <h2 class="font-display text-lg leading-snug">Tem um caso concreto?</h2>
+          <p class="mt-2.5 text-sm leading-relaxed text-white/65">
+            Conte a situação do seu imóvel e receba um diagnóstico com a rota e o escopo
+            definidos.
+          </p>
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-5 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-orange-500 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-orange-400"
+          >
+            <Icon name="whatsapp" class="h-4 w-4" />
+            Falar no WhatsApp
+          </a>
+          <p class="mt-4 text-center text-xs text-white/45">{site.contact.phoneDisplay}</p>
+        </div>
+      </aside>
+    </div>
+  </Section>
+
+  {
+    otherGuides.length > 0 && (
+      <Section tone="offwhite" space="md" width="wide">
+        <h2 class="font-display text-2xl text-navy-900" data-reveal>
+          Outros guias
+        </h2>
+        <ul class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {otherGuides.map((g, i) => (
+            <li data-reveal style={`--reveal-delay:${i * 90}ms`}>
+              <a
+                href={`/guias/${g.slug}`}
+                class="group flex h-full cursor-pointer flex-col rounded-2xl border border-navy-900/10 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:border-orange-500/40 hover:shadow-card"
+              >
+                <h3 class="text-base leading-snug text-navy-900">{g.name}</h3>
+                <p class="mt-2 flex-1 text-sm leading-relaxed text-navy-900/60">{g.summary}</p>
+                <span class="mt-4 inline-flex items-center gap-2 text-sm font-bold text-navy-800 transition-colors group-hover:text-orange-600">
+                  Ler o guia
+                  <Icon
+                    name="arrow-right"
+                    class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                  />
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <div class="mt-10" data-reveal>
+          <Button href="/guias" variant="ghost" size="md">
+            Ver todos os guias
+            <Icon name="arrow-right" class="h-4 w-4" />
+          </Button>
+        </div>
+      </Section>
+    )
+  }
+
+  <FinalCta />
+</BaseLayout>
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify(articleLd)} />
+{faqLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(faqLd)} />}

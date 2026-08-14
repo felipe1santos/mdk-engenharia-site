@@ -37,6 +37,7 @@ import SectionTitle from '../components/ui/SectionTitle.astro';
 import Icon from '../components/ui/Icon.astro';
 import Button from '../components/ui/Button.astro';
 import { cities } from '../data/cities';
+import { districts, headquartersDistrict } from '../data/districts';
 import { primaryServices, segments, getService } from '../data/services';
 import { site } from '../data/site';
 
@@ -236,6 +237,61 @@ const groups = [
     title="Processos em <span class='text-orange-600'>três órgãos</span>"
     subtitle="Aprovação e regularização não param no projeto: cada obra ainda passa por balcões diferentes. Atendemos os três, do protocolo à emissão do documento."
   />
+
+  {/*
+    Recortes locais da Zona Norte.
+    Entram aqui, e nao numa pagina propria, porque esta e a pagina que ja
+    responde "onde voces atendem" — e porque o link interno a partir dela e o
+    que da hierarquia as paginas de regiao aos olhos do buscador. Ver o criterio
+    do recorte em src/data/districts.ts.
+  */}
+  <Section id="zona-norte" tone="offwhite" width="wide">
+    <SectionTitle
+      eyebrow="Perto da sede"
+      title="Zona Norte de <span class='text-orange-600'>São Paulo</span>"
+      subtitle={`A sede fica no ${headquartersDistrict.name}. Na Zona Norte o atendimento é presencial e no mesmo dia — e as páginas abaixo trazem o que muda em cada região, do perfil construtivo à subprefeitura onde o processo é analisado.`}
+    />
+
+    <ul class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        districts.map((d, i) => (
+          <li data-reveal style={`--reveal-delay:${(i % 3) * 90}ms`}>
+            <a
+              href={`/areas-de-atuacao/${d.slug}`}
+              class:list={[
+                'group flex h-full cursor-pointer flex-col rounded-2xl border p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-card',
+                d.kind === 'Sede'
+                  ? 'border-orange-500/40 bg-orange-500/[0.06] hover:border-orange-500'
+                  : 'border-navy-900/10 bg-white hover:border-orange-500/40',
+              ]}
+            >
+              <p class="text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-navy-900/45">
+                {d.kind}
+              </p>
+              <h3 class="mt-2 text-base leading-snug text-navy-900">{d.name}</h3>
+              <p class="mt-2 flex-1 text-sm leading-relaxed text-navy-900/60">
+                {d.districts.join(' · ')}
+              </p>
+              <span class="mt-4 inline-flex items-center gap-2 text-sm font-bold text-navy-800 transition-colors group-hover:text-orange-600">
+                Ver a região
+                <Icon
+                  name="arrow-right"
+                  class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                />
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="mt-12 text-center" data-reveal>
+      <Button href="/areas-de-atuacao/zona-norte-sp" variant="ghost" size="md">
+        Ver a página da Zona Norte
+        <Icon name="arrow-right" class="h-4 w-4" />
+      </Button>
+    </div>
+  </Section>
 
   <ServiceAreas />
   <MapSection />

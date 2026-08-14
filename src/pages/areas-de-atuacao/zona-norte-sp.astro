@@ -1,0 +1,216 @@
+---
+/**
+ * Hub da Zona Norte.
+ *
+ * E a pagina-mae dos recortes locais: /areas-de-atuacao/[slug] aponta para ca na
+ * trilha, e daqui saem os links para cada subprefeitura. Sem esse no, as paginas
+ * de regiao ficariam soltas — alcancaveis pelo sitemap, mas sem nenhum caminho
+ * interno, que e o que o buscador usa para entender hierarquia.
+ *
+ * A pagina existe como arquivo estatico, e nao como mais uma entrada de
+ * districts.ts, porque o conteudo dela e de outra natureza: agrega e explica o
+ * criterio, em vez de descrever um recorte. Forcar os dois formatos no mesmo
+ * template deixaria os dois piores.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/layout/PageHero.astro';
+import FinalCta from '../../components/home/FinalCta.astro';
+import MapSection from '../../components/home/MapSection.astro';
+import Section from '../../components/ui/Section.astro';
+import SectionTitle from '../../components/ui/SectionTitle.astro';
+import Button from '../../components/ui/Button.astro';
+import Icon from '../../components/ui/Icon.astro';
+import { districts, headquartersDistrict, subprefectureDistricts } from '../../data/districts';
+import { primaryServices } from '../../data/services';
+import { site, fullAddress, whatsappUrl } from '../../data/site';
+
+const totalNeighborhoods = new Set(districts.flatMap((d) => d.neighborhoods)).size;
+
+const listLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Regiões atendidas na Zona Norte de São Paulo',
+  itemListElement: districts.map((d, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: d.name,
+    url: new URL(`/areas-de-atuacao/${d.slug}`, Astro.site).href,
+  })),
+};
+---
+
+<BaseLayout
+  title={`Engenharia e Projetos na Zona Norte de São Paulo | ${site.name}`}
+  description="Escritório de engenharia com sede no Jardim Peri. Projeto elétrico, hidráulico, estrutural, SPCI, regularização de imóvel e aprovação na Prefeitura em toda a Zona Norte de São Paulo."
+  keywords={[
+    'engenharia Zona Norte São Paulo',
+    'engenheiro civil Zona Norte SP',
+    'projeto elétrico Zona Norte',
+    'projeto hidráulico Zona Norte São Paulo',
+    'regularização de imóvel Zona Norte',
+    'aprovação de projeto prefeitura Zona Norte',
+    'escritório de engenharia Jardim Peri',
+  ]}
+>
+  <PageHero
+    eyebrow="Atuação local"
+    title="Engenharia na <span class='text-orange-500'>Zona Norte</span> de São Paulo"
+    subtitle={`Sede no Jardim Peri, atendimento presencial em ${totalNeighborhoods} bairros. Projeto, obra e documentação com o responsável técnico a poucos minutos do canteiro.`}
+    crumbs={[
+      { label: 'Áreas de Atuação', href: '/areas-de-atuacao' },
+      { label: 'Zona Norte de São Paulo' },
+    ]}
+    image="banner-areas"
+  >
+    <div class="mt-10 flex flex-col gap-4 sm:flex-row" data-reveal style="--reveal-delay:280ms">
+      <Button href={whatsappUrl} variant="primary" size="lg" external>
+        <Icon name="whatsapp" class="h-5 w-5" />
+        Agendar visita técnica
+      </Button>
+      <Button href={`/areas-de-atuacao/${headquartersDistrict.slug}`} variant="outline" size="lg">
+        Conhecer a sede
+      </Button>
+    </div>
+  </PageHero>
+
+  <Section tone="white" width="wide">
+    <div class="grid gap-12 lg:grid-cols-[1.5fr_1fr] lg:gap-20">
+      <div class="space-y-5 text-lg leading-relaxed text-navy-900/75" data-reveal>
+        <p>
+          A MDK fica na Rua Carlos Duarte Ferreira, 83, no Jardim Peri — distrito de Vila Nova
+          Cachoeirinha, dentro da Subprefeitura Casa Verde/Cachoeirinha/Limão. É de lá que saem as
+          visitas técnicas e onde os projetos são desenhados.
+        </p>
+        <p>
+          Estar na região muda o que dá para prometer. Conferir uma execução, responder a uma
+          exigência de órgão ou acompanhar uma concretagem são coisas que pedem alguém no local no
+          mesmo dia — e não na próxima semana, quando a agenda permitir atravessar a cidade.
+        </p>
+        <p>
+          Organizamos as páginas de região por subprefeitura, e não por bairro, porque é assim que
+          o processo funciona: aprovação e regularização de edificação são analisadas no recorte
+          administrativo, e o perfil construtivo muda de verdade entre eles — verticalização antiga
+          em Santana, terreno em declive na Freguesia do Ó, galpão na Vila Maria.
+        </p>
+      </div>
+
+      <aside class="rounded-2xl bg-offwhite p-8" data-reveal style="--reveal-delay:120ms">
+        <h2 class="font-display text-sm font-bold uppercase tracking-[0.14em] text-navy-900">
+          Sede
+        </h2>
+        <p class="mt-4 text-sm leading-relaxed text-navy-900/70">{fullAddress}</p>
+        <dl class="mt-6 space-y-3 text-sm">
+          <div class="flex items-start gap-3">
+            <Icon name="phone" class="mt-0.5 h-4 w-4 shrink-0 text-orange-500" />
+            <div>
+              <dt class="sr-only">Telefone</dt>
+              <dd class="text-navy-900/70">{site.contact.phoneDisplay}</dd>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <Icon name="clock" class="mt-0.5 h-4 w-4 shrink-0 text-orange-500" />
+            <div>
+              <dt class="sr-only">Atendimento</dt>
+              <dd class="text-navy-900/70">{site.contact.hours}</dd>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <Icon name="pin" class="mt-0.5 h-4 w-4 shrink-0 text-orange-500" />
+            <div>
+              <dt class="sr-only">Distrito</dt>
+              <dd class="text-navy-900/70">
+                Vila Nova Cachoeirinha — Subprefeitura Casa Verde/Cachoeirinha/Limão
+              </dd>
+            </div>
+          </div>
+        </dl>
+      </aside>
+    </div>
+  </Section>
+
+  <Section tone="offwhite" width="wide">
+    <SectionTitle
+      eyebrow="Regiões"
+      title="Onde atendemos na <span class='text-orange-600'>Zona Norte</span>"
+      subtitle="Cada página traz o que a região demanda na prática, os bairros cobertos e os serviços mais pedidos ali."
+    />
+
+    <ul class="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {
+        [headquartersDistrict, ...subprefectureDistricts].map((d, i) => (
+          <li data-reveal style={`--reveal-delay:${(i % 3) * 100}ms`}>
+            <a
+              href={`/areas-de-atuacao/${d.slug}`}
+              class:list={[
+                'group flex h-full cursor-pointer flex-col rounded-2xl border p-7 transition-all duration-300 hover:-translate-y-1 hover:shadow-card',
+                d.kind === 'Sede'
+                  ? 'border-orange-500/40 bg-orange-500/[0.06] hover:border-orange-500'
+                  : 'border-navy-900/10 bg-white hover:border-orange-500/40',
+              ]}
+            >
+              <p class="text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-navy-900/45">
+                {d.kind}
+              </p>
+              <h3 class="mt-2 font-display text-xl leading-snug text-navy-900 transition-colors group-hover:text-orange-600">
+                {d.name}
+              </h3>
+              <p class="mt-3 text-sm leading-relaxed text-navy-900/60">
+                {d.districts.join(' · ')}
+              </p>
+              <p class="mt-4 flex-1 text-sm leading-relaxed text-navy-900/65">
+                {d.demands[0].title} · {d.demands[1].title}
+              </p>
+              <span class="mt-5 inline-flex items-center gap-2 text-sm font-bold text-navy-800 transition-colors group-hover:text-orange-600">
+                Ver a região
+                <Icon
+                  name="arrow-right"
+                  class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                />
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  <Section tone="white" width="wide">
+    <SectionTitle
+      eyebrow="Disciplinas"
+      title="O que projetamos <span class='text-orange-600'>na região</span>"
+      subtitle="As mesmas disciplinas atendidas em toda a Grande São Paulo, com a diferença de que aqui a visita é no mesmo dia."
+    />
+
+    <ul class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        primaryServices.map((s, i) => (
+          <li data-reveal style={`--reveal-delay:${(i % 3) * 80}ms`}>
+            <a
+              href={`/servicos/${s.id}`}
+              class="group flex h-full cursor-pointer items-start gap-3 rounded-xl border border-navy-900/10 bg-white p-5 transition-all duration-300 hover:border-orange-500/40 hover:shadow-card"
+            >
+              <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-navy-800/5 text-navy-800 transition-colors group-hover:bg-orange-500 group-hover:text-white">
+                <Icon name={s.icon} class="h-4 w-4" />
+              </span>
+              <span class="text-sm font-bold leading-snug text-navy-900 transition-colors group-hover:text-orange-600">
+                {s.title}
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="mt-12 text-center" data-reveal>
+      <Button href="/servicos" variant="ghost" size="md">
+        Ver todos os serviços
+        <Icon name="arrow-right" class="h-4 w-4" />
+      </Button>
+    </div>
+  </Section>
+
+  <MapSection />
+  <FinalCta />
+</BaseLayout>
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify(listLd)} />

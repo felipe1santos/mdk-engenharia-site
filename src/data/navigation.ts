@@ -65,7 +65,16 @@ export const mainNav: NavItem[] = [
     ],
   },
   { label: 'Depoimentos', href: '/#depoimentos', pending: true },
-  { label: 'Áreas de Atuação', href: '/areas-de-atuacao' },
+  {
+    label: 'Áreas de Atuação',
+    href: '/areas-de-atuacao',
+    children: [
+      { label: 'Zona Norte de São Paulo', href: '/areas-de-atuacao/zona-norte-sp' },
+      { label: 'Jardim Peri (sede)', href: '/areas-de-atuacao/jardim-peri' },
+      { label: 'Cidades atendidas', href: '/areas-de-atuacao#areas-de-atuacao' },
+    ],
+  },
+  { label: 'Guias', href: '/guias' },
   { label: 'Contato', href: '/contato' },
 ];
 
@@ -86,5 +95,29 @@ export const footerNav = {
     { label: 'Obras realizadas', href: '/projetos' },
     { label: 'Áreas de atuação', href: '/areas-de-atuacao' },
     { label: 'Contato', href: '/contato' },
+  ],
+
+  /**
+   * SEO local e conteudo. Ficam no rodape, e nao no menu principal, porque sao
+   * paginas de captura: quem chega nelas vem da busca, nao da navegacao interna.
+   * O que o rodape resolve e o outro lado — dar a elas um link em todas as
+   * paginas, que e o que impede que nascam orfas.
+   */
+  regioes: [
+    { label: 'Zona Norte de São Paulo', href: '/areas-de-atuacao/zona-norte-sp' },
+    { label: 'Jardim Peri (sede)', href: '/areas-de-atuacao/jardim-peri' },
+    { label: 'Casa Verde, Cachoeirinha e Limão', href: '/areas-de-atuacao/casa-verde-cachoeirinha-limao' },
+    { label: 'Santana e Tucuruvi', href: '/areas-de-atuacao/santana-tucuruvi' },
+    { label: 'Freguesia do Ó e Brasilândia', href: '/areas-de-atuacao/freguesia-do-o-brasilandia' },
+    { label: 'Vila Maria e Vila Guilherme', href: '/areas-de-atuacao/vila-maria-vila-guilherme' },
+    { label: 'Pirituba, Jaraguá e Perus', href: '/areas-de-atuacao/pirituba-jaragua-perus' },
+  ],
+
+  guias: [
+    { label: 'Habite-se: o que é e como conseguir', href: '/guias/habite-se' },
+    { label: 'Como regularizar um imóvel', href: '/guias/regularizacao-de-imovel' },
+    { label: 'Projeto elétrico residencial', href: '/guias/projeto-eletrico-residencial' },
+    { label: 'Aprovação de projeto na Prefeitura', href: '/guias/aprovacao-de-projeto-na-prefeitura' },
+    { label: 'Todos os guias', href: '/guias' },
   ],
 };

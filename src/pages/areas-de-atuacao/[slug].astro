@@ -1,0 +1,270 @@
+---
+/**
+ * Pagina de recorte local — bairro-sede e subprefeituras da Zona Norte.
+ *
+ * Gerada a partir de src/data/districts.ts, que documenta por que o recorte e
+ * por subprefeitura e nao por bairro (resumo: busca hiperlocal nao tem volume, e
+ * combinacao exaustiva servico x bairro configura doorway content).
+ *
+ * O dado estruturado sai como `Service` com `areaServed` explicito — e o que
+ * conecta a pagina a regiao sem fingir que a MDK tem um endereco em cada bairro.
+ * NAO emitir `LocalBusiness` por pagina: multiplicar o negocio em varios
+ * enderecos e o erro classico de SEO local, quebra a consistencia do NAP e
+ * derruba justamente o sinal que a pagina existe para reforcar.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/layout/PageHero.astro';
+import FinalCta from '../../components/home/FinalCta.astro';
+import MapSection from '../../components/home/MapSection.astro';
+import Section from '../../components/ui/Section.astro';
+import SectionTitle from '../../components/ui/SectionTitle.astro';
+import Button from '../../components/ui/Button.astro';
+import Icon from '../../components/ui/Icon.astro';
+import { districts } from '../../data/districts';
+import { getService } from '../../data/services';
+import { site, fullAddress, whatsappUrl } from '../../data/site';
+
+export function getStaticPaths() {
+  return districts.map((district) => ({
+    params: { slug: district.slug },
+    props: { district },
+  }));
+}
+
+const { district } = Astro.props;
+
+const services = district.services.map((id) => getService(id)).filter((s) => s !== undefined);
+
+const others = districts.filter((d) => d.slug !== district.slug);
+
+const isHeadquarters = district.kind === 'Sede';
+
+const serviceLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: `Projetos de engenharia e regularização — ${district.name}`,
+  description: district.seo.description,
+  provider: { '@id': `${Astro.site}#organization` },
+  areaServed: district.neighborhoods.map((n) => ({
+    '@type': 'Place',
+    name: `${n}, São Paulo - SP`,
+  })),
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: `Serviços atendidos em ${district.name}`,
+    itemListElement: services.map((s) => ({
+      '@type': 'Offer',
+      itemOffered: { '@type': 'Service', name: s.title, url: new URL(`/servicos/${s.id}`, Astro.site).href },
+    })),
+  },
+  url: new URL(Astro.url.pathname, Astro.site).href,
+};
+
+const faqLd = district.faq.length
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: district.faq.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    }
+  : null;
+---
+
+<BaseLayout
+  title={district.seo.title}
+  description={district.seo.description}
+  keywords={district.seo.keywords}
+>
+  <PageHero
+    eyebrow={isHeadquarters ? 'Onde ficamos' : `Subprefeitura · ${district.districts.join(' · ')}`}
+    title={district.heading}
+    subtitle={district.intro[0]}
+    crumbs={[
+      { label: 'Áreas de Atuação', href: '/areas-de-atuacao' },
+      { label: 'Zona Norte de São Paulo', href: '/areas-de-atuacao/zona-norte-sp' },
+      { label: district.name },
+    ]}
+    image="banner-areas"
+  >
+    <div class="mt-10 flex flex-col gap-4 sm:flex-row" data-reveal style="--reveal-delay:280ms">
+      <Button href={whatsappUrl} variant="primary" size="lg" external>
+        <Icon name="whatsapp" class="h-5 w-5" />
+        Falar com a engenharia
+      </Button>
+      <Button href="/servicos" variant="outline" size="lg">Ver todos os serviços</Button>
+    </div>
+  </PageHero>
+
+  <Section tone="white" width="wide">
+    <div class="grid gap-14 lg:grid-cols-[1.55fr_1fr] lg:gap-20">
+      <div>
+        <div class="space-y-5 text-lg leading-relaxed text-navy-900/75" data-reveal>
+          {district.intro.slice(1).map((p) => <p>{p}</p>)}
+        </div>
+
+        <div class="mt-12" data-reveal>
+          <h2 class="flex items-center gap-3 font-display text-sm font-bold uppercase tracking-[0.14em] text-navy-900">
+            <span class="h-px w-8 bg-orange-500" aria-hidden="true" />
+            O que a região mais demanda
+          </h2>
+
+          <div class="mt-6 grid gap-5 sm:grid-cols-2">
+            {
+              district.demands.map((d, i) => (
+                <article
+                  class="rounded-2xl border border-navy-900/10 bg-offwhite p-6"
+                  data-reveal
+                  style={`--reveal-delay:${(i % 2) * 90}ms`}
+                >
+                  <h3 class="text-base leading-snug text-navy-900">{d.title}</h3>
+                  <p class="mt-2.5 text-sm leading-relaxed text-navy-900/65">{d.text}</p>
+                </article>
+              ))
+            }
+          </div>
+        </div>
+
+        {
+          district.faq.length > 0 && (
+            <div class="mt-16" data-reveal>
+              <h2 class="font-display text-2xl text-navy-900">Perguntas frequentes</h2>
+              <div class="mt-6 divide-y divide-navy-900/10 border-y border-navy-900/10">
+                {district.faq.map((f) => (
+                  <details class="group py-5">
+                    <summary class="flex cursor-pointer list-none items-start justify-between gap-4 text-base font-bold text-navy-900 transition-colors hover:text-orange-600">
+                      {f.q}
+                      <Icon
+                        name="chevron-down"
+                        class="mt-1 h-4 w-4 shrink-0 text-orange-500 transition-transform duration-300 group-open:rotate-180"
+                      />
+                    </summary>
+                    <p class="mt-3 text-[0.9375rem] leading-relaxed text-navy-900/65">{f.a}</p>
+                  </details>
+                ))}
+              </div>
+            </div>
+          )
+        }
+      </div>
+
+      <aside class="lg:sticky lg:top-28 lg:self-start">
+        <div class="rounded-2xl bg-offwhite p-7" data-reveal>
+          <h2 class="font-display text-sm font-bold uppercase tracking-[0.14em] text-navy-900">
+            Bairros atendidos
+          </h2>
+          <ul class="mt-5 flex flex-wrap gap-2">
+            {
+              district.neighborhoods.map((n) => (
+                <li class="rounded-full border border-navy-900/10 bg-white px-3 py-1.5 text-xs text-navy-900/70">
+                  {n}
+                </li>
+              ))
+            }
+          </ul>
+          <p class="mt-5 text-xs leading-relaxed text-navy-900/50">
+            A lista é dos bairros mais atendidos, não um limite. Fora dela, é só perguntar.
+          </p>
+        </div>
+
+        {
+          services.length > 0 && (
+            <div class="mt-6 rounded-2xl border border-navy-900/10 p-7" data-reveal style="--reveal-delay:80ms">
+              <h2 class="font-display text-sm font-bold uppercase tracking-[0.14em] text-navy-900">
+                Serviços em destaque
+              </h2>
+              <ul class="mt-5 space-y-4">
+                {services.map((s) => (
+                  <li>
+                    <a
+                      href={`/servicos/${s.id}`}
+                      class="group flex cursor-pointer items-start gap-3"
+                    >
+                      <span class="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-navy-800/5 text-navy-800 transition-colors group-hover:bg-orange-500 group-hover:text-white">
+                        <Icon name={s.icon} class="h-4 w-4" />
+                      </span>
+                      <span>
+                        <span class="block text-sm font-bold text-navy-900 transition-colors group-hover:text-orange-600">
+                          {s.title}
+                        </span>
+                        <span class="mt-1 block text-xs leading-relaxed text-navy-900/55">
+                          {s.summary}
+                        </span>
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+
+        <div
+          class="mt-6 rounded-2xl bg-navy-800 p-7 text-white"
+          data-reveal
+          style="--reveal-delay:160ms"
+        >
+          <h2 class="font-display text-lg leading-snug">
+            {isHeadquarters ? 'Nosso endereço' : 'Escritório mais próximo'}
+          </h2>
+          <p class="mt-2.5 text-sm leading-relaxed text-white/65">{fullAddress}</p>
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-5 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-orange-500 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-orange-400"
+          >
+            <Icon name="whatsapp" class="h-4 w-4" />
+            Agendar visita técnica
+          </a>
+          <p class="mt-4 text-center text-xs text-white/45">{site.contact.phoneDisplay}</p>
+        </div>
+      </aside>
+    </div>
+  </Section>
+
+  <Section tone="offwhite" space="md" width="wide">
+    <SectionTitle
+      align="left"
+      eyebrow="Zona Norte"
+      title="Outras <span class='text-orange-600'>regiões atendidas</span>"
+      subtitle="O recorte segue a subprefeitura, que é onde o processo é analisado — e não uma divisão de marketing."
+    />
+
+    <ul class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        others.map((d, i) => (
+          <li data-reveal style={`--reveal-delay:${(i % 3) * 90}ms`}>
+            <a
+              href={`/areas-de-atuacao/${d.slug}`}
+              class="group flex h-full cursor-pointer flex-col rounded-2xl border border-navy-900/10 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:border-orange-500/40 hover:shadow-card"
+            >
+              <p class="text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-navy-900/45">
+                {d.kind}
+              </p>
+              <h3 class="mt-2 text-base leading-snug text-navy-900">{d.name}</h3>
+              <p class="mt-2 flex-1 text-sm leading-relaxed text-navy-900/60">
+                {d.districts.join(', ')}
+              </p>
+              <span class="mt-4 inline-flex items-center gap-2 text-sm font-bold text-navy-800 transition-colors group-hover:text-orange-600">
+                Ver a região
+                <Icon
+                  name="arrow-right"
+                  class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                />
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  <MapSection />
+  <FinalCta />
+</BaseLayout>
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify(serviceLd)} />
+{faqLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(faqLd)} />}

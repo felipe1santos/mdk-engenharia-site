@@ -106,11 +106,34 @@ export const site = {
     linkedin: 'https://www.linkedin.com/',
   },
 
+  /**
+   * A lista de `keywords` alimenta duas coisas: a meta homonima (que o Google
+   * ignora desde 2009, mas outros buscadores e agregadores ainda leem) e o
+   * `knowsAbout` do JSON-LD da organizacao — este sim usado para entender sobre
+   * o que a empresa e autoridade.
+   *
+   * A ordem nao e aleatoria. Os primeiros termos sao os de maior volume medido
+   * no Planejador de Palavras-chave do Google em 14/08/2026 (mercado Brasil,
+   * janela ago/2025 a jul/2026, faixas porque a conta esta pausada):
+   * "habite-se" 10 mil-100 mil/mes, "regularizacao de imovel" e "projeto
+   * eletrico" 1 mil-10 mil/mes cada. Depois vem o bloco local da Zona Norte,
+   * que e onde fica a sede, e so entao as disciplinas de nicho.
+   *
+   * NAO INCHAR ESTA LISTA. Ela existe para declarar sobre o que o site e, nao
+   * para acumular termo — e cada item aqui deveria ter uma pagina propria que o
+   * defenda. Termo sem pagina correspondente e ruido.
+   */
   seo: {
     title: 'MDK Engenharia | Projetos, Execução e Regularização de Obras em São Paulo',
     description:
       'MDK Engenharia e Arquitetura: projetos de arquitetura, estrutura, instalações, SPCI, gases medicinais e drenagem, além de execução, consultoria e regularização de obras em São Paulo e Grande SP.',
     keywords: [
+      // Maior volume medido — cada um com guia proprio em /guias.
+      'habite-se',
+      'regularização de imóvel',
+      'projeto elétrico residencial',
+      'aprovação de projeto na prefeitura',
+      // Disciplinas de projeto.
       'projeto arquitetônico São Paulo',
       'projeto estrutural São Paulo',
       'projeto hidráulico São Paulo',
@@ -119,10 +142,17 @@ export const site = {
       'projeto de gases medicinais',
       'projeto de drenagem',
       'projeto industrial',
+      // Documentacao e orgaos.
       'regularização de obras',
-      'aprovação de projeto prefeitura',
+      'auto de regularização',
+      'certificado de conclusão São Paulo',
       'AVCB Corpo de Bombeiros',
       'licenciamento CETESB',
+      // SEO local — a sede fica no Jardim Peri, Zona Norte.
+      'engenharia Zona Norte São Paulo',
+      'engenheiro civil Jardim Peri',
+      'escritório de engenharia Zona Norte SP',
+      // Guarda-chuva.
       'engenharia civil São Paulo',
       'construção civil São Paulo',
     ],

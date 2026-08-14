@@ -174,6 +174,58 @@ const socials = [
         </ul>
       </div>
     </div>
+
+    {/*
+      Segunda faixa: SEO local e guias.
+      Fora das quatro colunas de proposito — sao links de captura, nao de
+      navegacao institucional, e diluir os dois no mesmo bloco tiraria o peso do
+      que o visitante realmente procura no rodape (contato e servicos). O que
+      importa aqui e o link existir em todas as paginas, para que nenhuma dessas
+      rotas nasca orfa.
+    */}
+    <div class="mt-14 grid gap-10 border-t border-white/10 pt-10 md:grid-cols-2">
+      <nav aria-labelledby="footer-regioes" data-reveal>
+        <h2 id="footer-regioes" class="text-sm font-bold uppercase tracking-[0.16em] text-white">
+          Atendimento por região
+        </h2>
+        <span class="mt-3 block h-0.5 w-9 bg-orange-500" aria-hidden="true"></span>
+        <ul class="mt-5 flex flex-wrap gap-x-5 gap-y-2.5">
+          {
+            footerNav.regioes.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  class="cursor-pointer text-sm text-white/55 transition-colors hover:text-orange-400"
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <nav aria-labelledby="footer-guias" data-reveal style="--reveal-delay:80ms">
+        <h2 id="footer-guias" class="text-sm font-bold uppercase tracking-[0.16em] text-white">
+          Guias técnicos
+        </h2>
+        <span class="mt-3 block h-0.5 w-9 bg-orange-500" aria-hidden="true"></span>
+        <ul class="mt-5 flex flex-wrap gap-x-5 gap-y-2.5">
+          {
+            footerNav.guias.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  class="cursor-pointer text-sm text-white/55 transition-colors hover:text-orange-400"
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </div>
   </div>
 
   <div class="border-t border-white/10">
