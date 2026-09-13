@@ -32,3 +32,10 @@ Thumbs.db
 # e publico e isto e material de trabalho, nao do site. As versoes tratadas que o
 # site usa estao versionadas em src/assets/images/ (equipe-*.jpg).
 equipe/
+
+# Segunda remessa do mesmo material, com o nome que o cliente usou na pasta:
+# retratos da equipe, panfletos fotografados e "Edicoes do Site.docx". Vale a
+# regra de cima — os retratos sao imagem de pessoa identificavel e o .docx traz
+# anotacao interna, nenhum dos dois pertence a um repositorio publico. As fotos
+# tratadas que o site exibe estao em src/assets/images/equipe-*.jpg.
+DADOS DA EMPRESA - EQUIPE/
