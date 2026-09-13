@@ -1,0 +1,1710 @@
+---
+/**
+ * /servicos/regularizacao/bombeiros — PAGINA DE VENDAS DE COMBATE A INCENDIO.
+ *
+ * Nasceu como uma das tres paginas de orgao geradas por
+ * `regularizacao/[slug].astro` a partir de `agencies.ts`. Deixou de ser: o
+ * cliente vai apontar o trafego pago de "combate a incendio" para ca, e o
+ * template de orgao nao da conta disso. Ele explica um balcao; uma pagina de
+ * campanha precisa fechar contato sozinha, sem o visitante navegar para
+ * /contato.
+ *
+ * Rota estatica ganha da dinamica no Astro, mas isso emitiria duas paginas para
+ * a mesma URL no build — entao `bombeiros` foi retirado do `getStaticPaths` do
+ * template. O filtro esta la, comentado, e aponta para este arquivo. As demais
+ * paginas de orgao continuam vindo do template.
+ *
+ * ESCOPO AMPLIADO E DELIBERADO. O template cobria projeto de SPCI, AVCB, CLCB e
+ * F.A.T. Aqui entram tambem SPDA, manutencao de tubulacao e de sistemas,
+ * instalacao e contrato de manutencao preventiva — frentes que o cliente
+ * confirmou em 03/09/2026 serem executadas com equipe propria, e nao apenas
+ * projetadas. O texto afirma execucao porque essa confirmacao existe; a
+ * ressalva geral de `services.ts` sobre nao prometer responsabilidade tecnica
+ * por disciplina sem confirmacao continua valendo para as outras paginas.
+ *
+ * O WhatsApp daqui usa mensagem propria ("orcamento de combate a incendio"),
+ * inclusive no botao flutuante. Numa pagina que recebe midia paga, o texto que
+ * chega escrito na conversa e o unico rastro que separa esse lead do organico.
+ *
+ * PERIODICIDADE DA MANUTENCAO: a tabela e apresentada como rotina tipica, com
+ * nota de que o intervalo final sai do plano de manutencao do sistema. Publicar
+ * prazo fechado por equipamento seria afirmar norma que varia por item e por
+ * ocupacao — e a pagina seria cobrada por isso.
+ */
+import { Image } from 'astro:assets';
+/* Lockup branco "MDK ENGENHARIA / Planejamento · Execucao · Compromisso". Entra
+   na capa porque o cliente pediu peca com a marca aplicada, no formato dos
+   criativos de anuncio que ele mandou como referencia. A navbar usa o
+   `mdk-logo-light`, que e a versao curta — aqui cabe a completa. */
+import logoFull from '../../../assets/logo/mdk-logo-full-light.png';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Team from '../../../components/home/Team.astro';
+import FinalCta from '../../../components/home/FinalCta.astro';
+import Section from '../../../components/ui/Section.astro';
+import SectionTitle from '../../../components/ui/SectionTitle.astro';
+import Button from '../../../components/ui/Button.astro';
+import Icon from '../../../components/ui/Icon.astro';
+import { site, whatsappUrlFor, yearsInBusiness } from '../../../data/site';
+import { getImage } from '../../../lib/images';
+
+const wa = whatsappUrlFor(
+  'Vim pelo site e quero um orçamento de combate a incêndio (AVCB, projeto, instalação ou manutenção)',
+);
+
+/*
+ * ACERVO EXCLUSIVO DESTA PAGINA.
+ *
+ * Nenhuma destas imagens aparece na home ou nas paginas de servico. A primeira
+ * versao reaproveitava seis do acervo geral — `orgao-bombeiros` da secao de
+ * orgaos, `service-spci`, `service-industrial`, `banner-servico-interno`,
+ * `service-documentacao`, `apoio-execucao` — e o cliente vetou em 03/09/2026:
+ * pagina de campanha que repete a foto da home nao se distingue da home.
+ *
+ * Todas sao `incendio-*` ou `spda-descarga`, baixadas do Pexels para ca e so
+ * para ca. Ver a nota no bloco correspondente de scripts/fetch-images.mjs, que
+ * tambem registra as buscas que falharam e a que foi vetada por trazer bombeiro
+ * fardado.
+ *
+ * Sao fotografias, nao pranchas — todas entram com `object-cover`.
+ */
+const capaImg = getImage('incendio-rota-fuga');
+/* Casa de bombas de verdade — bomba, motor, barrilete, registros e painel num
+   quadro so. Veio do Wikimedia Commons, nao do Pexels, porque o Pexels nao tem:
+   cinco buscas la devolveram bomba de aquecimento predial. E a foto que o
+   cliente pediu ao mandar o anuncio de "fire pump installation" como referencia
+   — aquele arquivo era peca de marketing de outra empresa, com titulo embutido;
+   este e o mesmo assunto com licenca verificavel. Credito no rodape. */
+const hidraulicosImg = getImage('incendio-casa-bombas');
+const spdaImg = getImage('spda-descarga');
+const manutencaoImg = getImage('incendio-manometros');
+const bandImg = getImage('incendio-galpao');
+/* Fundo da peca de destaque, a 25% de opacidade: sob a cortina a foto vira
+   textura, e o que se le e o vermelho do abrigo e do hidrante. */
+const pecaImg = getImage('incendio-abrigo-mangueiras');
+/* Arte fechada da MDK, a mesma que virou capa do card de bombeiros na home. */
+const cartazImg = getImage('cartaz-incendio-mdk');
+
+const heroBullets = [
+  'Projeto técnico de SPCI, protocolo no Corpo de Bombeiros e acompanhamento da vistoria até o AVCB sair',
+  'Instalação de hidrantes, sprinklers, alarme, iluminação de emergência e SPDA com equipe própria',
+  'Contrato de manutenção preventiva que mantém o sistema operante e o AVCB renovável',
+];
+
+/* Fatos verificaveis, cada um derivado de src/data/ — nenhum numero escrito a
+   mao aqui, entao nenhum envelhece sozinho. */
+const provas = [
+  { valor: `${yearsInBusiness} anos`, rotulo: `No mercado desde ${site.foundedYear}` },
+  { valor: 'Projeto + obra', rotulo: 'Mesma equipe do desenho à vistoria' },
+  { valor: '3 órgãos', rotulo: 'Bombeiros, Prefeitura e CETESB' },
+  { valor: 'CNPJ', rotulo: site.cnpj },
+];
+
+/* Reconhecimento de situacao. O visitante de midia paga chega com um problema
+   concreto, nao procurando "SPCI" — a secao existe para ele se achar em uma
+   linha e clicar sem ler a pagina inteira. */
+const situacoes = [
+  {
+    icon: 'flame' as const,
+    titulo: 'Nunca tirei o AVCB',
+    texto:
+      'Imóvel em uso, atividade rodando e nenhum documento do Corpo de Bombeiros. Começamos pelo levantamento do que existe e pela classificação — é ela que diz se o caso é AVCB ou CLCB.',
+  },
+  {
+    icon: 'clock' as const,
+    titulo: 'Meu AVCB venceu',
+    texto:
+      'Renovação não é só reprotocolar. Exige provar que o sistema continua operante, e é aí que aparece a manutenção que ficou para trás. Fazemos o levantamento, o reparo e a renovação.',
+  },
+  {
+    icon: 'document' as const,
+    titulo: 'O Bombeiro devolveu exigência',
+    texto:
+      'Processo parado em comunicado de exigência é o caso mais comum que recebemos. Assumimos o processo como está, respondemos tecnicamente item a item e levamos até a emissão.',
+  },
+  {
+    icon: 'shield' as const,
+    titulo: 'Fui notificado ou interditado',
+    texto:
+      'Notificação tem prazo, e prazo perdido vira multa e interdição. Atendemos com prioridade: visita técnica, plano de adequação faseado e o que dá para protocolar de imediato.',
+  },
+  {
+    icon: 'clipboard' as const,
+    titulo: 'A seguradora ou o contratante pediu laudo',
+    texto:
+      'Seguro negado em sinistro por falta de AVCB é regra, não exceção. Emitimos laudo técnico, ART e a documentação que o contrato ou a apólice exige.',
+  },
+  {
+    icon: 'blueprint' as const,
+    titulo: 'Obra nova, quero fazer certo desde o projeto',
+    texto:
+      'O caminho mais barato. SPCI resolvido na prancha custa uma fração do que custa abrir parede depois. Projetamos junto com as demais disciplinas, compatibilizado.',
+  },
+];
+
+/* Escopo completo. Cada grupo alimenta tambem o hasOfferCatalog do JSON-LD no
+   fim do arquivo — a lista e uma so, e nao duas para desencontrar. */
+const frentes = [
+  {
+    icon: 'document' as const,
+    titulo: 'Projeto e documentação no Corpo de Bombeiros',
+    texto:
+      'A papelada que transforma o sistema instalado em edificação regular. Conduzimos do enquadramento ao documento na mão.',
+    itens: [
+      'Projeto técnico de SPCI (PSCIP) no padrão do órgão',
+      'Classificação da edificação por ocupação, área e altura',
+      'Memorial descritivo e memorial de cálculo hidráulico',
+      'AVCB — Auto de Vistoria do Corpo de Bombeiros',
+      'CLCB — Certificado de Licença do Corpo de Bombeiros',
+      'Renovação de AVCB e de CLCB',
+      'F.A.T. — Formulário de Atendimento Técnico',
+      'Plano de Emergência contra Incêndio',
+      'Resposta a comunicados de exigência',
+      'Acompanhamento presencial da vistoria',
+      'ART de projeto e de execução',
+    ],
+  },
+  {
+    icon: 'water' as const,
+    titulo: 'Sistemas hidráulicos de combate',
+    texto:
+      'A parte pesada do sistema: o que leva água com pressão até o ponto onde o fogo está. Dimensionamos, instalamos e testamos.',
+    itens: [
+      'Rede de hidrantes e mangotinhos',
+      'Chuveiros automáticos — sprinklers',
+      'Reserva Técnica de Incêndio (RTI) e reservatório',
+      'Casa de bombas, bomba de pressurização e barrilete',
+      'Hidrante de coluna, recalque e registro de passeio',
+      'Tubulação em aço carbono, conexões ranhuradas e soldadas',
+      'Válvulas de governo e alarme (VGA)',
+      'Teste hidrostático e ensaio de vazão e pressão',
+      'Sistemas especiais: espuma, CO₂ e agente limpo',
+    ],
+  },
+  {
+    icon: 'bolt' as const,
+    titulo: 'Detecção, alarme e rotas de fuga',
+    texto:
+      'O que dá às pessoas o tempo de sair — e o que a vistoria confere item por item, porque é o que salva vida antes de a água chegar.',
+    itens: [
+      'Detecção e alarme de incêndio',
+      'Central de alarme, acionadores manuais e sirenes audiovisuais',
+      'Detectores de fumaça, de temperatura e de chama',
+      'Iluminação de emergência com autonomia dimensionada',
+      'Sinalização de abandono e de equipamentos',
+      'Saídas de emergência, escadas, corrimãos e guarda-corpos',
+      'Portas corta-fogo e barras antipânico',
+      'Extintores por classe de risco, com carga e sinalização',
+      'Compartimentação horizontal e vertical',
+      'Selagem corta-fogo de shafts e travessias',
+      'Controle de fumaça e pressurização de escada',
+    ],
+  },
+  {
+    icon: 'shield' as const,
+    titulo: 'SPDA e aterramento',
+    texto:
+      'Proteção contra descarga atmosférica. Anda junto com o combate a incêndio porque a origem de boa parte dos incêndios prediais é elétrica — e porque a vistoria costuma pedir o laudo.',
+    itens: [
+      'Projeto de SPDA conforme NBR 5419',
+      'Sistema de captação: Franklin, gaiola de Faraday ou cabo de cobertura',
+      'Descidas, conexões de medição e equipotencialização',
+      'Malha de aterramento e caixas de inspeção',
+      'Medição de resistência de aterramento com terrômetro',
+      'Laudo de conformidade de SPDA com ART',
+      'DPS — proteção contra surtos nos quadros',
+      'Inspeção e manutenção periódica do sistema',
+    ],
+  },
+  {
+    icon: 'hammer' as const,
+    titulo: 'Manutenção de tubulações e sistemas',
+    texto:
+      'O sistema não é obra entregue e esquecida. Rede de incêndio parada corrói por dentro, e quem descobre isso na vistoria de renovação já perdeu o prazo.',
+    itens: [
+      'Contrato de manutenção preventiva de rede de incêndio',
+      'Teste hidrostático de tubulação, mangueiras e esguichos',
+      'Detecção e reparo de vazamento na rede',
+      'Troca de trechos corroídos e recuperação de roscas e soldas',
+      'Pintura, identificação e código de cores da tubulação',
+      'Manutenção de bombas, painéis, pressostatos e válvulas',
+      'Recarga, teste e substituição de extintores',
+      'Troca de bicos de sprinkler e limpeza de linha',
+      'Manutenção de central de alarme e de iluminação de emergência',
+      'Relatório técnico com ART a cada visita — é o que sustenta a renovação',
+    ],
+  },
+  {
+    icon: 'building' as const,
+    titulo: 'Obra, adequação e serviços correlatos',
+    texto:
+      'Quando o sistema exige mexer na edificação, e quando o incêndio é só uma das frentes do processo. Resolvemos o pacote inteiro.',
+    itens: [
+      'Instalação completa do sistema conforme projeto aprovado',
+      'Adequação de edificação existente, faseada por prioridade',
+      'Compatibilização com elétrica, hidráulica e climatização',
+      'Reforma e ampliação com impacto no SPCI',
+      'Impermeabilização de reservatório de incêndio',
+      'Regularização na Prefeitura: alvará, auto de regularização e Habite-se',
+      'Licenciamento e dispensa de licença na CETESB',
+      'Projeto elétrico de baixa tensão e entrada de energia',
+      'Gases medicinais para clínicas e hospitais',
+    ],
+  },
+];
+
+/* Rotina tipica, nao tabela de prazos legais. Ver a nota no topo do arquivo. */
+const rotina = [
+  {
+    periodo: 'Semanal',
+    itens: 'Inspeção visual de extintores, sinalização e desobstrução de rotas de fuga.',
+  },
+  {
+    periodo: 'Mensal',
+    itens:
+      'Teste de bombas de incêndio, central de alarme, acionadores e iluminação de emergência.',
+  },
+  {
+    periodo: 'Trimestral',
+    itens: 'Hidrantes, mangotinhos, válvulas de governo, sinalizadores e detectores.',
+  },
+  {
+    periodo: 'Anual',
+    itens:
+      'Teste hidrostático de mangueiras, recarga de extintores, medição de aterramento do SPDA e laudo consolidado do sistema.',
+  },
+];
+
+const passos = [
+  {
+    titulo: 'Visita técnica e diagnóstico',
+    texto:
+      'Vamos ao imóvel, levantamos o que existe instalado e o que falta, e conferimos a documentação atual. Sem isso, orçamento é chute.',
+  },
+  {
+    titulo: 'Classificação e escopo',
+    texto:
+      'Enquadramento por ocupação, área e altura. É o que define o pacote de medidas exigido e se o caminho é AVCB ou CLCB — não é escolha, é a norma.',
+  },
+  {
+    titulo: 'Orçamento por escrito',
+    texto:
+      'O que está incluso, o que não está, o prazo e a forma de pagamento. Adequação em fases quando o orçamento pede, com a ordem de prioridade definida.',
+  },
+  {
+    titulo: 'Projeto, protocolo e instalação',
+    texto:
+      'Projeto técnico, abertura do processo no Corpo de Bombeiros e execução dos sistemas conforme o aprovado, com a nossa equipe.',
+  },
+  {
+    titulo: 'Vistoria, AVCB e manutenção',
+    texto:
+      'Acompanhamos a vistoria no local, entregamos o documento e deixamos o plano de manutenção rodando — para a renovação não virar obra outra vez.',
+  },
+];
+
+const comparativo = [
+  {
+    sigla: 'CLCB',
+    nome: 'Certificado de Licença do Corpo de Bombeiros',
+    linhas: [
+      'Via simplificada, para edificações de menor porte e risco',
+      'Dispensa projeto técnico completo',
+      'Processo mais curto e mais barato',
+      'Enquadramento definido por área, altura e ocupação',
+    ],
+  },
+  {
+    sigla: 'AVCB',
+    nome: 'Auto de Vistoria do Corpo de Bombeiros',
+    linhas: [
+      'Exigido quando a classificação pede projeto técnico',
+      'Projeto de SPCI com memorial de cálculo hidráulico',
+      'Vistoria presencial do órgão na edificação',
+      'É o documento que a licença de funcionamento e o seguro pedem',
+    ],
+  },
+];
+
+/*
+ * Conteudo da peca de destaque — a secao que imita o formato de criativo de
+ * anuncio. Ver a nota no proprio bloco, no corpo da pagina.
+ */
+const pecaBeneficios = [
+  {
+    icon: 'shield' as const,
+    titulo: 'Detecção e supressão precoce',
+    texto: 'Alarme que dispara antes de o fogo crescer e rede que já chega com pressão.',
+  },
+  {
+    icon: 'document' as const,
+    titulo: 'AVCB e CLCB emitidos',
+    texto: 'Protocolo, exigências e vistoria conduzidos até o documento sair.',
+  },
+  {
+    icon: 'check' as const,
+    titulo: 'Conforme IT e NBR',
+    texto: 'Instruções Técnicas do Corpo de Bombeiros e as normas de cada equipamento.',
+  },
+  {
+    icon: 'hammer' as const,
+    titulo: 'Instalação e manutenção próprias',
+    texto: 'Mesma equipe do projeto à visita de manutenção, com ART em cada etapa.',
+  },
+];
+
+const pecaSegmentos = [
+  { icon: 'building' as const, rotulo: 'Condomínios' },
+  { icon: 'factory' as const, rotulo: 'Indústrias e galpões' },
+  { icon: 'medical' as const, rotulo: 'Clínicas e hospitais' },
+  { icon: 'ruler' as const, rotulo: 'Comércio e escolas' },
+];
+
+const segmentos = [
+  'Condomínio residencial',
+  'Edifício comercial',
+  'Galpão e centro de distribuição',
+  'Indústria e planta de processo',
+  'Escola, creche e faculdade',
+  'Clínica e hospital',
+  'Restaurante, bar e casa noturna',
+  'Hotel e pousada',
+  'Loja, supermercado e shopping',
+  'Oficina, posto e concessionária',
+  'Igreja e templo',
+  'Depósito e autoarmazenagem',
+];
+
+/*
+ * A galeria era "pecas tecnicas e documentacao" — prancha, pasta de documento,
+ * capacete sobre projeto. Virou galeria de equipamento instalado por dois
+ * motivos: as fotos de documento eram todas reaproveitadas de outras paginas, e
+ * quem chega de anuncio de combate a incendio reconhece hidrante e extintor na
+ * hora, nao reconhece prancha. As entregas em papel continuam listadas na
+ * primeira frente do escopo.
+ */
+const sistemas = [
+  {
+    /* `incendio-hidrante-coluna` fica de reserva no acervo: mostra a mesma
+       frente, mas o recalque com os quatro engates diz mais em um quadro. */
+    key: 'incendio-barrilete',
+    titulo: 'Hidrantes e recalque',
+    texto: 'Coluna, registros, engate rápido e o recalque no alinhamento da calçada.',
+  },
+  {
+    /* Bico de sprinkler de incendio, do Commons em CC0. O `incendio-gongo-alarme`
+       do Pexels mostra o gongo da mesma rede e fica de reserva. */
+    key: 'incendio-sprinkler',
+    titulo: 'Sprinklers e válvula de governo',
+    texto: 'Rede de chuveiros automáticos com VGA e gongo hidráulico de alarme.',
+  },
+  {
+    key: 'incendio-sirene',
+    titulo: 'Detecção e alarme',
+    texto: 'Central, detectores, acionadores manuais e sirene audiovisual por setor.',
+  },
+  {
+    key: 'incendio-extintor',
+    titulo: 'Extintores e sinalização',
+    texto: 'Extintor por classe de risco, com suporte, carga em dia e sinalização.',
+  },
+];
+
+const documentosIniciais = [
+  'Endereço do imóvel',
+  'Planta da edificação, mesmo que antiga',
+  'Área construída e altura da edificação',
+  'Atividade exercida no local, ou contrato social',
+  'AVCB ou CLCB anterior, no caso de renovação',
+  'Relação do que já existe instalado de combate a incêndio',
+];
+
+const normas = [
+  'Decreto Estadual 63.911/2018 — Regulamento de Segurança contra Incêndios do Estado de São Paulo',
+  'Instruções Técnicas do Corpo de Bombeiros da Polícia Militar do Estado de São Paulo',
+  'NBR 13714 — sistemas de hidrantes e mangotinhos',
+  'NBR 10897 — sistemas de chuveiros automáticos',
+  'NBR 9077 — saídas de emergência em edifícios',
+  'NBR 12693 — sistemas de proteção por extintores',
+  'NBR 17240 — detecção e alarme de incêndio',
+  'NBR 10898 — iluminação de emergência',
+  'NBR 13434 — sinalização de segurança contra incêndio e pânico',
+  'NBR 12779 — inspeção, manutenção e cuidados com mangueiras de incêndio',
+  'NBR 5419 — proteção contra descargas atmosféricas (SPDA)',
+  'NBR 5410 — instalações elétricas de baixa tensão',
+];
+
+const relacionadas = [
+  {
+    href: '/servicos/projeto-spci',
+    icon: 'flame' as const,
+    titulo: 'Projeto de SPCI',
+    texto: 'A disciplina de projeto por dentro: escopo, memoriais e entregas.',
+  },
+  {
+    href: '/servicos/projeto-eletrico',
+    icon: 'bolt' as const,
+    titulo: 'Projeto elétrico e SPDA',
+    texto: 'Baixa tensão, quadro de cargas, entrada de energia e aterramento.',
+  },
+  {
+    href: '/servicos/regularizacao/prefeitura',
+    icon: 'building' as const,
+    titulo: 'Prefeitura',
+    texto: 'Alvará, auto de regularização, Habite-se e acessibilidade.',
+  },
+  {
+    href: '/servicos/regularizacao/cetesb',
+    icon: 'leaf' as const,
+    titulo: 'CETESB',
+    texto: 'Dispensa de licença e licenciamento ambiental da atividade.',
+  },
+];
+
+const faq = [
+  {
+    q: 'Vocês só fazem o projeto ou instalam o sistema também?',
+    a: 'Os dois, com equipe própria. Projeto, protocolo no Corpo de Bombeiros, instalação de hidrantes, sprinklers, alarme, iluminação de emergência e SPDA, e depois a manutenção. Quem desenha responde pela execução — não existe a conversa de que o problema foi do projeto ou da mão de obra.',
+  },
+  {
+    q: 'Qual a diferença entre AVCB e CLCB?',
+    a: 'O CLCB é a via simplificada, para edificações de menor porte e risco, e dispensa projeto técnico completo. O AVCB é exigido quando a classificação pede projeto técnico, com memorial de cálculo e vistoria no local. A área, a altura e a ocupação definem em qual você se enquadra — não é escolha.',
+  },
+  {
+    q: 'Meu prédio é antigo e nunca teve AVCB. Tem solução?',
+    a: 'Na maioria dos casos, sim. Edificações existentes seguem regras específicas, que consideram o que é viável adequar sem descaracterizar a construção. O caminho começa por uma visita técnica e pelo levantamento do que existe hoje instalado.',
+  },
+  {
+    q: 'O AVCB vence?',
+    a: 'Vence, e o prazo varia com o tipo de edificação e de ocupação. A renovação não é apenas burocrática: exige demonstrar que os sistemas continuam operantes, com manutenção registrada. É por isso que o contrato de manutenção sai mais barato do que a renovação de um sistema abandonado.',
+  },
+  {
+    q: 'Preciso de AVCB para alugar um imóvel comercial?',
+    a: 'Em geral, sim — o documento costuma ser condição para a licença de funcionamento. Vale verificar antes de assinar contrato: descobrir depois que o imóvel não tem condição de obter o auto significa reformar por conta própria ou perder o ponto.',
+  },
+  {
+    q: 'SPDA é obrigatório no meu caso?',
+    a: 'Depende da altura, da área, da ocupação e do índice de descargas da região, avaliados pela NBR 5419. A análise de risco da própria norma é o que responde. Fazemos essa análise, e se o sistema não for exigido isso também fica registrado por escrito — serve como defesa em fiscalização.',
+  },
+  {
+    q: 'Fui notificado pelo Corpo de Bombeiros. Dá para resolver no prazo?',
+    a: 'Depende do que foi apontado e de quanto prazo resta, mas notificação é o tipo de caso que atendemos com prioridade. O primeiro movimento é a visita técnica: com o levantamento na mão, dá para separar o que precisa ser protocolado de imediato do que pode entrar em plano de adequação faseado.',
+  },
+  {
+    q: 'Como funciona o contrato de manutenção?',
+    a: 'Definimos o plano a partir do que está instalado no seu imóvel: quais equipamentos, qual periodicidade e o que é verificado em cada visita. Cada atendimento gera relatório técnico com ART. É esse histórico que a renovação do AVCB pede, e é ele que evita a corrida de última hora.',
+  },
+  {
+    q: 'Quanto custa?',
+    a: 'Varia com a área, a altura, a ocupação e principalmente com o que já existe instalado — um prédio com rede de hidrantes em condição de uso está a uma distância muito diferente do documento do que um sem nada. Por isso orçamos depois da visita técnica, por escrito, com escopo e prazo definidos.',
+  },
+  {
+    q: 'Atendem fora da capital?',
+    a: 'Sim. Atuamos em São Paulo e na Grande São Paulo, com sede no Jardim Peri, Zona Norte. Fora do estado a legislação muda, mas o roteiro técnico é o mesmo — vale confirmar o caso pelo WhatsApp.',
+  },
+];
+
+const pageTitle = 'Combate a Incêndio: AVCB, Projeto de SPCI, SPDA e Manutenção | MDK Engenharia';
+const pageDescription =
+  'Empresa de combate a incêndio em São Paulo: projeto de SPCI, AVCB e CLCB, hidrantes, sprinklers, alarme, iluminação de emergência, SPDA, manutenção de tubulações e adequação de edificação existente.';
+const pageKeywords = [
+  'empresa de combate a incêndio São Paulo',
+  'projeto de combate a incêndio',
+  'AVCB São Paulo',
+  'CLCB Corpo de Bombeiros',
+  'projeto de SPCI',
+  'renovação de AVCB',
+  'instalação de hidrantes e sprinklers',
+  'manutenção de rede de incêndio',
+  'manutenção de tubulação de incêndio',
+  'projeto de SPDA',
+  'laudo de SPDA e aterramento',
+  'sistema de detecção e alarme de incêndio',
+  'iluminação de emergência e sinalização',
+  'adequação de edificação existente bombeiros',
+  'F.A.T. formulário de atendimento técnico',
+  'vistoria do Corpo de Bombeiros',
+];
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+
+const serviceLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Combate a incêndio: projeto, instalação, AVCB e manutenção',
+  description: pageDescription,
+  serviceType: 'Sistemas de proteção e combate a incêndio',
+  provider: { '@id': `${Astro.site}#organization` },
+  areaServed: { '@type': 'AdministrativeArea', name: 'São Paulo e Região Metropolitana' },
+  url: canonical,
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Serviços de combate a incêndio',
+    itemListElement: frentes.map((f) => ({
+      '@type': 'OfferCatalog',
+      name: f.titulo,
+      itemListElement: f.itens.map((i) => ({
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name: i },
+      })),
+    })),
+  },
+};
+
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+/* A trilha sai a mao porque esta pagina nao usa PageHero — e e ele que emite o
+   BreadcrumbList nas outras paginas internas. */
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { label: 'Home', href: '/' },
+    { label: 'Serviços', href: '/servicos' },
+    { label: 'Documentação e Regularização', href: '/servicos/regularizacao' },
+    { label: 'Combate a Incêndio e Corpo de Bombeiros' },
+  ].map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: c.label,
+    ...(c.href ? { item: new URL(c.href, Astro.site).href } : {}),
+  })),
+};
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  keywords={pageKeywords}
+  whatsappHref={wa}
+>
+  {/* ─────────────────────────── HERO ───────────────────────────
+      Mesma construcao do hero de /servicos: foto no fundo da secao inteira e
+      cortina assimetrica — opaca a esquerda, onde o texto branco precisa de
+      contraste, e leve a direita, que e onde a fotografia aparece. `isolate` e
+      obrigatorio: sem contexto de empilhamento proprio os filhos com z-index
+      negativo escapam para a raiz e a foto some atras do fundo navy. */}
+  <section
+    class="relative isolate flex min-h-[92svh] items-center overflow-hidden bg-navy-900 pb-20 pt-32 sm:pb-28 sm:pt-40"
+  >
+    {/* ───────────────────── FOTO DA CAPA ─────────────────────
+        A foto ocupa a METADE DIREITA no desktop, e nao a secao inteira.
+
+        Foi assim que o cliente pediu em 03/09/2026: na versao anterior a foto
+        cobria tudo e levava cortina navy por cima, e o resultado era um banner
+        "muito escondido" — a placa de rota de fuga ficava atras do H1 e a
+        cortina apagava a foto junto. Cortina opaca resolve contraste e mata a
+        imagem; e a mesma queixa que existe no cabecalho de /servicos.
+
+        A solucao aqui e separar os territorios em vez de sobrepor: o texto fica
+        sobre o navy solido da secao, a foto fica so na direita, e no lugar de
+        cortina entra uma MASCARA que dissolve a borda esquerda da foto no fundo.
+        Assim a foto aparece com o brilho original — sem escurecimento nenhum no
+        desktop — e o branco do texto nunca disputa contraste com ela.
+
+        No mobile nao ha metade: a foto vai a largura inteira e o texto cai sobre
+        ela, entao ali a cortina volta, porque sem ela o texto some. As duas
+        camadas de gradiente abaixo estao presas em `lg:hidden` por isso. */}
+    <div
+      class="absolute inset-y-0 right-0 -z-20 w-full lg:w-[58%]"
+      aria-hidden="true"
+      style="mask-image: linear-gradient(to right, transparent 0%, #000 32%); -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 32%);"
+    >
+      <Image
+        src={capaImg.src}
+        alt={capaImg.alt}
+        widths={[700, 1100, 1600]}
+        sizes="(min-width: 1024px) 58vw, 100vw"
+        class="h-full w-full object-cover object-center"
+        loading="eager"
+        fetchpriority="high"
+      />
+    </div>
+
+    <div
+      class="absolute inset-0 -z-10 bg-gradient-to-r from-navy-900 via-navy-900/75 to-navy-900/30 lg:hidden"
+      aria-hidden="true"
+    >
+    </div>
+    <div
+      class="absolute inset-0 -z-10 bg-gradient-to-t from-navy-900 via-transparent to-navy-900/60 lg:hidden"
+      aria-hidden="true"
+    >
+    </div>
+    {/* Fecha so a emenda de baixo com a faixa de provas, nos dois tamanhos. */}
+    <div
+      class="absolute inset-x-0 bottom-0 -z-10 h-28 bg-gradient-to-t from-navy-900 to-transparent"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div
+      class="absolute inset-0 -z-10 overflow-hidden"
+      style="mask-image: radial-gradient(120% 100% at 20% 40%, #000 20%, transparent 80%); -webkit-mask-image: radial-gradient(120% 100% at 20% 40%, #000 20%, transparent 80%);"
+      aria-hidden="true"
+    >
+      <div class="bg-grid animate-grid-drift absolute -inset-40 text-white/[0.06]"></div>
+    </div>
+    <div
+      class="bg-dots pointer-events-none absolute bottom-10 right-8 -z-10 hidden h-40 w-52 text-orange-500/35 lg:block"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="mx-auto w-full max-w-7xl px-5 sm:px-8">
+      <nav aria-label="Trilha de navegação" data-reveal>
+        <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-white/50">
+          <li>
+            <a href="/" class="cursor-pointer transition-colors hover:text-orange-400">Home</a>
+          </li>
+          <li class="flex items-center gap-2">
+            <Icon name="chevron-down" class="h-3 w-3 -rotate-90 text-white/30" />
+            <a href="/servicos" class="cursor-pointer transition-colors hover:text-orange-400">
+              Serviços
+            </a>
+          </li>
+          <li class="flex items-center gap-2">
+            <Icon name="chevron-down" class="h-3 w-3 -rotate-90 text-white/30" />
+            <a
+              href="/servicos/regularizacao"
+              class="cursor-pointer transition-colors hover:text-orange-400"
+            >
+              Regularização
+            </a>
+          </li>
+          <li class="flex items-center gap-2">
+            <Icon name="chevron-down" class="h-3 w-3 -rotate-90 text-white/30" />
+            <span class="text-white/75">Combate a Incêndio</span>
+          </li>
+        </ol>
+      </nav>
+
+      <div class="mt-10 max-w-2xl">
+        {/* Marca aplicada na capa. `h-14 w-auto` porque o lockup e largo e
+            baixo: fixar altura e deixar a largura livre evita distorcer. */}
+        <Image
+          src={logoFull}
+          alt="MDK Engenharia e Arquitetura"
+          widths={[220, 440]}
+          sizes="220px"
+          class="mb-8 h-14 w-auto"
+          loading="eager"
+          data-reveal
+        />
+
+        <p
+          class="inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/80"
+          data-reveal
+        >
+          <span class="h-1.5 w-1.5 rounded-full bg-orange-500" aria-hidden="true"></span>
+          Combate a incêndio · São Paulo e Grande SP
+        </p>
+
+        <h1
+          class="mt-6 text-[2.25rem] leading-[1.1] text-white sm:text-5xl lg:text-[3.5rem]"
+          data-reveal
+          style="--reveal-delay:80ms"
+        >
+          Projeto, instalação e AVCB de combate a incêndio
+          <span class="text-orange-500">com um responsável só</span>
+        </h1>
+
+        <p
+          class="mt-6 max-w-xl text-base leading-relaxed text-white/75 sm:text-lg"
+          data-reveal
+          style="--reveal-delay:140ms"
+        >
+          SPCI, hidrantes, sprinklers, alarme, iluminação de emergência, SPDA e manutenção de rede —
+          projetados, instalados e mantidos pela mesma equipe, do desenho até o documento na mão.
+        </p>
+
+        <ul class="mt-8 space-y-3" data-reveal style="--reveal-delay:200ms">
+          {
+            heroBullets.map((b) => (
+              <li class="flex items-start gap-3 text-sm leading-relaxed text-white/85 sm:text-base">
+                <Icon name="check" class="mt-1 h-4 w-4 shrink-0 text-orange-500" />
+                {b}
+              </li>
+            ))
+          }
+        </ul>
+
+        <div
+          class="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center"
+          data-reveal
+          style="--reveal-delay:260ms"
+        >
+          <Button href={wa} variant="primary" size="lg" external>
+            <Icon name="whatsapp" class="h-5 w-5" />
+            Quero um orçamento
+            <Icon
+              name="arrow-right"
+              class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+            />
+          </Button>
+          <Button href={`tel:${site.contact.phoneE164}`} variant="outline" size="lg">
+            <Icon name="phone" class="h-5 w-5" />
+            {site.contact.phoneDisplay}
+          </Button>
+        </div>
+
+        <p class="mt-6 text-sm text-white/45" data-reveal style="--reveal-delay:320ms">
+          {site.contact.hours} · Resposta mais rápida pelo WhatsApp
+        </p>
+      </div>
+    </div>
+
+    {/* ───────────── CARTAO FLUTUANTE DE CREDENCIAL ─────────────
+        Sobreposto a capa no desktop, no fluxo abaixo dela no mobile. E o que da
+        a capa o acabamento de peca montada em vez de foto com texto por cima —
+        e poe razao social, CNPJ e telefone na primeira dobra, que e onde o lead
+        de midia paga confere se a empresa existe antes de rolar a pagina.
+
+        `hidden lg:block` porque em tela estreita ele cobriria o proprio H1; os
+        mesmos dados aparecem no bloco de identificacao no fim da pagina, entao
+        nada se perde. */}
+    <div
+      class="absolute bottom-12 right-8 z-10 hidden w-72 rounded-2xl border border-white/10 bg-navy-900/85 p-6 shadow-card-hover backdrop-blur lg:block xl:right-16"
+      data-reveal
+      style="--reveal-delay:380ms"
+    >
+      <p class="text-[0.6875rem] font-bold uppercase tracking-[0.18em] text-orange-400">
+        Empresa registrada
+      </p>
+      <p class="mt-3 text-sm font-semibold leading-snug text-white">{site.legalName}</p>
+      <dl class="mt-5 space-y-3 border-t border-white/10 pt-5">
+        <div>
+          <dt class="text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-white/40">
+            CNPJ
+          </dt>
+          <dd class="mt-0.5 font-display text-base font-bold tabular-nums text-white">
+            {site.cnpj}
+          </dd>
+        </div>
+        <div>
+          <dt class="text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-white/40">
+            No mercado desde
+          </dt>
+          <dd class="mt-0.5 font-display text-base font-bold text-white">
+            {site.foundedYear} · {yearsInBusiness} anos
+          </dd>
+        </div>
+        <div>
+          <dt class="text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-white/40">
+            Atendimento
+          </dt>
+          <dd class="mt-0.5">
+            <a
+              href={`tel:${site.contact.phoneE164}`}
+              class="cursor-pointer font-display text-base font-bold text-white transition-colors hover:text-orange-400"
+            >
+              {site.contact.phoneDisplay}
+            </a>
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  {/* ─────────────────────── FAIXA DE PROVA ─────────────────────── */}
+  <Section tone="offwhite" space="sm" width="wide">
+    <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        provas.map((p, i) => (
+          <li
+            class="border-l-2 border-orange-500 pl-4"
+            data-reveal
+            style={`--reveal-delay:${i * 90}ms`}
+          >
+            <p class="font-display text-xl font-bold text-navy-900 sm:text-2xl">{p.valor}</p>
+            <p class="mt-1 text-sm leading-snug tabular-nums text-navy-900/60">{p.rotulo}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  {/* ──────────────── RECONHECIMENTO DE SITUACAO ──────────────── */}
+  <Section tone="white" width="wide">
+    <SectionTitle
+      eyebrow="Em que ponto você está"
+      title="Seu caso provavelmente é <span class='text-orange-600'>um destes</span>"
+      subtitle="Cada situação tem um caminho diferente, e o custo muda muito entre elas. Encontre a sua e mande a mensagem — o diagnóstico vem antes do orçamento."
+    />
+
+    <ul class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        situacoes.map((s, i) => (
+          <li data-reveal style={`--reveal-delay:${(i % 3) * 90}ms`}>
+            <div class="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-navy-900/10 bg-white p-7 transition-all duration-300 hover:-translate-y-1 hover:border-orange-500/40 hover:shadow-card">
+              <span
+                class="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-orange-500 transition-transform duration-400 ease-out group-hover:scale-x-100"
+                aria-hidden="true"
+              />
+              <span class="flex h-11 w-11 items-center justify-center rounded-lg bg-navy-800/5 text-navy-800 transition-colors duration-300 group-hover:bg-orange-500 group-hover:text-white">
+                <Icon name={s.icon} class="h-5 w-5" />
+              </span>
+              <h3 class="mt-4 text-base font-bold leading-snug text-navy-900">{s.titulo}</h3>
+              <p class="mt-2.5 text-sm leading-relaxed text-navy-900/65">{s.texto}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="mt-12 text-center" data-reveal>
+      <Button href={wa} variant="primary" size="lg" external>
+        <Icon name="whatsapp" class="h-5 w-5" />
+        Contar a minha situação
+      </Button>
+    </div>
+  </Section>
+
+  {/* ───────────────────── ESCOPO COMPLETO ───────────────────── */}
+  <Section id="escopo" tone="offwhite" width="wide">
+    <SectionTitle
+      eyebrow="Escopo completo"
+      title="Tudo o que fazemos em <span class='text-orange-600'>combate a incêndio</span>"
+      subtitle="Seis frentes, do enquadramento no órgão à manutenção da rede. Não é lista de vitrine: é o que a nossa equipe executa e assina."
+    />
+
+    <div class="mt-14 grid gap-5 lg:grid-cols-2">
+      {
+        frentes.map((f, i) => (
+          <div
+            class="flex h-full flex-col rounded-2xl border border-navy-900/10 bg-white p-7 sm:p-8"
+            data-reveal
+            style={`--reveal-delay:${(i % 2) * 90}ms`}
+          >
+            <div class="flex items-start gap-4">
+              <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-orange-500 text-white shadow-lg">
+                <Icon name={f.icon} class="h-6 w-6" />
+              </span>
+              <div>
+                <h3 class="font-display text-lg leading-snug text-navy-900">{f.titulo}</h3>
+                <p class="mt-2 text-sm leading-relaxed text-navy-900/65">{f.texto}</p>
+              </div>
+            </div>
+
+            <ul class="mt-6 grid gap-2.5 border-t border-navy-900/8 pt-6 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+              {f.itens.map((item) => (
+                <li class="flex items-start gap-2.5 text-sm leading-snug text-navy-900/75">
+                  <Icon name="check" class="mt-0.5 h-3.5 w-3.5 shrink-0 text-orange-500" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+
+  {/* ──────────── DETALHE 1: SISTEMAS HIDRAULICOS ────────────
+      As tres secoes de detalhe alternam o lado da imagem. Todas as imagens
+      daqui sao prancha ou modelo 3D, nao fotografia: `object-contain` sobre
+      branco, porque recortar um isometrico corta a informacao que ele carrega. */}
+  <Section tone="white" width="wide">
+    <div class="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+      <div class="relative order-2 lg:order-1" data-reveal>
+        <div
+          class="bg-dots pointer-events-none absolute -left-6 -top-6 hidden h-40 w-40 text-orange-500/40 sm:block"
+          aria-hidden="true"
+        >
+        </div>
+        <div class="relative overflow-hidden rounded-3xl shadow-card">
+          <Image
+            src={hidraulicosImg.src}
+            alt={hidraulicosImg.alt}
+            widths={[500, 800, 1100]}
+            sizes="(min-width: 1024px) 520px, 92vw"
+            class="w-full object-cover"
+            style={`aspect-ratio:${hidraulicosImg.src.width}/${hidraulicosImg.src.height}`}
+            loading="lazy"
+          />
+        </div>
+      </div>
+
+      <div class="order-1 lg:order-2">
+        <SectionTitle
+          align="left"
+          eyebrow="Sistemas hidráulicos"
+          title="Hidrantes, sprinklers e <span class='text-orange-600'>casa de bombas</span>"
+          subtitle="A parte do sistema que a vistoria testa com manômetro na mão. Pressão e vazão no ponto mais desfavorável não se resolvem no improviso — saem do cálculo hidráulico."
+        />
+        <div class="mt-8 space-y-4 text-base leading-relaxed text-navy-900/70">
+          <p>
+            Dimensionamos a rede a partir da carga de incêndio e da ocupação real da edificação, e
+            não por diâmetro padrão repetido. É o cálculo que define a reserva técnica, a bomba, o
+            barrilete e a bitola de cada trecho — e é ele que evita a reprovação na vistoria por
+            pressão insuficiente no hidrante mais alto.
+          </p>
+          <p>
+            Instalamos com equipe própria, em aço carbono com conexões ranhuradas ou soldadas, e
+            entregamos o sistema testado: ensaio hidrostático da tubulação, verificação de vazão e
+            pressão e comissionamento da casa de bombas.
+          </p>
+        </div>
+        <div class="mt-8" data-reveal>
+          <Button href={wa} variant="primary" size="lg" external>
+            <Icon name="whatsapp" class="h-5 w-5" />
+            Orçar rede de incêndio
+          </Button>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  {/* ──────────────────── DETALHE 2: SPDA ──────────────────── */}
+  <Section tone="offwhite" width="wide">
+    <div class="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <SectionTitle
+          align="left"
+          eyebrow="SPDA e aterramento"
+          title="Proteção contra <span class='text-orange-600'>descarga atmosférica</span>"
+          subtitle="Para-raios não é enfeite de telhado: é sistema de captação, descida e aterramento dimensionado por análise de risco. E é o laudo que a fiscalização e a seguradora pedem."
+        />
+        <div class="mt-8 space-y-4 text-base leading-relaxed text-navy-900/70">
+          <p>
+            Fazemos a análise de risco da NBR 5419 e o projeto do sistema — captação por Franklin,
+            gaiola de Faraday ou cabo de cobertura, conforme o caso —, instalamos as descidas, a
+            equipotencialização e a malha de aterramento, e medimos a resistência com terrômetro.
+          </p>
+          <p>
+            A entrega inclui laudo de conformidade com ART. Sistema instalado sem medição e sem
+            laudo não comprova nada: em fiscalização vale o documento, não o cabo aparente na
+            parede.
+          </p>
+        </div>
+        <div class="mt-8" data-reveal>
+          <Button href={wa} variant="primary" size="lg" external>
+            <Icon name="whatsapp" class="h-5 w-5" />
+            Falar sobre SPDA
+          </Button>
+        </div>
+      </div>
+
+      <div class="relative" data-reveal>
+        <div
+          class="bg-dots pointer-events-none absolute -bottom-6 -right-6 hidden h-40 w-40 text-orange-500/40 sm:block"
+          aria-hidden="true"
+        >
+        </div>
+        <div class="relative overflow-hidden rounded-3xl shadow-card">
+          <Image
+            src={spdaImg.src}
+            alt={spdaImg.alt}
+            widths={[500, 800, 1100]}
+            sizes="(min-width: 1024px) 520px, 92vw"
+            class="w-full object-cover"
+            style={`aspect-ratio:${spdaImg.src.width}/${spdaImg.src.height}`}
+            loading="lazy"
+          />
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  {/* ─────────────── DETALHE 3: MANUTENCAO ─────────────── */}
+  <Section tone="white" width="wide">
+    <div class="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+      <div class="relative order-2 lg:order-1" data-reveal>
+        <div class="relative overflow-hidden rounded-3xl shadow-card">
+          <Image
+            src={manutencaoImg.src}
+            alt={manutencaoImg.alt}
+            widths={[500, 800, 1100]}
+            sizes="(min-width: 1024px) 520px, 92vw"
+            class="w-full object-cover"
+            style={`aspect-ratio:${manutencaoImg.src.width}/${manutencaoImg.src.height}`}
+            loading="lazy"
+          />
+        </div>
+
+        {/* Rotina de manutencao. Fica junto da imagem, e nao numa tabela solta,
+            porque e argumento de venda do contrato — nao referencia normativa. */}
+        <div class="mt-6 overflow-hidden rounded-2xl border border-navy-900/10">
+          {
+            rotina.map((r) => (
+              <div class="flex gap-4 border-b border-navy-900/8 bg-offwhite p-4 last:border-b-0 sm:p-5">
+                <span class="w-20 shrink-0 font-display text-xs font-bold uppercase tracking-[0.12em] text-orange-600">
+                  {r.periodo}
+                </span>
+                <span class="text-sm leading-snug text-navy-900/70">{r.itens}</span>
+              </div>
+            ))
+          }
+        </div>
+        <p class="mt-3 text-xs leading-relaxed text-navy-900/45">
+          Rotina típica. A periodicidade final sai do plano de manutenção do seu sistema — as
+          Instruções Técnicas e as NBRs de cada equipamento definem o intervalo item por item.
+        </p>
+      </div>
+
+      <div class="order-1 lg:order-2">
+        <SectionTitle
+          align="left"
+          eyebrow="Manutenção de tubulações e sistemas"
+          title="O sistema tem que funcionar <span class='text-orange-600'>no dia do incêndio</span>"
+          subtitle="Rede de incêndio parada corrói por dentro. Quem descobre isso na vistoria de renovação já perdeu o prazo — e paga obra em vez de manutenção."
+        />
+        <div class="mt-8 space-y-4 text-base leading-relaxed text-navy-900/70">
+          <p>
+            Fazemos manutenção preventiva contratada e corretiva: teste hidrostático de tubulação e
+            mangueiras, localização e reparo de vazamento, troca de trechos corroídos, recuperação
+            de roscas e soldas, pintura e identificação da rede, manutenção de bombas, painéis,
+            pressostatos e válvulas de governo.
+          </p>
+          <p>
+            Cada visita gera relatório técnico com ART. Esse histórico é exatamente o que a
+            renovação do AVCB exige — e é a diferença entre renovar o documento e refazer o sistema.
+          </p>
+        </div>
+        <div class="mt-8" data-reveal>
+          <Button href={wa} variant="primary" size="lg" external>
+            <Icon name="whatsapp" class="h-5 w-5" />
+            Quero um contrato de manutenção
+          </Button>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  {/* ──────────────────── FAIXA DE OBRA + CTA ──────────────────── */}
+  <section class="relative overflow-hidden bg-navy-900">
+    <Image
+      src={bandImg.src}
+      alt=""
+      widths={[700, 1200, 1600]}
+      sizes="100vw"
+      class="absolute inset-0 h-full w-full object-cover opacity-40"
+      loading="lazy"
+      aria-hidden="true"
+    />
+    <div
+      class="absolute inset-0 bg-gradient-to-r from-navy-900 via-navy-900/85 to-navy-900/40"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="relative mx-auto w-full max-w-7xl px-5 py-20 sm:px-8 sm:py-24">
+      <div class="max-w-2xl" data-reveal>
+        <p class="text-xs font-bold uppercase tracking-[0.22em] text-orange-400">
+          Sem intermediário
+        </p>
+        <h2 class="mt-4 text-3xl leading-tight text-white sm:text-4xl">
+          Projeto, instalação e manutenção na mesma ART
+        </h2>
+        <p class="mt-5 text-base leading-relaxed text-white/75 sm:text-lg">
+          A maior parte dos processos que travam no Corpo de Bombeiros travou porque projetista e
+          instalador eram empresas diferentes, e cada uma jogou a exigência para a outra. Aqui é uma
+          equipe só, do enquadramento à vistoria.
+        </p>
+        <div class="mt-8">
+          <Button href={wa} variant="primary" size="lg" external>
+            <Icon name="whatsapp" class="h-5 w-5" />
+            Vim pelo site, quero um orçamento
+          </Button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ──────────────────── AVCB x CLCB ──────────────────── */}
+  <Section tone="offwhite" width="wide">
+    <SectionTitle
+      eyebrow="Qual documento é o seu"
+      title="AVCB ou <span class='text-orange-600'>CLCB</span>"
+      subtitle="Não é escolha nem preferência: a área, a altura e a ocupação da edificação definem em qual regime você se enquadra. A classificação é o primeiro trabalho que fazemos."
+    />
+
+    <div class="mt-14 grid gap-5 md:grid-cols-2">
+      {
+        comparativo.map((c, i) => (
+          <div
+            class="flex h-full flex-col rounded-2xl border border-navy-900/10 bg-white p-8"
+            data-reveal
+            style={`--reveal-delay:${i * 110}ms`}
+          >
+            <p class="font-display text-3xl font-bold text-orange-600">{c.sigla}</p>
+            <h3 class="mt-2 text-base font-bold leading-snug text-navy-900">{c.nome}</h3>
+            <ul class="mt-6 space-y-3 border-t border-navy-900/8 pt-6">
+              {c.linhas.map((l) => (
+                <li class="flex items-start gap-2.5 text-sm leading-relaxed text-navy-900/70">
+                  <Icon name="check" class="mt-0.5 h-4 w-4 shrink-0 text-orange-500" />
+                  {l}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+
+    <p
+      class="mx-auto mt-8 max-w-2xl text-center text-sm leading-relaxed text-navy-900/60"
+      data-reveal
+    >
+      Não sabe em qual se encaixa? Mande o endereço, a área construída, a altura e a atividade
+      exercida. A classificação sai da conversa.
+    </p>
+    <div class="mt-6 text-center" data-reveal>
+      <Button href={wa} variant="primary" size="lg" external>
+        <Icon name="whatsapp" class="h-5 w-5" />
+        Descobrir o meu enquadramento
+      </Button>
+    </div>
+  </Section>
+
+  {/* ──────────────────── COMO FUNCIONA ──────────────────── */}
+  <Section tone="white" width="wide">
+    <SectionTitle
+      eyebrow="Como funciona"
+      title="Da visita técnica ao <span class='text-orange-600'>documento na mão</span>"
+      subtitle="Cinco etapas. Você fala com quem entende de obra e de balcão do órgão, não com atendimento de script."
+    />
+
+    <ol class="mx-auto mt-14 max-w-3xl space-y-4">
+      {
+        passos.map((p, i) => (
+          <li class="flex gap-5" data-reveal style={`--reveal-delay:${i * 80}ms`}>
+            <span
+              class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-navy-800 font-display text-base font-bold text-orange-400"
+              aria-hidden="true"
+            >
+              {i + 1}
+            </span>
+            <div class="border-b border-navy-900/8 pb-5">
+              <h3 class="text-base font-bold leading-snug text-navy-900">{p.titulo}</h3>
+              <p class="mt-1.5 text-sm leading-relaxed text-navy-900/65">{p.texto}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </Section>
+
+  {/* ──────────────── PECAS QUE O CLIENTE RECEBE ──────────────── */}
+  <Section tone="offwhite" width="wide">
+    <SectionTitle
+      eyebrow="O que fica instalado"
+      title="Os sistemas que <span class='text-orange-600'>a gente monta e mantém</span>"
+      subtitle="É isso que o fiscal do Corpo de Bombeiros abre, testa e mede na vistoria. Instalado por equipe própria e mantido em contrato."
+    />
+
+    <ul class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        sistemas.map((s, i) => {
+          const img = getImage(s.key);
+          return (
+            <li data-reveal style={`--reveal-delay:${(i % 4) * 80}ms`}>
+              <div class="group flex h-full flex-col overflow-hidden rounded-2xl border border-navy-900/10 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-orange-500/40 hover:shadow-card">
+                <div class="aspect-[16/11] overflow-hidden border-b border-navy-900/8">
+                  <Image
+                    src={img.src}
+                    alt={img.alt}
+                    widths={[400, 700, 1000]}
+                    sizes="(min-width: 1024px) 300px, (min-width: 640px) 46vw, 92vw"
+                    class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    loading="lazy"
+                  />
+                </div>
+                <div class="flex flex-1 flex-col p-6">
+                  <h3 class="text-base font-bold leading-snug text-navy-900">{s.titulo}</h3>
+                  <p class="mt-2 text-sm leading-relaxed text-navy-900/60">{s.texto}</p>
+                </div>
+              </div>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </Section>
+
+  {/* ──────────────────── SEGMENTOS ──────────────────── */}
+  <Section tone="white" width="wide">
+    <SectionTitle
+      eyebrow="Onde atendemos"
+      title="Tipos de edificação que <span class='text-orange-600'>já passaram pela nossa mesa</span>"
+      subtitle="Cada ocupação tem exigência própria — a carga de incêndio de um depósito não é a de uma escola, e o pacote de medidas muda junto."
+    />
+
+    <ul class="mx-auto mt-12 flex max-w-4xl flex-wrap justify-center gap-3" data-reveal>
+      {
+        segmentos.map((s) => (
+          <li class="rounded-full border border-navy-900/10 bg-offwhite px-4 py-2 text-sm text-navy-900/75">
+            {s}
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="mt-12 text-center" data-reveal>
+      <Button href={wa} variant="primary" size="lg" external>
+        <Icon name="whatsapp" class="h-5 w-5" />
+        Meu imóvel é assim, quero orçar
+      </Button>
+    </div>
+  </Section>
+
+  {/* ──────────────── PECA DE DESTAQUE ────────────────
+      Bloco no formato dos criativos de anuncio que o cliente mandou como
+      referencia em 03/09/2026 (um de extintores para condominio, um de sistema
+      de sprinkler): titulo grande, lista curta de beneficios com icone, faixa
+      de segmentos atendidos e a identificacao da empresa no pe.
+
+      DESENHADO DO ZERO, e nao copiado. As referencias eram pecas de outras
+      empresas — Faustino Extintores e uma revenda chamada HTC Fire —, com marca
+      e telefone delas no meio da arte. Reaproveitar aquilo poria a marca de um
+      concorrente no site da MDK, entao o que se aproveita e o formato: a
+      estrutura de titulo + beneficios + segmentos + contato. A paleta e a do
+      site (navy e laranja), nao o vermelho das referencias.
+
+      Vive como secao HTML, nao como imagem exportada: fica nitido em qualquer
+      tela, o texto e indexavel, e trocar telefone ou CNPJ e editar
+      src/data/site.ts — numa arte fechada seria refazer o arquivo. */}
+  <section class="relative isolate overflow-hidden bg-navy-900">
+    <Image
+      src={pecaImg.src}
+      alt=""
+      widths={[700, 1200, 1600]}
+      sizes="100vw"
+      class="absolute inset-0 -z-20 h-full w-full object-cover opacity-25"
+      loading="lazy"
+      aria-hidden="true"
+    />
+    <div
+      class="absolute inset-0 -z-10 bg-gradient-to-br from-navy-900 via-navy-900/92 to-navy-800/85"
+      aria-hidden="true"
+    >
+    </div>
+    <div
+      class="absolute inset-y-0 right-0 -z-10 w-1/3 -skew-x-12 bg-orange-500/10"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="relative mx-auto w-full max-w-7xl px-5 py-20 sm:px-8 sm:py-24">
+      <div class="grid gap-14 lg:grid-cols-[0.85fr_1fr] lg:gap-20">
+        <div>
+          {/* A ARTE DA MDK, entregue pelo cliente em 03/09/2026.
+              Ela ja traz marca, chamada e os quatro icones de sistema, entao o
+              titulo e o logotipo em HTML que ocupavam esta coluna sairam — dois
+              cabecalhos dizendo a mesma coisa, um dentro da imagem e outro ao
+              lado, competiriam entre si. O que ficou de HTML aqui embaixo e o
+              que a arte nao tem e nao deve ter fixo: telefone, CNPJ e o CTA,
+              que saem de src/data/site.ts e mudam sem refazer a peca.
+
+              `object-contain` e obrigatorio: e peca fechada, com texto ate a
+              borda. Qualquer recorte decepa palavra. */}
+          <div
+            class="overflow-hidden rounded-2xl bg-white shadow-card-hover ring-1 ring-white/10"
+            data-reveal
+          >
+            <Image
+              src={cartazImg.src}
+              alt={cartazImg.alt}
+              widths={[400, 700, 1100]}
+              sizes="(min-width: 1024px) 420px, 92vw"
+              class="w-full object-contain"
+              style={`aspect-ratio:${cartazImg.src.width}/${cartazImg.src.height}`}
+              loading="lazy"
+            />
+          </div>
+
+          <div class="mt-8" data-reveal style="--reveal-delay:200ms">
+            <Button href={wa} variant="primary" size="lg" external>
+              <Icon name="whatsapp" class="h-5 w-5" />
+              Solicitar orçamento
+            </Button>
+          </div>
+
+          {/* Identificacao no pe da peca, como nas referencias. */}
+          <dl
+            class="mt-8 flex flex-wrap gap-x-10 gap-y-4 border-t border-white/10 pt-7"
+            data-reveal
+            style="--reveal-delay:260ms"
+          >
+            <div>
+              <dt class="text-[0.6875rem] font-bold uppercase tracking-[0.16em] text-orange-400">
+                Atendimento
+              </dt>
+              <dd class="mt-1">
+                <a
+                  href={`tel:${site.contact.phoneE164}`}
+                  class="cursor-pointer font-display text-lg font-bold text-white transition-colors hover:text-orange-400"
+                >
+                  {site.contact.phoneDisplay}
+                </a>
+              </dd>
+            </div>
+            <div>
+              <dt class="text-[0.6875rem] font-bold uppercase tracking-[0.16em] text-orange-400">
+                CNPJ
+              </dt>
+              <dd class="mt-1 font-display text-lg font-bold tabular-nums text-white">
+                {site.cnpj}
+              </dd>
+            </div>
+            <div>
+              <dt class="text-[0.6875rem] font-bold uppercase tracking-[0.16em] text-orange-400">
+                Site
+              </dt>
+              <dd class="mt-1 font-display text-lg font-bold text-white">
+                mdkengenharia.com.br
+              </dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="lg:pt-4">
+          <ul class="space-y-6">
+            {
+              pecaBeneficios.map((b, i) => (
+                <li class="flex gap-5" data-reveal style={`--reveal-delay:${i * 90}ms`}>
+                  <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-orange-500 text-white shadow-lg">
+                    <Icon name={b.icon} class="h-6 w-6" />
+                  </span>
+                  <div>
+                    <h3 class="text-base font-bold uppercase leading-snug tracking-[0.04em] text-white">
+                      {b.titulo}
+                    </h3>
+                    <p class="mt-1.5 text-sm leading-relaxed text-white/65">{b.texto}</p>
+                  </div>
+                </li>
+              ))
+            }
+          </ul>
+
+          <div
+            class="mt-10 rounded-2xl border border-white/10 bg-navy-900/60 p-7 backdrop-blur"
+            data-reveal
+            style="--reveal-delay:380ms"
+          >
+            <p class="text-center text-xs font-bold uppercase tracking-[0.2em] text-orange-400">
+              Proteja o que importa
+            </p>
+            <ul class="mt-6 grid grid-cols-2 gap-5 sm:grid-cols-4">
+              {
+                pecaSegmentos.map((s) => (
+                  <li class="flex flex-col items-center gap-2.5 text-center">
+                    <Icon name={s.icon} class="h-7 w-7 text-white/70" />
+                    <span class="text-[0.6875rem] font-bold uppercase leading-tight tracking-[0.08em] text-white/60">
+                      {s.rotulo}
+                    </span>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ──────────────────── EQUIPE ──────────────────── */}
+  <Team />
+
+  {/* ──────────────────── FAQ, DOCUMENTOS E NORMAS ──────────────────── */}
+  <Section tone="white" width="wide">
+    <div class="grid gap-14 lg:grid-cols-[1.5fr_1fr] lg:gap-20">
+      <div>
+        <h2 class="font-display text-2xl text-navy-900 sm:text-3xl" data-reveal>
+          Perguntas frequentes
+        </h2>
+        <div class="mt-8 divide-y divide-navy-900/10 border-y border-navy-900/10">
+          {
+            faq.map((f) => (
+              <details class="group py-5">
+                <summary class="flex cursor-pointer list-none items-start justify-between gap-4 text-base font-bold text-navy-900 transition-colors hover:text-orange-600">
+                  {f.q}
+                  <Icon
+                    name="chevron-down"
+                    class="mt-1 h-4 w-4 shrink-0 text-orange-500 transition-transform duration-300 group-open:rotate-180"
+                  />
+                </summary>
+                <p class="mt-3 text-[0.9375rem] leading-relaxed text-navy-900/65">{f.a}</p>
+              </details>
+            ))
+          }
+        </div>
+
+        <div class="mt-10" data-reveal>
+          <Button href={wa} variant="primary" size="lg" external>
+            <Icon name="whatsapp" class="h-5 w-5" />
+            Tenho outra dúvida
+          </Button>
+        </div>
+      </div>
+
+      <aside class="lg:sticky lg:top-28 lg:self-start">
+        <div class="rounded-2xl bg-offwhite p-7" data-reveal>
+          <h2 class="font-display text-sm font-bold uppercase tracking-[0.14em] text-navy-900">
+            Para começar, tenha em mãos
+          </h2>
+          <ul class="mt-5 space-y-3">
+            {
+              documentosIniciais.map((d) => (
+                <li class="flex items-start gap-2.5 text-sm leading-relaxed text-navy-900/70">
+                  <Icon name="check" class="mt-0.5 h-4 w-4 shrink-0 text-orange-500" />
+                  {d}
+                </li>
+              ))
+            }
+          </ul>
+          <p class="mt-5 text-xs leading-relaxed text-navy-900/50">
+            Não tem tudo? Manda o que tem. O levantamento do que existe hoje faz parte do nosso
+            serviço.
+          </p>
+        </div>
+
+        <div
+          class="mt-6 rounded-2xl bg-navy-800 p-7 text-white"
+          data-reveal
+          style="--reveal-delay:120ms"
+        >
+          <h2 class="font-display text-lg leading-snug">Não sabe em que situação está?</h2>
+          <p class="mt-2.5 text-sm leading-relaxed text-white/65">
+            Mande o endereço e o que existe hoje. O diagnóstico vem antes do orçamento.
+          </p>
+          <a
+            href={wa}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-5 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-orange-500 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-orange-400"
+          >
+            <Icon name="whatsapp" class="h-4 w-4" />
+            Falar no WhatsApp
+          </a>
+          <p class="mt-4 text-center text-xs text-white/45">{site.contact.phoneDisplay}</p>
+        </div>
+      </aside>
+    </div>
+  </Section>
+
+  {/* ──────────────────── BASE LEGAL E NORMAS ────────────────────
+      Comecou dentro da `aside` do FAQ, como nas paginas de orgao. Nao caberia:
+      sao doze normas, e a coluna lateral ficava mais alta que a das perguntas,
+      abrindo um vao de umas duas dobras a esquerda. Em secao propria a lista
+      ainda ganha: em tres colunas ela e lida, na coluna estreita era rolada. */}
+  <Section tone="offwhite" space="md" width="wide">
+    <h2 class="font-display text-2xl text-navy-900" data-reveal>Base legal e normas</h2>
+    <p class="mt-3 max-w-2xl text-sm leading-relaxed text-navy-900/60" data-reveal>
+      O que rege o projeto, a instalação e a manutenção. É contra estes textos que a vistoria
+      confere o sistema — e é neles que a nossa especificação se apoia.
+    </p>
+    <ul class="mt-8 grid gap-x-8 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        normas.map((n, i) => (
+          <li
+            class="border-l-2 border-orange-500/40 pl-3 text-sm leading-relaxed text-navy-900/65"
+            data-reveal
+            style={`--reveal-delay:${(i % 3) * 70}ms`}
+          >
+            {n}
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  {/* ──────────────── OUTRAS FRENTES DA MDK ──────────────── */}
+  <Section tone="white" space="md" width="wide">
+    <h2 class="font-display text-2xl text-navy-900" data-reveal>Frentes relacionadas</h2>
+    <ul class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        relacionadas.map((o, i) => (
+          <li data-reveal style={`--reveal-delay:${i * 80}ms`}>
+            <a
+              href={o.href}
+              class="group flex h-full cursor-pointer flex-col rounded-2xl border border-navy-900/10 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:border-orange-500/40 hover:shadow-card"
+            >
+              <span class="flex h-11 w-11 items-center justify-center rounded-lg bg-navy-800 text-orange-500 transition-colors duration-300 group-hover:bg-orange-500 group-hover:text-white">
+                <Icon name={o.icon} class="h-5 w-5" />
+              </span>
+              <h3 class="mt-4 text-base leading-snug text-navy-900">{o.titulo}</h3>
+              <p class="mt-1.5 text-sm leading-relaxed text-navy-900/60">{o.texto}</p>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  {/* ──────────────── IDENTIFICACAO DA EMPRESA ────────────────
+      Mesmo bloco de /servicos. Numa pagina que recebe midia paga, e o dado que
+      o lead copia para conferir a empresa antes de fechar — dai o CNPJ em corpo
+      maior e tabular. */}
+  <Section tone="offwhite" space="md" width="wide">
+    <div class="rounded-2xl border border-navy-900/10 bg-white p-7 sm:p-9" data-reveal>
+      <p class="text-xs font-bold uppercase tracking-[0.18em] text-orange-600">
+        Empresa registrada e identificada
+      </p>
+      <div class="mt-7 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-navy-900/45">Razão social</p>
+          <p class="mt-2 text-sm leading-relaxed text-navy-900">{site.legalName}</p>
+        </div>
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-navy-900/45">CNPJ</p>
+          <p class="mt-2 font-display text-lg font-bold tabular-nums text-navy-900">{site.cnpj}</p>
+        </div>
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-navy-900/45">Endereço</p>
+          <p class="mt-2 text-sm leading-relaxed text-navy-900">
+            {site.address.street} — {site.address.district}<br />
+            {site.address.city}/{site.address.state}, CEP {site.address.zip}
+          </p>
+        </div>
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-navy-900/45">Contato</p>
+          <a
+            href={`tel:${site.contact.phoneE164}`}
+            class="mt-2 block cursor-pointer text-sm font-semibold text-navy-900 transition-colors hover:text-orange-600"
+          >
+            {site.contact.phoneDisplay}
+          </a>
+          <a
+            href={`mailto:${site.contact.email}`}
+            class="mt-1 block cursor-pointer break-all text-sm text-navy-900/70 transition-colors hover:text-orange-600"
+          >
+            {site.contact.email}
+          </a>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  {/* ──────────────── CONTATO DIRETO, TRES CANAIS ──────────────── */}
+  <Section tone="white" space="md" width="wide">
+    <div class="mx-auto max-w-3xl text-center" data-reveal>
+      <h2 class="font-display text-2xl leading-snug text-navy-900 sm:text-3xl">
+        Fale direto com a MDK Engenharia
+      </h2>
+      <p class="mt-4 text-base leading-relaxed text-navy-900/65">
+        Sem formulário e sem fila de atendimento. Escolha o canal e fale com quem vai conduzir o seu
+        processo.
+      </p>
+      {/* `whitespace-nowrap` nos tres: sem isso o botao do meio e o unico que
+          cede espaco na linha e "Ligar agora" quebra em duas — dois botoes de
+          uma linha ao lado de um de duas fica torto. */}
+      <div class="mt-9 flex flex-col items-center justify-center gap-4 sm:flex-row sm:flex-wrap">
+        <Button href={wa} variant="primary" size="lg" external class="whitespace-nowrap">
+          <Icon name="whatsapp" class="h-5 w-5" />
+          WhatsApp {site.contact.phoneDisplay}
+        </Button>
+        <Button
+          href={`tel:${site.contact.phoneE164}`}
+          variant="ghost"
+          size="lg"
+          class="whitespace-nowrap"
+        >
+          <Icon name="phone" class="h-5 w-5" />
+          Ligar agora
+        </Button>
+        <Button
+          href={`mailto:${site.contact.emailOrcamento}`}
+          variant="ghost"
+          size="lg"
+          class="whitespace-nowrap"
+        >
+          <Icon name="mail" class="h-5 w-5" />
+          {site.contact.emailOrcamento}
+        </Button>
+      </div>
+      <p class="mt-6 text-sm text-navy-900/50">{site.contact.hours}</p>
+    </div>
+  </Section>
+
+  <FinalCta
+    whatsappHref={wa}
+    title="Vamos resolver o combate a incêndio do seu imóvel?"
+    text="Mande o endereço, a área e o que já existe instalado. Você recebe o diagnóstico e um orçamento com escopo detalhado e prazo definido."
+  />
+
+  {/* ──────────────── RODAPE DE PALAVRAS-CHAVE ────────────────
+      Pedido do cliente em 03/09/2026: bloco de termos no fim do conteudo, com
+      fim de SEO.
+
+      COMO FOI FEITO E POR QUE ASSIM. Lista de palavra solta empilhada no pe da
+      pagina e keyword stuffing — a diretriz de spam do Google trata como texto
+      irrelevante e o efeito pode ser negativo, nao neutro. Entao os termos
+      entram em frases que descrevem servico e cobertura de verdade, agrupados
+      por assunto, com os que tem pagina propria virando link. Cada frase e
+      informacao que um visitante pode ler sem estranhar — que e o teste.
+
+      Os termos sao os mesmos de `pageKeywords`, mais os recortes de bairro e
+      cidade, que e onde a busca local acontece. Nao inchar: termo sem servico
+      correspondente e ruido, e a nota no topo de src/data/site.ts vale aqui
+      tambem. */}
+  <Section tone="offwhite" space="md" width="wide">
+    <div class="border-t border-navy-900/10 pt-10" data-reveal>
+      <h2 class="font-display text-sm font-bold uppercase tracking-[0.14em] text-navy-900">
+        Também procurado por
+      </h2>
+
+      <div class="mt-6 grid gap-x-10 gap-y-6 text-sm leading-relaxed text-navy-900/60 md:grid-cols-2">
+        <p>
+          <strong class="font-semibold text-navy-900/80">Documentação:</strong> a MDK Engenharia faz
+          <a href="#escopo" class="cursor-pointer text-navy-900/75 underline decoration-orange-500/40 underline-offset-2 transition-colors hover:text-orange-600">
+            AVCB em São Paulo</a>, CLCB do Corpo de Bombeiros, renovação de AVCB vencido, laudo de
+          exigências, F.A.T. — Formulário de Atendimento Técnico — e regularização de edificação
+          existente no Corpo de Bombeiros, incluindo acompanhamento de vistoria e resposta a
+          notificação.
+        </p>
+        <p>
+          <strong class="font-semibold text-navy-900/80">Projeto:</strong> projeto de prevenção e
+          combate a incêndio, <a href="/servicos/projeto-spci" class="cursor-pointer text-navy-900/75 underline decoration-orange-500/40 underline-offset-2 transition-colors hover:text-orange-600">projeto de SPCI</a> e PSCIP,
+          memorial de cálculo hidráulico, dimensionamento de reserva técnica de incêndio, plano de
+          emergência e projeto de saídas de emergência conforme a NBR 9077.
+        </p>
+        <p>
+          <strong class="font-semibold text-navy-900/80">Instalação:</strong> instalação de
+          hidrantes e mangotinhos, rede de sprinklers, casa de bombas de incêndio, sistema de
+          detecção e alarme de incêndio, iluminação de emergência, sinalização de abandono,
+          extintores, portas corta-fogo e selagem corta-fogo.
+        </p>
+        <p>
+          <strong class="font-semibold text-navy-900/80">SPDA:</strong> projeto de SPDA, instalação
+          de para-raios, malha de aterramento, medição de resistência de aterramento e laudo de
+          SPDA com ART conforme a NBR 5419 — ver também
+          <a href="/servicos/projeto-eletrico" class="cursor-pointer text-navy-900/75 underline decoration-orange-500/40 underline-offset-2 transition-colors hover:text-orange-600">projeto elétrico</a>.
+        </p>
+        <p>
+          <strong class="font-semibold text-navy-900/80">Manutenção:</strong> manutenção preventiva
+          de rede de incêndio, manutenção de tubulação de incêndio, teste hidrostático de mangueiras
+          e tubulação, reparo de vazamento, recarga de extintores, manutenção de bomba de incêndio e
+          relatório técnico para renovação de AVCB.
+        </p>
+        <p>
+          <strong class="font-semibold text-navy-900/80">Onde atendemos:</strong> empresa de combate
+          a incêndio em São Paulo e Grande São Paulo, com sede no Jardim Peri, na
+          <a href="/areas-de-atuacao/zona-norte-sp" class="cursor-pointer text-navy-900/75 underline decoration-orange-500/40 underline-offset-2 transition-colors hover:text-orange-600">Zona Norte</a> —
+          Casa Verde, Cachoeirinha, Limão, Santana, Tucuruvi, Freguesia do Ó, Brasilândia, Vila
+          Maria, Vila Guilherme, Pirituba, Jaraguá e Perus. Atendemos condomínio, galpão, indústria,
+          escola, clínica, restaurante, hotel, loja e depósito.
+        </p>
+      </div>
+
+      <p class="mt-8 text-xs leading-relaxed text-navy-900/45">
+        A MDK também cuida da regularização na
+        <a href="/servicos/regularizacao/prefeitura" class="cursor-pointer underline decoration-orange-500/40 underline-offset-2 transition-colors hover:text-orange-600">Prefeitura</a>
+        — alvará, auto de regularização, Habite-se e certificado de acessibilidade — e do
+        <a href="/servicos/regularizacao/cetesb" class="cursor-pointer underline decoration-orange-500/40 underline-offset-2 transition-colors hover:text-orange-600">licenciamento ambiental na CETESB</a>.
+        {site.legalName} — CNPJ {site.cnpj}.
+      </p>
+    </div>
+  </Section>
+</BaseLayout>
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify(serviceLd)} />
+<script is:inline type="application/ld+json" set:html={JSON.stringify(faqLd)} />
+<script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />

@@ -14,11 +14,16 @@ import { site, fullAddress, whatsappUrl, mapDirectionsUrl } from '../../data/sit
 import { footerNav } from '../../data/navigation';
 import logoFull from '../../assets/logo/mdk-logo-full-light.png';
 import Icon from '../ui/Icon.astro';
+import { requiredAttributions } from '../../lib/images';
 
 // Ano fixo: `new Date()` num build estatico congela o ano do momento do build e
 // passa a mentir na virada. Atualizar aqui a cada ano, ou trocar por um script
 // no cliente se o cliente preferir.
 const year = 2026;
+
+/* Creditos que a licenca das imagens obriga a publicar. Vazio enquanto nao
+   houver imagem CC BY/CC BY-SA no manifesto — a linha some sozinha. */
+const creditosObrigatorios = requiredAttributions();
 
 const socials = [
   { name: 'instagram', label: 'Instagram', href: site.social.instagram },
@@ -235,9 +240,18 @@ const socials = [
       <p>
         © {year} {site.legalName} — CNPJ {site.cnpj}. Todos os direitos reservados.
       </p>
-      <p class="md:text-right">
-        Imagens do acervo da {site.name} e de banco de imagens (Pexels).
-      </p>
+      {/* A segunda linha so aparece quando ha imagem CC BY/CC BY-SA no
+          manifesto — hoje as fotos de casa de bombas e de sprinkler, vindas do
+          Wikimedia Commons. Essas licencas OBRIGAM o credito ao autor; a do
+          Pexels nao. Ver `requiredAttributions()` em src/lib/images.ts. */}
+      <div class="md:text-right">
+        <p>Imagens do acervo da {site.name}, de banco de imagens (Pexels) e do Wikimedia Commons.</p>
+        {
+          creditosObrigatorios.length > 0 && (
+            <p class="mt-1 text-white/40">Fotos sob Creative Commons: {creditosObrigatorios.join('; ')}.</p>
+          )
+        }
+      </div>
     </div>
   </div>
 </footer>

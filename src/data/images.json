@@ -306,5 +306,154 @@
     "photographer": "Enviada pelo cliente",
     "photographerUrl": "https://www.mdkengenharia.com.br/",
     "sourceUrl": "https://www.mdkengenharia.com.br/"
+  },
+  "spda-descarga": {
+    "file": "spda-descarga.webp",
+    "alt": "Descarga atmosférica sobre edificações em área urbana durante tempestade",
+    "photographer": "Donovan Kelly",
+    "photographerUrl": "https://www.pexels.com/@donovan-kelly-110228397",
+    "sourceUrl": "https://www.pexels.com/photo/high-rise-buildings-in-the-city-during-nighttime-13210826/"
+  },
+  "incendio-extintor": {
+    "file": "incendio-extintor.webp",
+    "alt": "Extintor de pó químico ABC instalado em suporte de parede, com rótulo de instruções de uso",
+    "photographer": "Jaycee300s",
+    "photographerUrl": "https://www.pexels.com/@jaycee300s-3059779",
+    "sourceUrl": "https://www.pexels.com/photo/exstinguisher-at-airbnb-18071862/"
+  },
+  "incendio-abrigo-mangueiras": {
+    "file": "incendio-abrigo-mangueiras.webp",
+    "alt": "Abrigo de mangueiras de incêndio e hidrante de coluna instalados na fachada de uma edificação",
+    "photographer": "Srattha Nualsate",
+    "photographerUrl": "https://www.pexels.com/@srattha-nualsate-2695613",
+    "sourceUrl": "https://www.pexels.com/photo/fire-hydrant-on-the-street-13060858/"
+  },
+  "incendio-hidrante-coluna": {
+    "file": "incendio-hidrante-coluna.webp",
+    "alt": "Hidrante de coluna com registros e engate rápido, instalado junto à parede",
+    "photographer": "Engin Akyurt",
+    "photographerUrl": "https://www.pexels.com/@enginakyurt",
+    "sourceUrl": "https://www.pexels.com/photo/fire-hydrant-beside-cobblestone-wall-12133994/"
+  },
+  "incendio-gongo-alarme": {
+    "file": "incendio-gongo-alarme.webp",
+    "alt": "Gongo hidráulico de alarme ligado à tubulação vermelha de um sistema de chuveiros automáticos",
+    "photographer": "Steppe Walker",
+    "photographerUrl": "https://www.pexels.com/@steppewalker",
+    "sourceUrl": "https://www.pexels.com/photo/red-fire-alarm-bell-on-exterior-wall-in-hong-kong-36595991/"
+  },
+  "incendio-rota-fuga": {
+    "file": "incendio-rota-fuga.webp",
+    "alt": "Sinalização de rota de fuga iluminada em corredor de edificação",
+    "photographer": "Sami  Aksu",
+    "photographerUrl": "https://www.pexels.com/@sami-aksu-48867324",
+    "sourceUrl": "https://www.pexels.com/photo/a-green-and-white-exit-sign-hanging-on-metal-bar-11606737/"
+  },
+  "incendio-galpao": {
+    "file": "incendio-galpao.webp",
+    "alt": "Interior de galpão com tubulação aparente sob a laje e sinalização de saída de emergência",
+    "photographer": "Wenxin Dong",
+    "photographerUrl": "https://www.pexels.com/@wenxin-dong-450439949",
+    "sourceUrl": "https://www.pexels.com/photo/interior-of-an-empty-warehouse-16924265/"
+  },
+  "incendio-sirene": {
+    "file": "incendio-sirene.webp",
+    "alt": "Sirene audiovisual de alarme de incêndio instalada no teto",
+    "photographer": "Caleb Oquendo",
+    "photographerUrl": "https://www.pexels.com/@caleboquendo",
+    "sourceUrl": "https://www.pexels.com/photo/ceiling-mounted-fire-alarm-system-in-building-39183052/"
+  },
+  "incendio-manometros": {
+    "file": "incendio-manometros.webp",
+    "alt": "Manômetros em linha, instalados na tubulação isolada de uma sala técnica",
+    "photographer": "Vladimir Srajber",
+    "photographerUrl": "https://www.pexels.com/@vladimirsrajber",
+    "sourceUrl": "https://www.pexels.com/photo/meters-on-pipes-19841125/"
+  },
+  "incendio-barrilete": {
+    "file": "incendio-barrilete.webp",
+    "alt": "Distribuidor metálico de água para mangueiras de combate a incêndio, com registros de manobra",
+    "photographer": "Brett Sayles",
+    "photographerUrl": "https://www.pexels.com/@brett-sayles",
+    "sourceUrl": "https://www.pexels.com/photo/fire-extinguishing-equipment-with-water-distribution-system-7146867/"
+  },
+  "incendio-casa-bombas": {
+    "file": "incendio-casa-bombas.webp",
+    "alt": "Casa de bombas de incêndio: conjunto de bombas e motor sobre base, barrilete, registros de manobra e painel de comando",
+    "photographer": "Kgbo",
+    "photographerUrl": "https://commons.wikimedia.org/wiki/File:Fire_pumps_plantroom,_Sydney,_2022.jpg",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Fire_pumps_plantroom,_Sydney,_2022.jpg",
+    "source": "Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "attribution": "Kgbo, via Wikimedia Commons (CC BY-SA 4.0)"
+  },
+  "incendio-sprinkler": {
+    "file": "incendio-sprinkler.webp",
+    "alt": "Chuveiro automático de incêndio do tipo fusível, instalado no teto, em detalhe",
+    "photographer": "Stebanoid",
+    "photographerUrl": "https://commons.wikimedia.org/wiki/File:Fusable_link_sprinkler_head.jpg",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Fusable_link_sprinkler_head.jpg",
+    "source": "Wikimedia Commons",
+    "license": "CC0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "attribution": "Stebanoid, via Wikimedia Commons (CC0)"
+  },
+  "cartaz-incendio-mdk": {
+    "file": "cartaz-incendio-mdk.webp",
+    "alt": "Peça da MDK Engenharia sobre proteção contra incêndio, com extintores de CO2, pó químico e espuma, detector de fumaça, acionador manual e carretel de mangueira",
+    "photographer": "MDK Engenharia",
+    "photographerUrl": "https://www.mdkengenharia.com.br",
+    "sourceUrl": "https://www.mdkengenharia.com.br",
+    "source": "Acervo da MDK Engenharia"
+  },
+  "imovel-equipe-vistoria": {
+    "file": "imovel-equipe-vistoria.jpg",
+    "alt": "Equipe de engenharia com colete e capacete conferindo documentação em vistoria",
+    "photographer": "Mikael Blomkvist",
+    "photographerUrl": "https://www.pexels.com/@mikael-blomkvist",
+    "sourceUrl": "https://www.pexels.com/photo/a-man-and-a-woman-wearing-hardhats-standing-near-a-metal-structure-8961002/"
+  },
+  "imovel-levantamento-campo": {
+    "file": "imovel-levantamento-campo.jpg",
+    "alt": "Topógrafo operando estação total no levantamento de um terreno",
+    "photographer": "Mukhtar Shuaib Mukhtar",
+    "photographerUrl": "https://www.pexels.com/@akoonie",
+    "sourceUrl": "https://www.pexels.com/photo/construction-worker-using-survey-equipment-outdoors-30379883/"
+  },
+  "imovel-prancha-projeto": {
+    "file": "imovel-prancha-projeto.jpg",
+    "alt": "Planta técnica sobre a prancheta, com escalímetro e instrumentos de desenho",
+    "photographer": "Tima Miroshnichenko",
+    "photographerUrl": "https://www.pexels.com/@tima-miroshnichenko",
+    "sourceUrl": "https://www.pexels.com/photo/printed-designs-and-drawings-over-the-work-table-6614747/"
+  },
+  "imovel-escritura-assinatura": {
+    "file": "imovel-escritura-assinatura.jpg",
+    "alt": "Assinatura de documento de imóvel sobre a mesa, com contrato e caneta",
+    "photographer": "cottonbro studio",
+    "photographerUrl": "https://www.pexels.com/@cottonbro",
+    "sourceUrl": "https://www.pexels.com/photo/man-signing-a-contract-6814539/"
+  },
+  "imovel-chaves-entrega": {
+    "file": "imovel-chaves-entrega.jpg",
+    "alt": "Entrega das chaves de um imóvel ao novo proprietário",
+    "photographer": "Kampus Production",
+    "photographerUrl": "https://www.pexels.com/@kampus",
+    "sourceUrl": "https://www.pexels.com/photo/a-couple-receiving-keys-from-a-broker-8730048/"
+  },
+  "imovel-fachada-residencial": {
+    "file": "imovel-fachada-residencial.jpg",
+    "alt": "Fachada de residência de dois pavimentos vista da entrada, com garagem e acesso pavimentado",
+    "photographer": "Max Vakhtbovych",
+    "photographerUrl": "https://www.pexels.com/@artbovich",
+    "sourceUrl": "https://www.pexels.com/photo/modern-house-exterior-design-8134821/"
+  },
+  "imovel-sao-paulo-aerea": {
+    "file": "imovel-sao-paulo-aerea.jpg",
+    "alt": "Vista aérea de São Paulo, com quadras densas de casas e edifícios",
+    "photographer": "K",
+    "photographerUrl": "https://www.pexels.com/@kelly",
+    "sourceUrl": "https://www.pexels.com/photo/downtown-of-sao-paulo-in-brazil-17291130/"
   }
 }

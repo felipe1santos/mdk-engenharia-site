@@ -62,9 +62,38 @@ export function getImage(key: string): SiteImage {
 
 /**
  * Creditos dos fotografos, disponiveis caso o cliente queira exibi-los.
- * A licenca do Pexels nao exige atribuicao, entao hoje o rodape traz apenas a
- * origem. Os nomes ficam registrados em src/data/images.json.
+ * A licenca do Pexels nao exige atribuicao, entao para aquelas o rodape traz
+ * apenas a origem. Os nomes ficam registrados em src/data/images.json.
  */
 export function imageCredits(): string[] {
   return [...new Set(Object.values(manifest).map((m) => m.photographer))].sort();
+}
+
+/**
+ * Creditos que a licenca OBRIGA a exibir.
+ *
+ * As imagens vindas do Wikimedia Commons entram sob Creative Commons, e as CC BY
+ * e CC BY-SA exigem credito ao autor com indicacao da licenca — diferente do
+ * Pexels, que dispensa. Sao poucas, entao o rodape lista uma a uma.
+ *
+ * O CC0 e equivalente a dominio publico e nao obriga nada; fica de fora para a
+ * linha nao inchar. O campo `attribution` so existe nas entradas gravadas por
+ * scripts/fetch-commons.mjs.
+ *
+ * NAO REMOVER A CHAMADA DISSO DO RODAPE enquanto houver imagem CC BY ou CC BY-SA
+ * no manifesto: sem o credito, a publicacao descumpre a licenca.
+ */
+export function requiredAttributions(): string[] {
+  const comLicenca = Object.values(manifest) as Array<{
+    attribution?: string;
+    license?: string;
+  }>;
+
+  return [
+    ...new Set(
+      comLicenca
+        .filter((m) => m.attribution && /^CC BY/i.test(m.license ?? ''))
+        .map((m) => m.attribution!),
+    ),
+  ].sort();
 }

@@ -218,6 +218,18 @@ export const agencies: Agency[] = [
       'Acompanhamento da vistoria',
     ],
     image: 'orgao-bombeiros',
+    /**
+     * O brasao do Corpo de Bombeiros da PM-SP, como o cliente decidiu.
+     *
+     * Chegou a ser trocado pela peca propria da MDK (`cartaz-incendio-mdk`) em
+     * 03/09/2026, e o cliente mandou voltar no mesmo dia. A peca continua no
+     * acervo e em uso na pagina /servicos/regularizacao/bombeiros.
+     *
+     * A ressalva do topo deste arquivo segue de pe e nao foi resolvida: exibir
+     * insignia de orgao publico num card de servico sugere um credenciamento
+     * que a MDK nao tem. Foi apresentada tres vezes; a decisao de publicar
+     * assim e do cliente.
+     */
     cover: 'card-bombeiros',
     coverFit: 'contain',
     icon: 'flame',
