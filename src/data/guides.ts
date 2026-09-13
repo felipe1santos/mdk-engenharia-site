@@ -52,6 +52,23 @@ export interface Guide {
   faq: { q: string; a: string }[];
   /** Servicos para onde o guia encaminha, por id de src/data/services.ts. */
   services: string[];
+  /**
+   * Pagina comercial que trata do MESMO assunto do guia, quando existe.
+   *
+   * Existe para resolver um problema criado pelas paginas de campanha: o guia
+   * /guias/regularizacao-de-imovel e a pagina de vendas
+   * /servicos/regularizacao/prefeitura/regularizacao-de-imovel falam do mesmo
+   * tema e disputariam a mesma busca. Duas paginas do mesmo site competindo por
+   * um termo dividem sinal e nenhuma ranqueia bem.
+   *
+   * A divisao e de intencao, e o link a torna explicita: o guia explica o
+   * assunto para quem ainda esta entendendo, e encaminha para a pagina de vendas
+   * quem ja quer contratar. Para o buscador, o link tambem diz qual das duas e o
+   * destino comercial do termo.
+   *
+   * Opcional: guia sem pagina correspondente simplesmente nao mostra o bloco.
+   */
+  pagina?: { href: string; titulo: string; texto: string };
   seo: { title: string; description: string; keywords: string[] };
 }
 
@@ -139,6 +156,12 @@ export const guides: Guide[] = [
       },
     ],
     services: ['regularizacao', 'consultoria-obra'],
+    pagina: {
+      href: '/servicos/regularizacao/prefeitura#habite-se',
+      titulo: 'Habite-se com a MDK',
+      texto:
+        'Conferência do executado, protocolo, acompanhamento da vistoria e orientação da averbação em cartório.',
+    },
     seo: {
       title: 'Habite-se: o que é, documentos e como conseguir | MDK Engenharia',
       description:
@@ -227,6 +250,12 @@ export const guides: Guide[] = [
       },
     ],
     services: ['regularizacao', 'projeto-arquitetonico', 'consultoria-obra'],
+    pagina: {
+      href: '/servicos/regularizacao/prefeitura/regularizacao-de-imovel',
+      titulo: 'Regularização de imóvel com a MDK',
+      texto:
+        'Levantamento, projeto de regularização, processo na prefeitura e averbação — com diagnóstico antes do orçamento.',
+    },
     seo: {
       title: 'Como Regularizar um Imóvel: Passo a Passo | MDK Engenharia',
       description:
@@ -426,6 +455,12 @@ export const guides: Guide[] = [
       },
     ],
     services: ['regularizacao', 'projeto-arquitetonico', 'projeto-estrutural'],
+    pagina: {
+      href: '/servicos/regularizacao/prefeitura#aprovacao-e-alvara',
+      titulo: 'Aprovação e alvará com a MDK',
+      texto:
+        'Consulta de zoneamento, projeto legal e condução do processo até o alvará de aprovação e execução.',
+    },
     seo: {
       title: 'Aprovação de Projeto na Prefeitura: Etapas e Documentos | MDK Engenharia',
       description:

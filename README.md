@@ -3,8 +3,9 @@
 Site da MDK Engenharia e Arquitetura LTDA - ME (São Paulo/SP). Astro 5 + Tailwind 4,
 saída estática.
 
-São 35 páginas: home, institucional, portfólio, áreas de atuação, contato, uma página por
-disciplina de serviço, quatro guias técnicos e sete recortes de SEO local.
+São 37 páginas: home, institucional, portfólio, áreas de atuação, contato, uma página por
+disciplina de serviço, quatro guias técnicos, sete recortes de SEO local e as páginas de
+regularização por órgão e por assunto.
 
 | Rota | Conteúdo |
 |---|---|
@@ -12,7 +13,10 @@ disciplina de serviço, quatro guias técnicos e sete recortes de SEO local.
 | `/sobre` | História, missão/visão/valores e direção técnica |
 | `/servicos` | Índice das frentes, divididas entre projeto e obra |
 | `/servicos/[slug]` | Uma página por disciplina — escopo, entregáveis, normas e FAQ |
-| `/servicos/regularizacao/[slug]` | Prefeitura, Corpo de Bombeiros e CETESB — o que resolvemos em cada órgão |
+| `/servicos/regularizacao/[slug]` | Página de órgão gerada de `agencies.ts` — hoje só a CETESB |
+| `/servicos/regularizacao/bombeiros` | Página de vendas de combate a incêndio (mídia paga) |
+| `/servicos/regularizacao/prefeitura` | Página-mãe da frente de prefeitura: índice dos quatro assuntos |
+| `/servicos/regularizacao/prefeitura/[assunto]` | Uma página de vendas por assunto — hoje só `regularizacao-de-imovel` |
 | `/projetos` | Obras em andamento e concluídas |
 | `/areas-de-atuacao` | Cobertura presencial e remota, cidades atendidas e mapa |
 | `/areas-de-atuacao/zona-norte-sp` | Hub do SEO local: sede, critério do recorte e regiões |
@@ -23,6 +27,29 @@ disciplina de serviço, quatro guias técnicos e sete recortes de SEO local.
 
 As páginas de serviço são geradas de `src/data/services.ts`. Serviço sem o campo `detail`
 não vira rota — é o mecanismo para publicar em etapas sem deixar link quebrado.
+
+### Páginas de campanha (mídia paga)
+
+Órgão que vira destino de anúncio ganha página própria e sai do `getStaticPaths` de
+`regularizacao/[slug].astro` — rota estática e dinâmica emitiriam o mesmo arquivo no build.
+Aconteceu duas vezes, por motivos diferentes:
+
+- **`bombeiros`** virou página de vendas: o template explica um balcão, e uma página que
+  recebe clique de anúncio precisa fechar contato sozinha.
+- **`prefeitura`** virou página-mãe: o balcão tem quatro assuntos buscados separadamente
+  (regularização de imóvel, Habite-se, aprovação e alvará, desdobro de lote), e uma página
+  que fala dos quatro converte pior do que quatro que falam de um cada.
+
+O índice dos assuntos está em `src/data/prefeitura-topics.ts`. Assunto sem página própria
+aponta para a âncora da sua seção na página-mãe, que traz o conteúdo completo do tema —
+então nenhum card leva a lugar nenhum, e publicar uma nova página é trocar `href` e `tipo`
+de uma entrada. O cabeçalho daquele arquivo explica o mecanismo.
+
+**Nenhuma dessas páginas publica número que a MDK não possa comprovar.** As duas referências
+que o cliente mandou (Nexxer e Fortezza) afirmam percentual de desvalorização, percentual de
+imóveis irregulares no país e prazo fechado de processo, sem fonte para nenhum. Onde a
+referência põe percentual, as páginas da MDK põem a consequência jurídica concreta — que é
+verificável e não é motivo de reprovação de anúncio por afirmação não comprovável.
 
 ### SEO: guias e recortes locais
 

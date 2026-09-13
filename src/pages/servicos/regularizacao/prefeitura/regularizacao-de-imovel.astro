@@ -1,0 +1,1278 @@
+---
+/**
+ * /servicos/regularizacao/prefeitura/regularizacao-de-imovel
+ * PAGINA DE VENDAS DE REGULARIZACAO DE IMOVEL.
+ *
+ * Primeira das paginas de assunto da frente de prefeitura. A pagina-mae
+ * (`regularizacao/prefeitura.astro`) explica o balcao e distribui; esta fecha
+ * contato sozinha, porque e o destino do trafego pago de "regularizar imovel",
+ * "regularizacao imobiliaria" e "auto de regularizacao". As outras tres —
+ * habite-se, aprovacao e alvara, desdobro de lote — viram paginas iguais a esta
+ * conforme o cliente for abrindo campanha; o indice em
+ * src/data/prefeitura-topics.ts ja esta preparado para receber a URL de cada uma.
+ *
+ * ESTRUTURA. Segue o esqueleto das duas referencias que o cliente mandou em
+ * 13/09/2026 — nexxer.com.br e a LP da Fortezza Engenharia — porque as duas
+ * funcionam e ele disse expressamente que gostou da segunda, "mais direta ao
+ * ponto": reconhecimento de situacao, custo de nao resolver, metodo em etapas,
+ * o que muda depois, prova, FAQ, contato. O que NAO veio junto foram os numeros.
+ *
+ * NENHUM PERCENTUAL FOI COPIADO, E ISSO E DELIBERADO. As duas referencias
+ * afirmam coisas como "70% dos imoveis do Brasil sao irregulares", "seu imovel
+ * pode valer ate 50% mais" e "de 60 a 120 dias". Nao ha fonte para nenhuma
+ * delas, e numero inventado em pagina de servico de engenharia e risco duplo:
+ * publicidade enganosa no CDC e, no Google Ads, motivo de reprovacao por
+ * "afirmacoes nao comprovaveis". Onde a referencia poe percentual, esta pagina
+ * poe a consequencia juridica concreta — que e verificavel e, para quem esta
+ * com o negocio travado, mais convincente.
+ *
+ * PRAZO. Mesma regra: a pagina nao promete prazo fechado. Processo de prefeitura
+ * depende do orgao e da complexidade do caso, e a unica promessa honesta e a de
+ * diagnostico antes do orcamento — que e a que o cliente ja faz nas outras
+ * paginas.
+ *
+ * ACERVO DE IMAGENS. Todas `imovel-*`, exclusivas desta pagina e da pagina-mae.
+ * Vale aqui o veto que o cliente deu em 03/09/2026 na pagina de bombeiros:
+ * pagina de campanha que repete a foto da home nao se distingue da home. A foto
+ * vertical da equipe ao lado do texto e a copia do enquadramento da secao
+ * "Expansao sem riscos" da Nexxer, que foi o pedido explicito.
+ *
+ * O WhatsApp usa mensagem propria, inclusive no botao flutuante: numa pagina que
+ * recebe midia paga, o texto que chega escrito na conversa e o unico rastro que
+ * separa esse lead do organico.
+ */
+import { Image } from 'astro:assets';
+/* Lockup branco completo, como na capa de /servicos/regularizacao/bombeiros. A
+   navbar usa a versao curta; numa capa de campanha cabe a marca por extenso. */
+import logoFull from '../../../../assets/logo/mdk-logo-full-light.png';
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import Team from '../../../../components/home/Team.astro';
+import FinalCta from '../../../../components/home/FinalCta.astro';
+import Section from '../../../../components/ui/Section.astro';
+import SectionTitle from '../../../../components/ui/SectionTitle.astro';
+import Button from '../../../../components/ui/Button.astro';
+import Icon from '../../../../components/ui/Icon.astro';
+import { site, whatsappUrlFor, yearsInBusiness } from '../../../../data/site';
+import { getImage } from '../../../../lib/images';
+
+const wa = whatsappUrlFor(
+  'Vim pelo site e quero regularizar meu imóvel. Posso mandar o endereço e o que existe construído?',
+);
+
+const capaImg = getImage('imovel-fachada-residencial');
+/* A foto no formato da Nexxer: vertical, equipe tecnica em campo. */
+const equipeImg = getImage('imovel-equipe-vistoria');
+const levantamentoImg = getImage('imovel-levantamento-campo');
+const pranchaImg = getImage('imovel-prancha-projeto');
+const escrituraImg = getImage('imovel-escritura-assinatura');
+const chavesImg = getImage('imovel-chaves-entrega');
+const cidadeImg = getImage('imovel-sao-paulo-aerea');
+
+const pageTitle = 'Regularização de Imóvel em São Paulo | Auto de Regularização e Averbação | MDK';
+const pageDescription =
+  'Regularização de imóvel construído sem alvará ou fora do projeto aprovado em São Paulo e Grande SP. Levantamento, projeto de regularização, protocolo na prefeitura e averbação em cartório. Diagnóstico antes do orçamento.';
+const pageKeywords = [
+  'regularização de imóvel',
+  'regularizar imóvel São Paulo',
+  'legalização imobiliária',
+  'auto de regularização',
+  'regularização de construção',
+  'regularização de obra sem alvará',
+  'averbação de construção em cartório',
+  'regularização de imóvel para financiamento',
+  'imóvel irregular o que fazer',
+  'regularização de ampliação e edícula',
+  'Lei 17.202/2019 regularização São Paulo',
+  'engenheiro para regularizar imóvel Zona Norte',
+];
+
+const heroBullets = [
+  'Levantamento do que existe construído hoje e diagnóstico do que a lei permite manter',
+  'Projeto de regularização, protocolo na prefeitura e resposta às exigências até o auto sair',
+  'Orientação da averbação em cartório — que é o que faz a área construída entrar na matrícula',
+];
+
+/* Fatos verificaveis, todos derivados de src/data/site.ts. Nenhum numero escrito
+   a mao, entao nenhum envelhece sozinho — e nenhum e afirmacao de marketing. */
+const provas = [
+  { valor: `${yearsInBusiness} anos`, rotulo: `No mercado desde ${site.foundedYear}` },
+  { valor: 'Engenharia própria', rotulo: 'Do levantamento à averbação' },
+  { valor: '3 órgãos', rotulo: 'Prefeitura, Bombeiros e CETESB' },
+  { valor: 'CNPJ', rotulo: site.cnpj },
+];
+
+/*
+ * Reconhecimento de situacao — o bloco que a LP da Fortezza abre com "Isso
+ * aconteceu com voce?".
+ *
+ * E o mais importante da pagina para midia paga. Quem clica no anuncio nao
+ * procura "auto de regularizacao": procura resolver uma venda travada. A secao
+ * existe para essa pessoa se achar em uma linha e clicar sem ler o resto.
+ */
+const situacoes = [
+  {
+    icon: 'document' as const,
+    titulo: 'A venda travou na documentação',
+    texto:
+      'O comprador pediu a matrícula, e a área construída não consta lá. Sem averbação, o negócio para no cartório — e costuma ser descoberto com a proposta já aceita.',
+  },
+  {
+    icon: 'building' as const,
+    titulo: 'O banco recusou o financiamento',
+    texto:
+      'O banco trabalha com a matrícula, não com a realidade. Se a construção não está averbada, ela não entra na avaliação de garantia e o financiamento não sai.',
+  },
+  {
+    icon: 'hammer' as const,
+    titulo: 'Construí ou ampliei sem alvará',
+    texto:
+      'Edícula, segundo pavimento, área de serviço fechada, galpão nos fundos. Foi executado, funciona, e não existe em nenhum papel da prefeitura.',
+  },
+  {
+    icon: 'shield' as const,
+    titulo: 'Recebi notificação ou multa',
+    texto:
+      'A fiscalização autuou, embargou ou deu prazo. Aqui a ordem importa: responder o processo administrativo e regularizar são coisas diferentes, e precisam andar juntas.',
+  },
+  {
+    icon: 'clipboard' as const,
+    titulo: 'Recebi de herança e nada bate',
+    texto:
+      'Inventário aberto, planta antiga, imóvel reformado por três gerações. O inventário não fecha enquanto o que está na matrícula não corresponder ao que está de pé.',
+  },
+  {
+    icon: 'factory' as const,
+    titulo: 'Preciso do alvará de funcionamento',
+    texto:
+      'Ponto alugado, atividade pronta para abrir, e a prefeitura pede a documentação da edificação antes da licença. Sem imóvel regular, o negócio não abre.',
+  },
+];
+
+/*
+ * Custo de nao resolver.
+ *
+ * Cada item e consequencia juridica ou pratica verificavel — nao ha percentual
+ * de desvalorizacao aqui, pela razao explicada no topo do arquivo.
+ */
+const riscos = [
+  {
+    titulo: 'O imóvel não vende pelo que vale',
+    texto:
+      'Comprador que precisa de financiamento fica de fora, e sobra quem paga à vista — que desconta justamente por saber disso. A irregularidade não tira o valor do imóvel, tira o comprador.',
+  },
+  {
+    titulo: 'Multa, embargo e ordem de demolição',
+    texto:
+      'Obra sem licença é infração ao Código de Obras do município. A autuação pode vir a qualquer momento, e a exigência de desfazimento é prevista em lei — não é hipótese remota.',
+  },
+  {
+    titulo: 'Nada que dependa da matrícula anda',
+    texto:
+      'Financiamento, inventário, partilha, garantia bancária e desmembramento passam pelo Registro de Imóveis. Enquanto a construção não estiver averbada, todos ficam parados.',
+  },
+  {
+    titulo: 'O problema encarece com o tempo',
+    texto:
+      'Legislação muda, e o que hoje é regularizável pode deixar de ser. Cada obra nova feita por cima de uma irregularidade também aumenta o que vai precisar ser adequado depois.',
+  },
+];
+
+/*
+ * As quatro frentes do servico, no formato da secao "Expansao sem riscos" da
+ * Nexxer: foto vertical a esquerda, texto e quatro cards curtos a direita.
+ */
+const frentes = [
+  {
+    sigla: 'Levantamento',
+    titulo: 'Cadastral e arquitetônico',
+    texto: 'Medição em campo de tudo que está construído, inclusive o que nunca foi projetado.',
+  },
+  {
+    sigla: 'Viabilidade',
+    titulo: 'Análise técnica e legal',
+    texto: 'O que a lei vigente admite manter, o que exige adequação e o que não tem caminho.',
+  },
+  {
+    sigla: 'Projeto',
+    titulo: 'Peças de regularização',
+    texto: 'Plantas, memorial, quadro de áreas e as ARTs/RRTs no padrão que o município exige.',
+  },
+  {
+    sigla: 'Processo',
+    titulo: 'Protocolo e exigências',
+    texto: 'Condução do processo no órgão e resposta técnica a cada comunicado, até a emissão.',
+  },
+];
+
+/* O metodo, etapa a etapa. E a secao "O Metodo Fortezza" — com o conteudo que a
+   MDK de fato executa, e sem prazo prometido. */
+const metodo = [
+  {
+    titulo: 'Diagnóstico',
+    texto:
+      'Lemos a matrícula, o espelho de IPTU e o que já foi aprovado, cruzamos com o zoneamento do lote e comparamos com o que está construído. É aqui que aparece se o caminho é regularização, adequação prévia ou aprovação nova — e se existe caminho.',
+  },
+  {
+    titulo: 'Levantamento em campo',
+    texto:
+      'Visita técnica e medição do imóvel como ele está hoje. É o que transforma "acho que tem uns 180 metros" em quadro de áreas defensável diante do órgão.',
+  },
+  {
+    titulo: 'Projeto de regularização',
+    texto:
+      'Montagem das peças técnicas no padrão do município, com memorial descritivo, quadro de áreas e responsabilidade técnica registrada em ART ou RRT.',
+  },
+  {
+    titulo: 'Protocolo e exigências',
+    texto:
+      'Abertura do processo no sistema eletrônico da prefeitura, recolhimento de taxas e resposta a cada comunicado de exigência. É a etapa que mais alonga processo quando mal conduzida, e onde a experiência com o balcão pesa mais que o desenho.',
+  },
+  {
+    titulo: 'Emissão e averbação',
+    texto:
+      'Saída do Auto de Regularização e orientação da averbação no Registro de Imóveis — o passo final, e o único que faz a construção existir na matrícula.',
+  },
+];
+
+/* O que muda depois. Beneficios concretos, sem percentual. */
+const ganhos = [
+  {
+    icon: 'check' as const,
+    titulo: 'A matrícula passa a descrever o imóvel real',
+    texto:
+      'A área construída entra no Registro de Imóveis. É o que o comprador, o banco e o inventário consultam — e a partir daí todos enxergam o imóvel inteiro.',
+  },
+  {
+    icon: 'building' as const,
+    titulo: 'O comprador consegue financiar',
+    texto:
+      'Com a construção averbada, o imóvel volta a atender ao que o banco exige como garantia. O universo de compradores deixa de ser só quem paga à vista.',
+  },
+  {
+    icon: 'shield' as const,
+    titulo: 'Acaba a exposição a multa e embargo',
+    texto:
+      'Edificação regular não é passível de autuação por falta de licença. O risco sai do seu patrimônio e da sua agenda.',
+  },
+  {
+    icon: 'document' as const,
+    titulo: 'Destrava o que depende de documentação',
+    texto:
+      'Inventário, partilha, desmembramento, alvará de funcionamento, financiamento e uso do imóvel como garantia voltam a andar.',
+  },
+];
+
+/* Tipos de imovel atendidos. Serve de reconhecimento e de cauda longa de busca:
+   cada linha e uma consulta que alguem faz com essas palavras. */
+const tipos = [
+  { icon: 'building' as const, rotulo: 'Casa e sobrado' },
+  { icon: 'hammer' as const, rotulo: 'Ampliação e edícula' },
+  { icon: 'pillar' as const, rotulo: 'Prédio residencial' },
+  { icon: 'factory' as const, rotulo: 'Galpão e indústria' },
+  { icon: 'clipboard' as const, rotulo: 'Loja e comércio' },
+  { icon: 'ruler' as const, rotulo: 'Terreno e lote' },
+];
+
+const documentosIniciais = [
+  'Matrícula atualizada do imóvel',
+  'IPTU ou espelho cadastral do lote',
+  'Projeto anteriormente aprovado, se houver',
+  'Documento de identificação do proprietário',
+  'Notificação ou auto de infração, se já existir',
+  'Fotos do que está construído hoje',
+];
+
+const normas = [
+  'Lei Municipal 17.202/2019 — regularização de edificações no Município de São Paulo',
+  'Lei Municipal 16.642/2017 — Código de Obras e Edificações de São Paulo',
+  'Lei Municipal 16.402/2016 — Parcelamento, Uso e Ocupação do Solo de São Paulo',
+  'Lei Federal 6.015/1973 — Registros Públicos, que rege a averbação da construção',
+  'Lei Federal 13.465/2017 — regularização fundiária urbana (Reurb)',
+  'NBR 13532 — elaboração de projetos de edificações: arquitetura',
+  'NBR 9050 — acessibilidade, quando a edificação for de uso coletivo',
+  'Legislação municipal específica, quando o imóvel ficar fora da capital',
+];
+
+const faq = [
+  {
+    q: 'Dá para regularizar qualquer imóvel?',
+    a: 'Não. Construção sobre recuo obrigatório, em área não edificável, invadindo faixa de servidão ou acima do que o zoneamento admite pode não ter caminho sem adequação física — às vezes demolição parcial. O diagnóstico existe justamente para descobrir isso antes de um processo ser protocolado, e não depois de pago.',
+  },
+  {
+    q: 'Quanto tempo demora?',
+    a: 'Depende muito mais do órgão e da complexidade do caso do que do projeto. Processo simples, com o imóvel dentro do que a lei admite, corre mais rápido; caso que exige adequação física antes do protocolo leva o tempo da obra mais o do processo. Damos a estimativa depois do diagnóstico — antes disso, qualquer prazo seria chute.',
+  },
+  {
+    q: 'Quanto custa?',
+    a: 'O valor depende da área construída, da complexidade e de quanto do que existe precisa ser levantado do zero. Não trabalhamos com tabela fechada porque ela só funcionaria chutando para cima. O diagnóstico vem antes do orçamento, e o orçamento sai com escopo detalhado.',
+  },
+  {
+    q: 'Qual a diferença entre regularizar e tirar o Habite-se?',
+    a: 'O Habite-se, ou Certificado de Conclusão, é para obra que foi aprovada e executada conforme o projeto — ele só atesta a conclusão. A regularização é para obra que foi construída sem licença ou diferente do aprovado: ela cria a licença que nunca existiu. Se a obra saiu diferente do projeto, o caminho é regularizar primeiro.',
+  },
+  {
+    q: 'Já tenho o auto da prefeitura. Está resolvido?',
+    a: 'Falta a parte mais esquecida: a averbação. O documento da prefeitura autoriza, mas quem registra é o cartório. Enquanto a construção não for averbada na matrícula, para o banco e para o comprador o imóvel continua sendo só o terreno com o que estava registrado antes.',
+  },
+  {
+    q: 'Posso vender enquanto regularizo?',
+    a: 'Negociar, sim — é comum o processo correr em paralelo com a negociação, e às vezes com o comprador participando do custo. O que não dá é escriturar a construção antes de ela estar averbada. Vale combinar isso no contrato, e não descobrir na hora da assinatura.',
+  },
+  {
+    q: 'Vocês atendem imóvel fora da capital?',
+    a: 'Sim. Atendemos São Paulo e a Grande São Paulo. Em outro município muda a lei aplicável e o sistema de protocolo, não o roteiro do serviço — o diagnóstico já leva a legislação local em conta.',
+  },
+  {
+    q: 'Preciso contratar a obra com vocês também?',
+    a: 'Não. A regularização é um serviço fechado em si. Se o diagnóstico apontar adequação física necessária, apresentamos o escopo e você decide quem executa — podemos executar, acompanhar tecnicamente ou apenas especificar.',
+  },
+];
+
+const relacionadas = [
+  {
+    href: '/servicos/regularizacao/prefeitura',
+    icon: 'building' as const,
+    titulo: 'Prefeitura',
+    texto: 'A frente completa: alvará, Habite-se, desdobro e acessibilidade.',
+  },
+  {
+    href: '/servicos/regularizacao/bombeiros',
+    icon: 'flame' as const,
+    titulo: 'Corpo de Bombeiros',
+    texto: 'Projeto de incêndio, AVCB e CLCB — exigidos para imóvel comercial.',
+  },
+  {
+    href: '/servicos/regularizacao/cetesb',
+    icon: 'leaf' as const,
+    titulo: 'CETESB',
+    texto: 'Dispensa e licenciamento ambiental, quando a atividade exigir.',
+  },
+  {
+    href: '/servicos/projeto-arquitetonico',
+    icon: 'blueprint' as const,
+    titulo: 'Projeto arquitetônico',
+    texto: 'Para quem vai construir ou ampliar — aprovar antes é sempre mais barato.',
+  },
+];
+
+const serviceLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Regularização de imóvel em São Paulo',
+  description: pageDescription,
+  serviceType: 'Regularização de edificação junto à Prefeitura e averbação em cartório',
+  provider: { '@id': `${Astro.site}#organization` },
+  areaServed: { '@type': 'AdministrativeArea', name: 'São Paulo e Região Metropolitana' },
+  url: new URL(Astro.url.pathname, Astro.site).href,
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Etapas da regularização de imóvel',
+    itemListElement: metodo.map((m) => ({
+      '@type': 'Offer',
+      itemOffered: { '@type': 'Service', name: m.titulo, description: m.texto },
+    })),
+  },
+};
+
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+/* `HowTo` descreve o roteiro do servico para o buscador. Sem `totalTime`, pela
+   mesma razao pela qual a pagina nao promete prazo. */
+const howToLd = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Como regularizar um imóvel em São Paulo',
+  description:
+    'Roteiro da regularização de uma construção executada sem alvará ou em desacordo com o projeto aprovado, do diagnóstico à averbação em cartório.',
+  step: metodo.map((m, i) => ({
+    '@type': 'HowToStep',
+    position: i + 1,
+    name: m.titulo,
+    text: m.texto,
+  })),
+};
+
+/* A trilha sai a mao: esta pagina nao usa PageHero, e e ele que emite o
+   BreadcrumbList nas paginas internas. */
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { label: 'Home', href: '/' },
+    { label: 'Serviços', href: '/servicos' },
+    { label: 'Documentação e Regularização', href: '/servicos/regularizacao' },
+    { label: 'Prefeitura', href: '/servicos/regularizacao/prefeitura' },
+    { label: 'Regularização de imóvel' },
+  ].map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: c.label,
+    ...(c.href ? { item: new URL(c.href, Astro.site).href } : {}),
+  })),
+};
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  keywords={pageKeywords}
+  whatsappHref={wa}
+>
+  {/* ─────────────────────────── HERO ───────────────────────────
+      Capa diferente da de /servicos/regularizacao/bombeiros, de propósito. Lá a
+      foto ocupa a metade direita e o texto fica sobre o navy sólido, porque a
+      fotografia é técnica — placa de rota de fuga — e some sob cortina.
+
+      Aqui o assunto é o imóvel inteiro, e a foto PRECISA ser lida como imóvel à
+      primeira vista: é ela que diz em meio segundo do que a página trata. Então
+      volta o formato de foto sangrada com cortina por cima, que é o da
+      referência da Fortezza. A cortina é dupla e assimétrica — opaca à esquerda,
+      onde fica o texto, e leve à direita, onde a casa aparece.
+
+      `isolate` é obrigatório: sem contexto de empilhamento próprio, os filhos
+      com z-index negativo escapam para a raiz e a foto some atrás do fundo navy. */}
+  <section
+    class="relative isolate flex min-h-[92svh] items-center overflow-hidden bg-navy-900 pb-20 pt-32 sm:pb-28 sm:pt-40"
+  >
+    <Image
+      src={capaImg.src}
+      alt={capaImg.alt}
+      widths={[700, 1200, 1800]}
+      sizes="100vw"
+      class="absolute inset-0 -z-20 h-full w-full object-cover object-center"
+      loading="eager"
+      fetchpriority="high"
+    />
+
+    <div
+      class="absolute inset-0 -z-10 bg-gradient-to-r from-navy-900 via-navy-900/85 to-navy-900/45"
+      aria-hidden="true"
+    >
+    </div>
+    <div
+      class="absolute inset-0 -z-10 bg-gradient-to-t from-navy-900 via-navy-900/20 to-navy-900/70"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div
+      class="absolute inset-0 -z-10 overflow-hidden"
+      style="mask-image: radial-gradient(120% 100% at 20% 40%, #000 20%, transparent 80%); -webkit-mask-image: radial-gradient(120% 100% at 20% 40%, #000 20%, transparent 80%);"
+      aria-hidden="true"
+    >
+      <div class="bg-grid animate-grid-drift absolute -inset-40 text-white/[0.06]"></div>
+    </div>
+
+    <div class="mx-auto w-full max-w-7xl px-5 sm:px-8">
+      <nav aria-label="Trilha de navegação" data-reveal>
+        <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-white/50">
+          <li>
+            <a href="/" class="cursor-pointer transition-colors hover:text-orange-400">Home</a>
+          </li>
+          <li class="flex items-center gap-2">
+            <Icon name="chevron-down" class="h-3 w-3 -rotate-90 text-white/30" />
+            <a href="/servicos" class="cursor-pointer transition-colors hover:text-orange-400">
+              Serviços
+            </a>
+          </li>
+          <li class="flex items-center gap-2">
+            <Icon name="chevron-down" class="h-3 w-3 -rotate-90 text-white/30" />
+            <a
+              href="/servicos/regularizacao/prefeitura"
+              class="cursor-pointer transition-colors hover:text-orange-400"
+            >
+              Prefeitura
+            </a>
+          </li>
+          <li class="flex items-center gap-2">
+            <Icon name="chevron-down" class="h-3 w-3 -rotate-90 text-white/30" />
+            <span class="text-white/75">Regularização de imóvel</span>
+          </li>
+        </ol>
+      </nav>
+
+      <div class="mt-10 max-w-2xl">
+        <Image
+          src={logoFull}
+          alt="MDK Engenharia e Arquitetura"
+          widths={[220, 440]}
+          sizes="220px"
+          class="mb-8 h-14 w-auto"
+          loading="eager"
+          data-reveal
+        />
+
+        <p
+          class="inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/80"
+          data-reveal
+        >
+          <span class="h-1.5 w-1.5 rounded-full bg-orange-500" aria-hidden="true"></span>
+          Regularização de imóvel · São Paulo e Grande SP
+        </p>
+
+        <h1
+          class="mt-6 text-[2.25rem] leading-[1.1] text-white sm:text-5xl lg:text-[3.5rem]"
+          data-reveal
+          style="--reveal-delay:80ms"
+        >
+          Seu imóvel existe. <span class="text-orange-500">Na matrícula, ainda não.</span>
+        </h1>
+
+        <p
+          class="mt-6 max-w-xl text-base leading-relaxed text-white/75 sm:text-lg"
+          data-reveal
+          style="--reveal-delay:140ms"
+        >
+          Regularizamos construção feita sem alvará ou fora do projeto aprovado — do levantamento em
+          campo ao Auto de Regularização, até a construção ser averbada em cartório e o imóvel poder
+          ser vendido, financiado e inventariado.
+        </p>
+
+        <ul class="mt-8 space-y-3" data-reveal style="--reveal-delay:200ms">
+          {
+            heroBullets.map((b) => (
+              <li class="flex items-start gap-3 text-sm leading-relaxed text-white/85 sm:text-base">
+                <Icon name="check" class="mt-1 h-4 w-4 shrink-0 text-orange-500" />
+                {b}
+              </li>
+            ))
+          }
+        </ul>
+
+        <div
+          class="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center"
+          data-reveal
+          style="--reveal-delay:260ms"
+        >
+          <Button href={wa} variant="primary" size="lg" external>
+            <Icon name="whatsapp" class="h-5 w-5" />
+            Quero o diagnóstico do meu caso
+            <Icon
+              name="arrow-right"
+              class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+            />
+          </Button>
+          <Button href={`tel:${site.contact.phoneE164}`} variant="outline" size="lg">
+            <Icon name="phone" class="h-5 w-5" />
+            {site.contact.phoneDisplay}
+          </Button>
+        </div>
+
+        <p class="mt-6 text-sm text-white/45" data-reveal style="--reveal-delay:320ms">
+          {site.contact.hours} · O diagnóstico vem antes do orçamento
+        </p>
+      </div>
+    </div>
+
+    {/* Cartão de credencial sobreposto à capa. `hidden lg:block` porque em tela
+        estreita ele cobriria o H1; os mesmos dados reaparecem no bloco de
+        identificação no fim da página, então nada se perde. */}
+    <div
+      class="absolute bottom-12 right-8 z-10 hidden w-72 rounded-2xl border border-white/10 bg-navy-900/85 p-6 shadow-card-hover backdrop-blur lg:block xl:right-16"
+      data-reveal
+      style="--reveal-delay:380ms"
+    >
+      <p class="text-[0.6875rem] font-bold uppercase tracking-[0.18em] text-orange-400">
+        Empresa registrada
+      </p>
+      <p class="mt-3 text-sm font-semibold leading-snug text-white">{site.legalName}</p>
+      <dl class="mt-5 space-y-3 border-t border-white/10 pt-5">
+        <div>
+          <dt class="text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-white/40">CNPJ</dt>
+          <dd class="mt-0.5 font-display text-base font-bold tabular-nums text-white">
+            {site.cnpj}
+          </dd>
+        </div>
+        <div>
+          <dt class="text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-white/40">
+            No mercado desde
+          </dt>
+          <dd class="mt-0.5 font-display text-base font-bold text-white">
+            {site.foundedYear} · {yearsInBusiness} anos
+          </dd>
+        </div>
+        <div>
+          <dt class="text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-white/40">
+            Atendimento
+          </dt>
+          <dd class="mt-0.5">
+            <a
+              href={`tel:${site.contact.phoneE164}`}
+              class="cursor-pointer font-display text-base font-bold text-white transition-colors hover:text-orange-400"
+            >
+              {site.contact.phoneDisplay}
+            </a>
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  {/* ─────────────────────── FAIXA DE PROVA ─────────────────────── */}
+  <Section tone="offwhite" space="sm" width="wide">
+    <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        provas.map((p, i) => (
+          <li
+            class="border-l-2 border-orange-500 pl-4"
+            data-reveal
+            style={`--reveal-delay:${i * 90}ms`}
+          >
+            <p class="font-display text-xl font-bold text-navy-900 sm:text-2xl">{p.valor}</p>
+            <p class="mt-1 text-sm leading-snug tabular-nums text-navy-900/60">{p.rotulo}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  {/* ──────────────── RECONHECIMENTO DE SITUACAO ──────────────── */}
+  <Section id="situacoes" tone="white" width="wide">
+    <SectionTitle
+      eyebrow="Em que ponto você está"
+      title="Seu caso provavelmente é <span class='text-orange-600'>um destes</span>"
+      subtitle="Cada situação tem um caminho e um custo diferentes. Encontre a sua e mande a mensagem — respondemos com o que precisa ser verificado primeiro."
+    />
+
+    <ul class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        situacoes.map((s, i) => (
+          <li
+            class="group flex h-full flex-col rounded-2xl border border-navy-900/10 bg-offwhite p-7 transition-all duration-300 hover:-translate-y-1 hover:border-orange-500/40 hover:shadow-card"
+            data-reveal
+            style={`--reveal-delay:${(i % 3) * 80}ms`}
+          >
+            <span class="flex h-11 w-11 items-center justify-center rounded-lg bg-navy-800 text-orange-500 transition-colors duration-300 group-hover:bg-orange-500 group-hover:text-white">
+              <Icon name={s.icon} class="h-5 w-5" />
+            </span>
+            <h3 class="mt-5 text-base font-bold leading-snug text-navy-900">{s.titulo}</h3>
+            <p class="mt-2.5 text-sm leading-relaxed text-navy-900/65">{s.texto}</p>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="mt-12 text-center" data-reveal>
+      <Button href={wa} variant="primary" size="lg" external>
+        <Icon name="whatsapp" class="h-5 w-5" />
+        Me identifiquei — quero resolver
+      </Button>
+    </div>
+  </Section>
+
+  {/* ──────────────── CUSTO DE NAO RESOLVER ────────────────
+      Bloco escuro, no meio da página: quebra o ritmo de seções claras e separa o
+      "seu problema" do "nosso método". É a seção de consequência da referência
+      da Fortezza, reescrita em consequência jurídica no lugar de percentual. */}
+  <section class="relative isolate overflow-hidden bg-navy-900">
+    <Image
+      src={escrituraImg.src}
+      alt=""
+      widths={[700, 1200, 1600]}
+      sizes="100vw"
+      class="absolute inset-0 -z-20 h-full w-full object-cover opacity-20"
+      loading="lazy"
+      aria-hidden="true"
+    />
+    <div
+      class="absolute inset-0 -z-10 bg-gradient-to-br from-navy-900 via-navy-900/92 to-navy-800/85"
+      aria-hidden="true"
+    >
+    </div>
+    <div
+      class="absolute inset-y-0 right-0 -z-10 w-1/3 -skew-x-12 bg-orange-500/10"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="relative mx-auto w-full max-w-7xl px-5 py-20 sm:px-8 sm:py-24">
+      <SectionTitle
+        eyebrow="O custo de deixar como está"
+        title="O que acontece <span class='text-orange-400'>se não resolver</span>"
+        subtitle="Não é uma pendência que fica parada esperando. Ela cobra em momentos específicos — e todos são momentos em que você precisa do imóvel."
+        tone="light"
+      />
+
+      <ul class="mt-14 grid gap-6 sm:grid-cols-2">
+        {
+          riscos.map((r, i) => (
+            <li
+              class="rounded-2xl border border-white/10 bg-white/[0.04] p-7 backdrop-blur"
+              data-reveal
+              style={`--reveal-delay:${(i % 2) * 90}ms`}
+            >
+              <h3 class="flex items-start gap-3 text-base font-bold leading-snug text-white">
+                <span
+                  class="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-orange-500"
+                  aria-hidden="true"
+                />
+                {r.titulo}
+              </h3>
+              <p class="mt-3 pl-[1.125rem] text-sm leading-relaxed text-white/65">{r.texto}</p>
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="mt-10 max-w-3xl text-sm leading-relaxed text-white/45" data-reveal>
+        Antes de qualquer proposta, dizemos se o seu caso é regularizável. Quando não é, também
+        dizemos — e explicamos o que precisaria mudar fisicamente para passar a ser.
+      </p>
+    </div>
+  </section>
+
+  {/* ──────────────── AS QUATRO FRENTES DO SERVICO ────────────────
+      Formato pedido pelo cliente em 13/09/2026, copiado da seção "Expansão sem
+      riscos" do site da Nexxer: foto vertical grande à esquerda, texto à direita
+      e quatro cards curtos embaixo, um por frente de trabalho.
+
+      A foto é `object-cover` em altura cheia da coluna, e não uma imagem solta
+      com proporção fixa — é o que faz as duas colunas terminarem juntas em
+      qualquer largura. */}
+  <Section id="escopo" tone="offwhite" width="wide">
+    <div class="grid gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:gap-16">
+      <div class="overflow-hidden rounded-2xl shadow-card" data-reveal>
+        <Image
+          src={equipeImg.src}
+          alt={equipeImg.alt}
+          widths={[400, 700, 1000]}
+          sizes="(min-width: 1024px) 420px, 92vw"
+          class="h-full min-h-[22rem] w-full object-cover"
+          loading="lazy"
+        />
+      </div>
+
+      <div>
+        <SectionTitle
+          eyebrow="O que está incluído"
+          title="Regularização completa, <span class='text-orange-600'>com um responsável só</span>"
+          subtitle="Levantamento, projeto, processo e orientação de cartório com a mesma equipe. Você não fica no meio entre um desenhista, um despachante e o balcão."
+          align="left"
+        />
+
+        <div class="mt-8 space-y-4 text-base leading-relaxed text-navy-900/70" data-reveal>
+          <p>
+            Regularizar não é redesenhar a planta. É provar ao município que o que está construído
+            pode permanecer conforme a legislação vigente — e, quando não pode inteiro, apontar o
+            que precisa ser adequado para que possa.
+          </p>
+          <p>
+            Isso exige ler a matrícula, o cadastro fiscal e o zoneamento do lote antes de desenhar
+            qualquer linha. É o trabalho que separa um processo que anda de um que volta com
+            exigência três vezes.
+          </p>
+        </div>
+
+        <ul class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {
+            frentes.map((f, i) => (
+              <li
+                class="rounded-xl border border-navy-900/10 bg-white p-5 text-center transition-colors duration-300 hover:border-orange-500/40"
+                data-reveal
+                style={`--reveal-delay:${i * 80}ms`}
+              >
+                <p class="font-display text-sm font-bold uppercase tracking-[0.08em] text-orange-600">
+                  {f.sigla}
+                </p>
+                <h3 class="mt-2 text-sm font-bold leading-snug text-navy-900">{f.titulo}</h3>
+                <p class="mt-2 text-xs leading-relaxed text-navy-900/60">{f.texto}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </Section>
+
+  {/* ──────────────── O METODO, ETAPA A ETAPA ──────────────── */}
+  <Section tone="white" width="wide">
+    <SectionTitle
+      eyebrow="Como conduzimos"
+      title="Do diagnóstico <span class='text-orange-600'>à averbação</span>"
+      subtitle="Cinco etapas. A primeira responde se o caso tem solução; a última é a que faz a construção existir na matrícula — e é a que mais gente esquece."
+    />
+
+    <div class="mt-14 grid gap-12 lg:grid-cols-[1.25fr_1fr] lg:gap-16">
+      <ol class="space-y-4">
+        {
+          metodo.map((m, i) => (
+            <li class="flex gap-5" data-reveal style={`--reveal-delay:${i * 80}ms`}>
+              <span
+                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-navy-800 font-display text-sm font-bold text-orange-500"
+                aria-hidden="true"
+              >
+                {i + 1}
+              </span>
+              <div class="border-b border-navy-900/10 pb-5">
+                <h3 class="text-base font-bold text-navy-900">{m.titulo}</h3>
+                <p class="mt-1.5 text-sm leading-relaxed text-navy-900/65">{m.texto}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+
+      <div class="space-y-6 lg:sticky lg:top-28 lg:self-start">
+        <div class="overflow-hidden rounded-2xl shadow-card" data-reveal>
+          <Image
+            src={levantamentoImg.src}
+            alt={levantamentoImg.alt}
+            widths={[400, 700, 1000]}
+            sizes="(min-width: 1024px) 420px, 92vw"
+            class="aspect-[4/3] w-full object-cover"
+            loading="lazy"
+          />
+        </div>
+        <div class="overflow-hidden rounded-2xl shadow-card" data-reveal style="--reveal-delay:90ms">
+          <Image
+            src={pranchaImg.src}
+            alt={pranchaImg.alt}
+            widths={[400, 700, 1000]}
+            sizes="(min-width: 1024px) 420px, 92vw"
+            class="aspect-[4/3] w-full object-cover"
+            loading="lazy"
+          />
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  {/* ──────────────── O QUE MUDA DEPOIS ──────────────── */}
+  <Section tone="offwhite" width="wide">
+    <div class="grid gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-16">
+      <div>
+        <SectionTitle
+          eyebrow="O resultado"
+          title="O que muda quando o imóvel <span class='text-orange-600'>está regular</span>"
+          subtitle="A regularização não é um papel a mais na gaveta. É o que devolve ao imóvel a capacidade de ser usado como patrimônio."
+          align="left"
+        />
+
+        <ul class="mt-10 space-y-6">
+          {
+            ganhos.map((g, i) => (
+              <li class="flex gap-5" data-reveal style={`--reveal-delay:${i * 80}ms`}>
+                <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-orange-500 text-white shadow-lg">
+                  <Icon name={g.icon} class="h-5 w-5" />
+                </span>
+                <div>
+                  <h3 class="text-base font-bold leading-snug text-navy-900">{g.titulo}</h3>
+                  <p class="mt-1.5 text-sm leading-relaxed text-navy-900/65">{g.texto}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="overflow-hidden rounded-2xl shadow-card" data-reveal style="--reveal-delay:120ms">
+        <Image
+          src={chavesImg.src}
+          alt={chavesImg.alt}
+          widths={[400, 700, 1100]}
+          sizes="(min-width: 1024px) 460px, 92vw"
+          class="aspect-[4/5] w-full object-cover"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </Section>
+
+  {/* ──────────────── TIPOS DE IMOVEL E COBERTURA ────────────────
+      Faixa com a foto aérea de São Paulo. Além de dizer onde atendemos, ela é o
+      retrato do problema: quadra densa, lote estreito, edificação colada na
+      divisa. É onde a regularização acontece. */}
+  <section class="relative isolate overflow-hidden bg-navy-800">
+    <Image
+      src={cidadeImg.src}
+      alt=""
+      widths={[900, 1400, 1920]}
+      sizes="100vw"
+      class="absolute inset-0 -z-20 h-full w-full object-cover"
+      loading="lazy"
+      aria-hidden="true"
+    />
+    {/* Cortina mais leve do que a do bloco de riscos, de propósito: lá a foto é
+        textura e o que importa é o texto; aqui a foto É o argumento — quadra
+        densa, lote estreito, edificação colada na divisa. Escurecer até virar
+        navy chapado desperdiçaria a única imagem da página que mostra o
+        problema. O degradê fecha nas bordas, que é onde o texto fica. */}
+    <div
+      class="absolute inset-0 -z-10 bg-gradient-to-r from-navy-900/95 via-navy-900/80 to-navy-900/60"
+      aria-hidden="true"
+    >
+    </div>
+    <div
+      class="absolute inset-0 -z-10 bg-gradient-to-b from-navy-900/70 via-transparent to-navy-900/80"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="relative mx-auto w-full max-w-7xl px-5 py-16 sm:px-8 sm:py-20">
+      <div class="grid gap-10 lg:grid-cols-[1fr_1.2fr] lg:items-center lg:gap-16">
+        <div data-reveal>
+          <p class="text-xs font-bold uppercase tracking-[0.22em] text-orange-400">
+            Serve para o seu imóvel
+          </p>
+          <h2 class="mt-4 font-display text-2xl leading-snug text-white sm:text-3xl">
+            Casa, galpão, loja ou prédio — em São Paulo e Grande SP
+          </h2>
+          <p class="mt-4 text-sm leading-relaxed text-white/65">
+            A sede fica no Jardim Peri, na Zona Norte, e atendemos presencialmente a capital e a
+            região metropolitana. Fora da capital muda a lei aplicável, não o roteiro do serviço.
+          </p>
+          <div class="mt-8">
+            <Button href="/areas-de-atuacao" variant="outline" size="md">
+              Ver as cidades atendidas
+            </Button>
+          </div>
+        </div>
+
+        <ul class="grid grid-cols-2 gap-5 sm:grid-cols-3">
+          {
+            tipos.map((t, i) => (
+              <li
+                class="flex flex-col items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] p-5 text-center backdrop-blur"
+                data-reveal
+                style={`--reveal-delay:${(i % 3) * 80}ms`}
+              >
+                <Icon name={t.icon} class="h-7 w-7 text-orange-400" />
+                <span class="text-[0.8125rem] font-semibold leading-tight text-white/80">
+                  {t.rotulo}
+                </span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  {/* ──────────────────── EQUIPE ──────────────────── */}
+  <Team />
+
+  {/* ──────────────────── FAQ E DOCUMENTOS ──────────────────── */}
+  <Section tone="white" width="wide">
+    <div class="grid gap-14 lg:grid-cols-[1.5fr_1fr] lg:gap-20">
+      <div>
+        <h2 class="font-display text-2xl text-navy-900 sm:text-3xl" data-reveal>
+          Perguntas frequentes
+        </h2>
+        <div class="mt-8 divide-y divide-navy-900/10 border-y border-navy-900/10">
+          {
+            faq.map((f) => (
+              <details class="group py-5">
+                <summary class="flex cursor-pointer list-none items-start justify-between gap-4 text-base font-bold text-navy-900 transition-colors hover:text-orange-600">
+                  {f.q}
+                  <Icon
+                    name="chevron-down"
+                    class="mt-1 h-4 w-4 shrink-0 text-orange-500 transition-transform duration-300 group-open:rotate-180"
+                  />
+                </summary>
+                <p class="mt-3 text-[0.9375rem] leading-relaxed text-navy-900/65">{f.a}</p>
+              </details>
+            ))
+          }
+        </div>
+
+        <div class="mt-10" data-reveal>
+          <Button href={wa} variant="primary" size="lg" external>
+            <Icon name="whatsapp" class="h-5 w-5" />
+            Tenho outra dúvida
+          </Button>
+        </div>
+      </div>
+
+      <aside class="lg:sticky lg:top-28 lg:self-start">
+        <div class="rounded-2xl bg-offwhite p-7" data-reveal>
+          <h2 class="font-display text-sm font-bold uppercase tracking-[0.14em] text-navy-900">
+            Para começar, tenha em mãos
+          </h2>
+          <ul class="mt-5 space-y-3">
+            {
+              documentosIniciais.map((d) => (
+                <li class="flex items-start gap-2.5 text-sm leading-relaxed text-navy-900/70">
+                  <Icon name="check" class="mt-0.5 h-4 w-4 shrink-0 text-orange-500" />
+                  {d}
+                </li>
+              ))
+            }
+          </ul>
+          <p class="mt-5 text-xs leading-relaxed text-navy-900/50">
+            Não tem tudo? Manda o que tem. Levantar o que existe hoje faz parte do serviço, e a
+            matrícula atualizada a gente ensina a pedir.
+          </p>
+        </div>
+
+        <div
+          class="mt-6 rounded-2xl bg-navy-800 p-7 text-white"
+          data-reveal
+          style="--reveal-delay:120ms"
+        >
+          <h2 class="font-display text-lg leading-snug">Não sabe em que situação está?</h2>
+          <p class="mt-2.5 text-sm leading-relaxed text-white/65">
+            Mande o endereço e o que existe construído hoje. O diagnóstico vem antes do orçamento.
+          </p>
+          <a
+            href={wa}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-5 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-orange-500 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-orange-400"
+          >
+            <Icon name="whatsapp" class="h-4 w-4" />
+            Falar no WhatsApp
+          </a>
+          <p class="mt-4 text-center text-xs text-white/45">{site.contact.phoneDisplay}</p>
+        </div>
+      </aside>
+    </div>
+  </Section>
+
+  {/* ──────────────── BASE LEGAL ──────────────── */}
+  <Section tone="offwhite" space="md" width="wide">
+    <h2 class="font-display text-2xl text-navy-900" data-reveal>Base legal</h2>
+    <p class="mt-3 max-w-2xl text-sm leading-relaxed text-navy-900/60" data-reveal>
+      É contra estes textos que o processo é analisado — e é neles que a viabilidade do seu caso é
+      decidida, antes de qualquer desenho.
+    </p>
+    <ul class="mt-8 grid gap-x-8 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        normas.map((n, i) => (
+          <li
+            class="border-l-2 border-orange-500/40 pl-3 text-sm leading-relaxed text-navy-900/65"
+            data-reveal
+            style={`--reveal-delay:${(i % 3) * 70}ms`}
+          >
+            {n}
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  {/* ──────────────── FRENTES RELACIONADAS ──────────────── */}
+  <Section tone="white" space="md" width="wide">
+    <h2 class="font-display text-2xl text-navy-900" data-reveal>Frentes relacionadas</h2>
+    <ul class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        relacionadas.map((o, i) => (
+          <li data-reveal style={`--reveal-delay:${i * 80}ms`}>
+            <a
+              href={o.href}
+              class="group flex h-full cursor-pointer flex-col rounded-2xl border border-navy-900/10 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:border-orange-500/40 hover:shadow-card"
+            >
+              <span class="flex h-11 w-11 items-center justify-center rounded-lg bg-navy-800 text-orange-500 transition-colors duration-300 group-hover:bg-orange-500 group-hover:text-white">
+                <Icon name={o.icon} class="h-5 w-5" />
+              </span>
+              <h3 class="mt-4 text-base leading-snug text-navy-900">{o.titulo}</h3>
+              <p class="mt-1.5 text-sm leading-relaxed text-navy-900/60">{o.texto}</p>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  {/* ──────────────── IDENTIFICACAO DA EMPRESA ────────────────
+      Numa página que recebe mídia paga, é o dado que o lead copia para conferir
+      a empresa antes de fechar — daí o CNPJ em corpo maior e tabular. */}
+  <Section tone="offwhite" space="md" width="wide">
+    <div class="rounded-2xl border border-navy-900/10 bg-white p-7 sm:p-9" data-reveal>
+      <p class="text-xs font-bold uppercase tracking-[0.18em] text-orange-600">
+        Empresa registrada e identificada
+      </p>
+      <div class="mt-7 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-navy-900/45">Razão social</p>
+          <p class="mt-2 text-sm leading-relaxed text-navy-900">{site.legalName}</p>
+        </div>
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-navy-900/45">CNPJ</p>
+          <p class="mt-2 font-display text-lg font-bold tabular-nums text-navy-900">{site.cnpj}</p>
+        </div>
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-navy-900/45">Endereço</p>
+          <p class="mt-2 text-sm leading-relaxed text-navy-900">
+            {site.address.street} — {site.address.district}<br />
+            {site.address.city}/{site.address.state}, CEP {site.address.zip}
+          </p>
+        </div>
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-navy-900/45">Contato</p>
+          <a
+            href={`tel:${site.contact.phoneE164}`}
+            class="mt-2 block cursor-pointer text-sm font-semibold text-navy-900 transition-colors hover:text-orange-600"
+          >
+            {site.contact.phoneDisplay}
+          </a>
+          <a
+            href={`mailto:${site.contact.email}`}
+            class="mt-1 block cursor-pointer break-all text-sm text-navy-900/70 transition-colors hover:text-orange-600"
+          >
+            {site.contact.email}
+          </a>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  {/* ──────────────── CONTATO DIRETO, TRES CANAIS ──────────────── */}
+  <Section tone="white" space="md" width="wide">
+    <div class="mx-auto max-w-3xl text-center" data-reveal>
+      <h2 class="font-display text-2xl leading-snug text-navy-900 sm:text-3xl">
+        Fale direto com a MDK Engenharia
+      </h2>
+      <p class="mt-4 text-base leading-relaxed text-navy-900/65">
+        Sem formulário e sem fila de atendimento. Escolha o canal e fale com quem vai conduzir o seu
+        processo.
+      </p>
+      {/* `whitespace-nowrap` nos três: sem isso o botão do meio é o único que
+          cede espaço na linha e "Ligar agora" quebra em duas. */}
+      <div class="mt-9 flex flex-col items-center justify-center gap-4 sm:flex-row sm:flex-wrap">
+        <Button href={wa} variant="primary" size="lg" external class="whitespace-nowrap">
+          <Icon name="whatsapp" class="h-5 w-5" />
+          WhatsApp {site.contact.phoneDisplay}
+        </Button>
+        <Button
+          href={`tel:${site.contact.phoneE164}`}
+          variant="ghost"
+          size="lg"
+          class="whitespace-nowrap"
+        >
+          <Icon name="phone" class="h-5 w-5" />
+          Ligar agora
+        </Button>
+        <Button
+          href={`mailto:${site.contact.emailOrcamento}`}
+          variant="ghost"
+          size="lg"
+          class="whitespace-nowrap"
+        >
+          <Icon name="mail" class="h-5 w-5" />
+          {site.contact.emailOrcamento}
+        </Button>
+      </div>
+      <p class="mt-6 text-sm text-navy-900/50">{site.contact.hours}</p>
+    </div>
+  </Section>
+
+  <FinalCta
+    whatsappHref={wa}
+    title="Vamos descobrir se o seu imóvel é regularizável?"
+    text="Mande o endereço, a matrícula se tiver e uma foto do que está construído. Você recebe o diagnóstico e, só depois dele, um orçamento com escopo e etapas."
+  />
+
+  {/* ──────────────── RODAPE DE PALAVRAS-CHAVE ────────────────
+      Mesmo formato do rodapé de /servicos/regularizacao/bombeiros, e pelo mesmo
+      motivo: lista de palavra solta empilhada no pé da página é keyword
+      stuffing, que a diretriz de spam do Google trata como texto irrelevante —
+      efeito negativo, não neutro. Então os termos entram em frases que
+      descrevem serviço e cobertura de verdade, com os que têm página própria
+      virando link. O teste é simples: um visitante consegue ler sem estranhar. */}
+  <Section tone="offwhite" space="md" width="wide">
+    <div class="border-t border-navy-900/10 pt-10" data-reveal>
+      <h2 class="font-display text-sm font-bold uppercase tracking-[0.14em] text-navy-900">
+        Também procurado por
+      </h2>
+
+      <div
+        class="mt-6 grid gap-x-10 gap-y-6 text-sm leading-relaxed text-navy-900/60 md:grid-cols-2"
+      >
+        <p>
+          <strong class="font-semibold text-navy-900/80">Regularização:</strong> a MDK Engenharia faz
+          regularização de imóvel e legalização imobiliária em São Paulo — auto de regularização,
+          regularização de construção sem alvará, de ampliação, de edícula e de obra executada fora
+          do projeto aprovado, além de regularização de imóvel para financiamento e para venda.
+        </p>
+        <p>
+          <strong class="font-semibold text-navy-900/80">Documentos:</strong> averbação de construção
+          em cartório, atualização de área na matrícula,
+          <a
+            href="/guias/habite-se"
+            class="cursor-pointer text-navy-900/75 underline decoration-orange-500/40 underline-offset-2 transition-colors hover:text-orange-600"
+            >Habite-se e Certificado de Conclusão</a
+          >, certificado de acessibilidade e regularização de IPTU com desmembramento ou unificação
+          de cadastro.
+        </p>
+        <p>
+          <strong class="font-semibold text-navy-900/80">Projeto e aprovação:</strong> levantamento
+          cadastral e arquitetônico, quadro de áreas, memorial descritivo, ART e RRT,
+          <a
+            href="/guias/aprovacao-de-projeto-na-prefeitura"
+            class="cursor-pointer text-navy-900/75 underline decoration-orange-500/40 underline-offset-2 transition-colors hover:text-orange-600"
+            >aprovação de projeto na prefeitura</a
+          >, alvará de aprovação e execução e
+          <a
+            href="/servicos/projeto-arquitetonico"
+            class="cursor-pointer text-navy-900/75 underline decoration-orange-500/40 underline-offset-2 transition-colors hover:text-orange-600"
+            >projeto arquitetônico</a
+          >.
+        </p>
+        <p>
+          <strong class="font-semibold text-navy-900/80">Quando já há processo:</strong> resposta a
+          comunicado de exigência, defesa técnica em auto de infração, imóvel embargado, notificação
+          da fiscalização e laudo técnico para instruir processo administrativo.
+        </p>
+        <p>
+          <strong class="font-semibold text-navy-900/80">Outros órgãos:</strong> imóvel comercial
+          costuma precisar dos três balcões — além da
+          <a
+            href="/servicos/regularizacao/prefeitura"
+            class="cursor-pointer text-navy-900/75 underline decoration-orange-500/40 underline-offset-2 transition-colors hover:text-orange-600"
+            >prefeitura</a
+          >, o
+          <a
+            href="/servicos/regularizacao/bombeiros"
+            class="cursor-pointer text-navy-900/75 underline decoration-orange-500/40 underline-offset-2 transition-colors hover:text-orange-600"
+            >AVCB no Corpo de Bombeiros</a
+          >
+          e o
+          <a
+            href="/servicos/regularizacao/cetesb"
+            class="cursor-pointer text-navy-900/75 underline decoration-orange-500/40 underline-offset-2 transition-colors hover:text-orange-600"
+            >licenciamento ambiental na CETESB</a
+          >.
+        </p>
+        <p>
+          <strong class="font-semibold text-navy-900/80">Onde atendemos:</strong> regularização de
+          imóvel em São Paulo e Grande São Paulo, com sede no Jardim Peri, na
+          <a
+            href="/areas-de-atuacao/zona-norte-sp"
+            class="cursor-pointer text-navy-900/75 underline decoration-orange-500/40 underline-offset-2 transition-colors hover:text-orange-600"
+            >Zona Norte</a
+          > — Casa Verde, Cachoeirinha, Limão, Santana, Tucuruvi, Freguesia do Ó, Brasilândia, Vila
+          Maria, Vila Guilherme, Pirituba, Jaraguá e Perus.
+        </p>
+      </div>
+
+      <p class="mt-8 text-xs leading-relaxed text-navy-900/45">
+        Quer entender o assunto antes de contratar? Os guias de
+        <a
+          href="/guias/regularizacao-de-imovel"
+          class="cursor-pointer underline decoration-orange-500/40 underline-offset-2 transition-colors hover:text-orange-600"
+          >regularização de imóvel</a
+        >
+        e de
+        <a
+          href="/guias/habite-se"
+          class="cursor-pointer underline decoration-orange-500/40 underline-offset-2 transition-colors hover:text-orange-600"
+          >Habite-se</a
+        >
+        explicam o processo sem compromisso. {site.legalName} — CNPJ {site.cnpj}.
+      </p>
+    </div>
+  </Section>
+</BaseLayout>
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify(serviceLd)} />
+<script is:inline type="application/ld+json" set:html={JSON.stringify(howToLd)} />
+<script is:inline type="application/ld+json" set:html={JSON.stringify(faqLd)} />
+<script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />

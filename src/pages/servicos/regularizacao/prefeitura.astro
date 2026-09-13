@@ -1,0 +1,466 @@
+---
+/**
+ * /servicos/regularizacao/prefeitura — PAGINA-MAE DA FRENTE DE PREFEITURA.
+ *
+ * Nasceu como uma das tres paginas de orgao geradas por
+ * `regularizacao/[slug].astro` a partir de `agencies.ts`, e deixou de ser pelo
+ * mesmo motivo que `bombeiros` deixou: o template descreve um balcao inteiro
+ * numa pagina so, e o balcao da prefeitura tem quatro assuntos que sao buscados
+ * separadamente. Quem procura "habite-se" nao procura "desdobro de lote".
+ *
+ * A DIFERENCA EM RELACAO A BOMBEIROS: aquela pagina e de vendas, escrita para
+ * receber trafego pago direto. Esta e um indice. Ela explica a frente, entrega
+ * o conteudo completo de cada assunto e distribui para a pagina especifica de
+ * quem ja tem uma. E o que o cliente pediu em 13/09/2026: "uma pagina mae com
+ * todas as informacoes de prefeitura", e dela para as paginas de campanha.
+ *
+ * O indice vive em src/data/prefeitura-topics.ts, e o cabecalho daquele arquivo
+ * explica por que cada card aponta ora para uma URL, ora para uma ancora daqui.
+ * Resumo: assunto sem pagina propria tem a secao completa NESTA pagina, entao o
+ * card leva ate ela. Publicar a pagina do assunto e trocar `href` e `tipo`.
+ *
+ * O resto do conteudo — servicos, etapas, documentos, normas e FAQ — continua
+ * saindo de `agencies.ts`, e nao foi copiado para ca. Duplicar aquele texto
+ * criaria duas versoes da mesma informacao para manter em sincronia.
+ *
+ * Rota estatica ganha da dinamica no Astro, mas as duas emitiriam o mesmo
+ * arquivo no build — entao `prefeitura` saiu do `getStaticPaths` do template,
+ * junto de `bombeiros`.
+ */
+import { Image } from 'astro:assets';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHero from '../../../components/layout/PageHero.astro';
+import FinalCta from '../../../components/home/FinalCta.astro';
+import Section from '../../../components/ui/Section.astro';
+import SectionTitle from '../../../components/ui/SectionTitle.astro';
+import Button from '../../../components/ui/Button.astro';
+import Icon from '../../../components/ui/Icon.astro';
+import { agencies } from '../../../data/agencies';
+import { prefeituraTopicos } from '../../../data/prefeitura-topics';
+import { site, whatsappUrlFor, yearsInBusiness } from '../../../data/site';
+import { getImage } from '../../../lib/images';
+
+const agency = agencies.find((a) => a.id === 'prefeitura')!;
+const { detail } = agency;
+
+/* Mensagem propria: separa no atendimento quem chegou pela frente de prefeitura
+   de quem chegou pelo WhatsApp geral do rodape. */
+const wa = whatsappUrlFor(
+  'Vim pelo site e preciso resolver um processo na prefeitura (regularização, Habite-se, alvará ou desdobro)',
+);
+
+const img = getImage(agency.image);
+
+/* Os assuntos que ja tem pagina de campanha aparecem em destaque no card. */
+const outrosOrgaos = agencies.filter((a) => a.id !== agency.id);
+
+const serviceLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: `${agency.name} — ${agency.tagline}`,
+  description: agency.seo.description,
+  serviceType: agency.fullName,
+  provider: { '@id': `${Astro.site}#organization` },
+  areaServed: { '@type': 'AdministrativeArea', name: 'São Paulo e Região Metropolitana' },
+  url: new URL(Astro.url.pathname, Astro.site).href,
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: `Serviços — ${agency.fullName}`,
+    itemListElement: detail.services.map((s) => ({
+      '@type': 'Offer',
+      itemOffered: { '@type': 'Service', name: s.title, description: s.text },
+    })),
+  },
+};
+
+/* A pagina e um indice, entao declara explicitamente o que ela indexa. E o dado
+   que descreve a relacao mae/filha para o buscador — sem ele, as quatro paginas
+   de assunto parecem soltas em vez de um conjunto. */
+const itemListLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Assuntos da frente de Prefeitura — MDK Engenharia',
+  itemListElement: prefeituraTopicos.map((t, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: t.titulo,
+    description: t.resumo,
+    url: new URL(
+      t.tipo === 'pagina' ? t.href : `${Astro.url.pathname}${t.href}`,
+      Astro.site,
+    ).href,
+  })),
+};
+
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: detail.faq.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<BaseLayout
+  title={agency.seo.title}
+  description={agency.seo.description}
+  keywords={agency.seo.keywords}
+  whatsappHref={wa}
+>
+  <PageHero
+    eyebrow={agency.fullName}
+    title={agency.tagline}
+    subtitle={agency.summary}
+    crumbs={[
+      { label: 'Serviços', href: '/servicos' },
+      { label: 'Documentação e Regularização', href: '/servicos/regularizacao' },
+      { label: agency.name },
+    ]}
+    image={agency.banner ?? agency.image}
+  >
+    <div class="mt-10 flex flex-col gap-4 sm:flex-row" data-reveal style="--reveal-delay:280ms">
+      <Button href={wa} variant="primary" size="lg" external>
+        <Icon name="whatsapp" class="h-5 w-5" />
+        Falar sobre o meu caso
+      </Button>
+      <Button href="#assuntos" variant="outline" size="lg">Ver os assuntos</Button>
+    </div>
+  </PageHero>
+
+  {/* ─────────────── INTRODUCAO DA FRENTE ─────────────── */}
+  <Section tone="white" width="wide">
+    <div class="grid gap-12 lg:grid-cols-[1.45fr_1fr] lg:items-start lg:gap-20">
+      <div class="space-y-5 text-lg leading-relaxed text-navy-900/75" data-reveal>
+        {detail.intro.map((p) => <p>{p}</p>)}
+        <p>
+          Cada uma dessas situações tem um caminho próprio, com documentos, prazos e riscos
+          diferentes. Abaixo elas estão separadas — encontre a sua e vá direto ao ponto.
+        </p>
+      </div>
+
+      <div class="overflow-hidden rounded-2xl shadow-card" data-reveal style="--reveal-delay:120ms">
+        <Image
+          src={img.src}
+          alt={img.alt}
+          widths={[400, 700, 1000]}
+          sizes="(min-width: 1024px) 380px, 92vw"
+          class="aspect-[4/3] w-full object-cover"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </Section>
+
+  {/* ─────────────── INDICE DOS ASSUNTOS ───────────────
+      O bloco mais importante da pagina: e ele que faz o trabalho de distribuir.
+      Cards grandes, com o assunto no titulo e o problema no corpo — quem chega
+      aqui procura a propria situacao, nao o nome tecnico do processo. */}
+  <Section id="assuntos" tone="offwhite" width="wide">
+    <SectionTitle
+      eyebrow="Escolha o seu caso"
+      title="O que você precisa resolver <span class='text-orange-600'>na prefeitura</span>"
+      subtitle="A frente de prefeitura se divide em quatro assuntos. Cada um tem exigência, prazo e documentação próprios."
+    />
+
+    <ul class="mt-14 grid gap-6 md:grid-cols-2">
+      {
+        prefeituraTopicos.map((t, i) => (
+          <li data-reveal style={`--reveal-delay:${(i % 2) * 90}ms`}>
+            <a
+              href={t.href}
+              class="group flex h-full cursor-pointer flex-col rounded-2xl border border-navy-900/10 bg-white p-8 transition-all duration-300 hover:-translate-y-1 hover:border-orange-500/40 hover:shadow-card"
+            >
+              <div class="flex items-start justify-between gap-4">
+                <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-navy-800 text-orange-500 transition-colors duration-300 group-hover:bg-orange-500 group-hover:text-white">
+                  <Icon name={t.icon} class="h-6 w-6" />
+                </span>
+                {t.tipo === 'pagina' && (
+                  <span class="rounded-full bg-orange-500/10 px-3 py-1 text-[0.6875rem] font-bold uppercase tracking-[0.12em] text-orange-600">
+                    Página completa
+                  </span>
+                )}
+              </div>
+
+              <h3 class="mt-6 font-display text-xl leading-snug text-navy-900">{t.titulo}</h3>
+              <p class="mt-1.5 text-sm font-semibold leading-snug text-orange-600">{t.tagline}</p>
+              <p class="mt-4 flex-1 text-[0.9375rem] leading-relaxed text-navy-900/65">
+                {t.resumo}
+              </p>
+
+              <span class="mt-6 inline-flex items-center gap-2 text-sm font-bold text-navy-900 transition-colors group-hover:text-orange-600">
+                {t.cta}
+                <Icon
+                  name="arrow-right"
+                  class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                />
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  {/* ─────────────── SECAO DE CADA ASSUNTO ───────────────
+      As ancoras que os cards apontam. O assunto que ja tem pagina propria
+      TAMBEM ganha secao aqui, com o link para a pagina no pe: quem rolou ate
+      aqui sem clicar no card precisa de uma segunda porta. */}
+  {
+    prefeituraTopicos.map((t, i) => (
+      <Section id={t.id} tone={i % 2 === 0 ? 'white' : 'offwhite'} space="md" width="wide">
+        <div class="grid gap-10 lg:grid-cols-[0.9fr_1.4fr] lg:gap-16">
+          <div>
+            <p
+              class="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.22em] text-orange-600"
+              data-reveal
+            >
+              <span class="h-px w-8 bg-current" aria-hidden="true" />
+              Assunto {i + 1} de {prefeituraTopicos.length}
+            </p>
+            <h2 class="mt-4 font-display text-2xl leading-snug text-navy-900 sm:text-3xl" data-reveal>
+              {t.titulo}
+            </h2>
+            <p class="mt-3 text-base leading-relaxed text-navy-900/65" data-reveal>
+              {t.tagline}
+            </p>
+
+            <div class="mt-8" data-reveal>
+              {t.tipo === 'pagina' ? (
+                <Button href={t.href} variant="primary" size="md">
+                  Ver a página de {t.titulo.toLowerCase()}
+                  <Icon
+                    name="arrow-right"
+                    class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                  />
+                </Button>
+              ) : (
+                <Button href={wa} variant="ghost" size="md" external>
+                  <Icon name="whatsapp" class="h-4 w-4" />
+                  Falar sobre {t.titulo.toLowerCase()}
+                </Button>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <p class="text-lg leading-relaxed text-navy-900/75" data-reveal>
+              {t.secao.intro}
+            </p>
+
+            <ul class="mt-8 grid gap-4 sm:grid-cols-3">
+              {t.secao.itens.map((item, j) => (
+                <li
+                  class="rounded-xl border border-navy-900/10 bg-white/60 p-6"
+                  data-reveal
+                  style={`--reveal-delay:${j * 80}ms`}
+                >
+                  <h3 class="text-sm font-bold leading-snug text-navy-900">{item.titulo}</h3>
+                  <p class="mt-2.5 text-sm leading-relaxed text-navy-900/65">{item.texto}</p>
+                </li>
+              ))}
+            </ul>
+
+            {t.secao.nota && (
+              <p
+                class="mt-6 border-l-2 border-orange-500 pl-4 text-sm leading-relaxed text-navy-900/60"
+                data-reveal
+              >
+                {t.secao.nota}
+              </p>
+            )}
+          </div>
+        </div>
+      </Section>
+    ))
+  }
+
+  {/* ─────────────── ESCOPO COMPLETO ───────────────
+      Os quatro assuntos acima cobrem o que e procurado. O balcao faz mais do
+      que isso, e o que sobra — acessibilidade, unificacao de IPTU — precisa
+      aparecer em algum lugar para quem chegou procurando justamente ele. */}
+  <Section tone="white" width="wide">
+    <SectionTitle
+      eyebrow="Escopo completo"
+      title="Tudo o que resolvemos <span class='text-orange-600'>neste balcão</span>"
+      subtitle="Cada item é um processo próprio, com peças técnicas e trâmite específicos."
+    />
+
+    <ul class="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        detail.services.map((s, i) => (
+          <li
+            class="rounded-xl border border-navy-900/10 bg-offwhite p-6 transition-colors duration-300 hover:border-orange-500/40"
+            data-reveal
+            style={`--reveal-delay:${(i % 3) * 80}ms`}
+          >
+            <h3 class="text-base font-bold leading-snug text-navy-900">{s.title}</h3>
+            <p class="mt-2.5 text-sm leading-relaxed text-navy-900/65">{s.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  {/* ─────────────── COMO O PROCESSO ANDA ─────────────── */}
+  <Section tone="offwhite" width="wide">
+    <SectionTitle
+      eyebrow="Do diagnóstico ao documento"
+      title="Como o processo <span class='text-orange-600'>anda</span>"
+      subtitle="O roteiro é o mesmo para os quatro assuntos. O que muda é o que se protocola no fim."
+    />
+
+    <ol class="mx-auto mt-14 max-w-3xl space-y-4">
+      {
+        detail.steps.map((s, i) => (
+          <li class="flex gap-5" data-reveal style={`--reveal-delay:${i * 80}ms`}>
+            <span
+              class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-navy-800 font-display text-sm font-bold text-orange-500"
+              aria-hidden="true"
+            >
+              {i + 1}
+            </span>
+            <div class="border-b border-navy-900/10 pb-4">
+              <h3 class="text-base font-bold text-navy-900">{s.title}</h3>
+              <p class="mt-1.5 text-sm leading-relaxed text-navy-900/65">{s.text}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </Section>
+
+  {/* ─────────────── DOCUMENTOS, NORMAS E FAQ ─────────────── */}
+  <Section tone="white" width="wide">
+    <div class="grid gap-14 lg:grid-cols-[1.5fr_1fr] lg:gap-20">
+      <div>
+        <h2 class="font-display text-2xl text-navy-900 sm:text-3xl" data-reveal>
+          Perguntas frequentes
+        </h2>
+        <div class="mt-8 divide-y divide-navy-900/10 border-y border-navy-900/10">
+          {
+            detail.faq.map((f) => (
+              <details class="group py-5">
+                <summary class="flex cursor-pointer list-none items-start justify-between gap-4 text-base font-bold text-navy-900 transition-colors hover:text-orange-600">
+                  {f.q}
+                  <Icon
+                    name="chevron-down"
+                    class="mt-1 h-4 w-4 shrink-0 text-orange-500 transition-transform duration-300 group-open:rotate-180"
+                  />
+                </summary>
+                <p class="mt-3 text-[0.9375rem] leading-relaxed text-navy-900/65">{f.a}</p>
+              </details>
+            ))
+          }
+        </div>
+
+        <div class="mt-10" data-reveal>
+          <Button href={wa} variant="primary" size="lg" external>
+            <Icon name="whatsapp" class="h-5 w-5" />
+            Tenho outra dúvida
+          </Button>
+        </div>
+
+        <div class="mt-12" data-reveal>
+          <h2 class="font-display text-sm font-bold uppercase tracking-[0.14em] text-navy-900">
+            Base legal
+          </h2>
+          <ul class="mt-5 grid gap-x-8 gap-y-2.5 sm:grid-cols-2">
+            {
+              detail.norms.map((n) => (
+                <li class="border-l-2 border-orange-500/40 pl-3 text-sm leading-relaxed text-navy-900/60">
+                  {n}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+
+      <aside class="lg:sticky lg:top-28 lg:self-start">
+        <div class="rounded-2xl bg-offwhite p-7" data-reveal>
+          <h2 class="font-display text-sm font-bold uppercase tracking-[0.14em] text-navy-900">
+            Para começar, tenha em mãos
+          </h2>
+          <ul class="mt-5 space-y-3">
+            {
+              detail.documents.map((d) => (
+                <li class="flex items-start gap-2.5 text-sm leading-relaxed text-navy-900/70">
+                  <Icon name="check" class="mt-0.5 h-4 w-4 shrink-0 text-orange-500" />
+                  {d}
+                </li>
+              ))
+            }
+          </ul>
+          <p class="mt-5 text-xs leading-relaxed text-navy-900/50">
+            Não tem tudo? Manda o que tem. O levantamento do que existe hoje faz parte do serviço.
+          </p>
+        </div>
+
+        <div
+          class="mt-6 rounded-2xl bg-navy-800 p-7 text-white"
+          data-reveal
+          style="--reveal-delay:120ms"
+        >
+          <h2 class="font-display text-lg leading-snug">Não sabe em que situação está?</h2>
+          <p class="mt-2.5 text-sm leading-relaxed text-white/65">
+            Mande o endereço e o que existe hoje. O diagnóstico vem antes do orçamento.
+          </p>
+          <a
+            href={wa}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-5 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-orange-500 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-orange-400"
+          >
+            <Icon name="whatsapp" class="h-4 w-4" />
+            Falar no WhatsApp
+          </a>
+          <p class="mt-4 text-center text-xs text-white/45">{site.contact.phoneDisplay}</p>
+          <p class="mt-4 border-t border-white/10 pt-4 text-center text-xs text-white/45">
+            {site.legalName} · CNPJ {site.cnpj} · {yearsInBusiness} anos de mercado
+          </p>
+        </div>
+      </aside>
+    </div>
+  </Section>
+
+  {/* ─────────────── OUTROS ORGAOS ─────────────── */}
+  <Section tone="offwhite" space="md" width="wide">
+    <h2 class="font-display text-2xl text-navy-900" data-reveal>Outros órgãos</h2>
+    <p class="mt-3 max-w-2xl text-sm leading-relaxed text-navy-900/60" data-reveal>
+      A prefeitura é um dos três balcões por onde uma obra passa. Um imóvel comercial costuma
+      precisar dos três.
+    </p>
+    <ul class="mt-8 grid gap-5 sm:grid-cols-2">
+      {
+        outrosOrgaos.map((o, i) => (
+          <li data-reveal style={`--reveal-delay:${i * 90}ms`}>
+            <a
+              href={`/servicos/regularizacao/${o.id}`}
+              class="group flex h-full cursor-pointer gap-5 rounded-2xl border border-navy-900/10 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:border-orange-500/40 hover:shadow-card"
+            >
+              <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-navy-800 text-orange-500 transition-colors duration-300 group-hover:bg-orange-500 group-hover:text-white">
+                <Icon name={o.icon} class="h-5 w-5" />
+              </span>
+              <div>
+                <h3 class="text-base leading-snug text-navy-900">{o.name}</h3>
+                <p class="mt-1 text-sm leading-relaxed text-navy-900/60">{o.tagline}</p>
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  <FinalCta
+    whatsappHref={wa}
+    title="Vamos resolver o processo do seu imóvel na prefeitura?"
+    text="Mande o endereço, o que existe construído e o que você precisa. Você recebe o diagnóstico antes de qualquer orçamento."
+  />
+</BaseLayout>
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify(serviceLd)} />
+<script is:inline type="application/ld+json" set:html={JSON.stringify(itemListLd)} />
+<script is:inline type="application/ld+json" set:html={JSON.stringify(faqLd)} />

@@ -21,11 +21,33 @@ import { agencies } from '../../../data/agencies';
 import { site, whatsappUrl } from '../../../data/site';
 import { getImage } from '../../../lib/images';
 
+/**
+ * `bombeiros` e `prefeitura` estao de fora: aquelas URLs passaram a ter pagina
+ * propria em `regularizacao/bombeiros.astro` e `regularizacao/prefeitura.astro`,
+ * porque o template nao da conta delas. Ele descreve um balcao; bombeiros virou
+ * pagina de vendas para o trafego pago de combate a incendio, e prefeitura
+ * virou pagina-mae de quatro assuntos que sao buscados separadamente.
+ *
+ * Rota estatica ganha da dinamica no Astro, mas as duas emitiriam o mesmo
+ * arquivo no build — dai o filtro. Os cards de "Outros orgaos" continuam
+ * funcionando: apontam para `/servicos/regularizacao/{id}`, e a pagina existe
+ * do outro lado.
+ *
+ * Sobrou CETESB. Quando ela tambem ganhar pagina propria, este arquivo deixa de
+ * emitir qualquer rota e pode ser removido junto do template.
+ */
 export function getStaticPaths() {
-  return agencies.map((agency) => ({
-    params: { slug: agency.id },
-    props: { agency },
-  }));
+  /* Dentro da funcao de proposito: o Astro avalia `getStaticPaths` isolada do
+     resto do frontmatter, e uma const no escopo do modulo daria
+     "is not defined" no build. */
+  const temPaginaPropria = ['bombeiros', 'prefeitura'];
+
+  return agencies
+    .filter((agency) => !temPaginaPropria.includes(agency.id))
+    .map((agency) => ({
+      params: { slug: agency.id },
+      props: { agency },
+    }));
 }
 
 const { agency } = Astro.props;

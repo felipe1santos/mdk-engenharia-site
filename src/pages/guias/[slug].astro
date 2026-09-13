@@ -137,6 +137,39 @@ const faqLd = guide.faq.length
       </article>
 
       <aside class="lg:sticky lg:top-28 lg:self-start">
+        {/* ───────── PAGINA COMERCIAL DO MESMO ASSUNTO ─────────
+            Primeiro bloco da coluna, acima da lista de servicos, porque e o
+            unico link que trata exatamente do tema do guia — os servicos
+            relacionados sao mais largos que ele.
+
+            Existe para separar a intencao de busca das duas paginas, que de
+            outra forma disputariam o mesmo termo. A razao completa esta no campo
+            `pagina` de src/data/guides.ts. */}
+        {
+          guide.pagina && (
+            <a
+              href={guide.pagina.href}
+              class="group mb-6 flex cursor-pointer flex-col rounded-2xl border border-orange-500/30 bg-orange-500/5 p-7 transition-all duration-300 hover:-translate-y-1 hover:border-orange-500/60 hover:shadow-card"
+              data-reveal
+            >
+              <p class="text-[0.6875rem] font-bold uppercase tracking-[0.16em] text-orange-600">
+                Quer contratar?
+              </p>
+              <h2 class="mt-3 font-display text-lg leading-snug text-navy-900">
+                {guide.pagina.titulo}
+              </h2>
+              <p class="mt-2.5 text-sm leading-relaxed text-navy-900/65">{guide.pagina.texto}</p>
+              <span class="mt-5 inline-flex items-center gap-2 text-sm font-bold text-navy-900 transition-colors group-hover:text-orange-600">
+                Ver a página do serviço
+                <Icon
+                  name="arrow-right"
+                  class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                />
+              </span>
+            </a>
+          )
+        }
+
         {
           related.length > 0 && (
             <div class="rounded-2xl bg-offwhite p-7" data-reveal>

@@ -94,6 +94,221 @@ const WANTED = [
     alt: 'Edificação moderna em fase de construção',
     orientation: 'landscape',
   },
+  /*
+   * SPDA na pagina de combate a incendio.
+   *
+   * A secao usava `service-eletrico` — a prancha isometrica de instalacao
+   * eletrica do acervo. O cliente apontou o problema em 03/09/2026: aquela
+   * imagem fala de projeto eletrico predial, nao de protecao contra descarga
+   * atmosferica, e numa pagina de venda a ilustracao errada desmente o titulo.
+   *
+   * Foram baixadas duas candidatas. A busca "lightning rod building roof metal"
+   * trouxe telhados parisienses com chaminés e uma antena de TV — nenhum captor
+   * a vista, e o alt teria descrito coisa que a foto nao mostra. Descartada, e
+   * a busca fica registrada aqui para ninguem repetir. Se um dia for preciso
+   * uma foto do sistema em si, o caminho e material real de obra da MDK: banco
+   * de imagens nao tem SPDA identificavel.
+   */
+  {
+    key: 'spda-descarga',
+    query: 'lightning strike city skyline storm',
+    pick: 1,
+    alt: 'Descarga atmosférica sobre edificações em área urbana durante tempestade',
+    orientation: 'landscape',
+  },
+
+  /* ─────────────── ACERVO PROPRIO DA PAGINA DE COMBATE A INCENDIO ───────────────
+   *
+   * Todas as `incendio-*` existem para /servicos/regularizacao/bombeiros e para
+   * mais nada. A pagina nasceu reaproveitando imagem da home e das paginas de
+   * servico — hidrante da secao de orgaos, prancha de SPCI, foto de laje —, e o
+   * cliente vetou isso em 03/09/2026: pagina de campanha com a mesma foto que o
+   * visitante ja viu na home nao parece pagina de campanha, parece a mesma
+   * pagina de novo.
+   *
+   * NAO USAR ESTAS CHAVES EM OUTRA PAGINA. O ponto delas e serem exclusivas; se
+   * comecarem a circular pelo site, o problema volta.
+   *
+   * Sao fotografias de sistema instalado, nao de desenho tecnico — entao entram
+   * com `object-cover`, diferente das pranchas do acervo da MDK.
+   *
+   * A CHAVE DESCREVE O QUE A FOTO MOSTRA, e nao onde ela e usada. A primeira
+   * rodada nomeou por posicao (`incendio-hero`, `incendio-faixa`) e as fotos
+   * acabaram em outros lugares, deixando o nome mentindo sobre o conteudo.
+   *
+   * BUSCAS QUE FALHARAM, registradas para ninguem repetir:
+   *   - "sprinkler head ceiling close up" e "fire sprinkler water suppression
+   *     system installation" trouxeram aspersor de irrigacao de jardim, nas
+   *     duas tentativas. O Pexels nao tem bico de sprinkler de incendio
+   *     identificavel — o slot foi abandonado, e nao preenchido com foto errada.
+   *   - "industrial pump room pipes valves machinery" trouxe bomba circuladora
+   *     de aquecimento, com manometro em graus Celsius. Nao e casa de bombas.
+   *   - "lightning rod building roof metal" trouxe telhado com chaminé e antena
+   *     de TV, sem captor a vista. Ver a nota de `spda-descarga`.
+   *   - "firefighter gear helmet equipment dark" trouxe bombeiro fardado. NAO
+   *     USAR: nesta pagina, cujo assunto e o Corpo de Bombeiros, pessoa de
+   *     farda sugere que a MDK e a corporacao ou tem credenciamento dela —
+   *     mesma ressalva do topo de src/data/agencies.ts sobre exibir brasao de
+   *     orgao publico. A MDK e escritorio de engenharia: as fotos mostram
+   *     sistema instalado, nao guarnicao.
+   *
+   * Duas buscas diferentes ("fire hose cabinet..." e "fire sprinkler pipes...")
+   * chegaram a devolver o MESMO arquivo. Se aparecer foto repetida na pagina,
+   * conferir o md5 antes de culpar o componente.
+   */
+  {
+    key: 'incendio-abrigo-mangueiras',
+    query: 'fire hose cabinet industrial building red pipes',
+    alt: 'Abrigo de mangueiras de incêndio e hidrante de coluna instalados na fachada de uma edificação',
+    orientation: 'landscape',
+  },
+  {
+    key: 'incendio-hidrante-coluna',
+    query: 'fire pump water supply pipes valves red industrial',
+    alt: 'Hidrante de coluna com registros e engate rápido, instalado junto à parede',
+    orientation: 'landscape',
+  },
+  /*
+   * Barrilete/distribuidor de incendio — o mais proximo de "casa de bombas" que
+   * o Pexels tem. O cliente mandou como referencia o print de um anuncio de
+   * skid de bomba de incendio (bomba vermelha sobre base, com manometros e motor
+   * diesel); aquele arquivo e peca de marketing de outra empresa, com titulo
+   * embutido e sem licenca verificavel, entao nao vai para o site. Esta e o
+   * equivalente licenciado do mesmo assunto.
+   */
+  {
+    key: 'incendio-barrilete',
+    query: 'fire hydrant system pipes building basement',
+    pick: 1,
+    alt: 'Distribuidor metálico de água para mangueiras de combate a incêndio, com registros de manobra',
+    orientation: 'landscape',
+  },
+  {
+    key: 'incendio-gongo-alarme',
+    query: 'fire sprinkler pipes ceiling warehouse red',
+    alt: 'Gongo hidráulico de alarme ligado à tubulação vermelha de um sistema de chuveiros automáticos',
+    orientation: 'landscape',
+  },
+  {
+    key: 'incendio-sirene',
+    query: 'smoke detector ceiling fire alarm',
+    alt: 'Sirene audiovisual de alarme de incêndio instalada no teto',
+    orientation: 'landscape',
+  },
+  {
+    key: 'incendio-extintor',
+    query: 'fire extinguisher wall mounted red building',
+    alt: 'Extintor de pó químico ABC instalado em suporte de parede, com rótulo de instruções de uso',
+    orientation: 'landscape',
+  },
+  /* Escura o bastante para o H1 branco passar em contraste — e o hero da pagina. */
+  {
+    key: 'incendio-rota-fuga',
+    query: 'emergency exit sign corridor green',
+    alt: 'Sinalização de rota de fuga iluminada em corredor de edificação',
+    orientation: 'landscape',
+  },
+  /* Fundo da faixa navy, sob cortina escura: precisa ser ambiente de pouca luz. */
+  {
+    key: 'incendio-galpao',
+    query: 'industrial warehouse ceiling pipes dark interior',
+    alt: 'Interior de galpão com tubulação aparente sob a laje e sinalização de saída de emergência',
+    orientation: 'landscape',
+  },
+  {
+    key: 'incendio-manometros',
+    query: 'technician hands pressure gauge valve pipe maintenance',
+    alt: 'Manômetros em linha, instalados na tubulação isolada de uma sala técnica',
+    orientation: 'landscape',
+  },
+
+  /*
+   * ACERVO DE REGULARIZACAO DE IMOVEL — `imovel-*`.
+   *
+   * Existem para a pagina-mae /servicos/regularizacao/prefeitura e para a
+   * pagina de vendas /servicos/regularizacao/prefeitura/regularizacao-de-imovel,
+   * que recebe o trafego pago de "regularizar imovel" e "habite-se".
+   *
+   * Vale aqui a mesma regra que valeu para o acervo `incendio-*`: pagina de
+   * campanha nao repete a foto da home. Nenhuma destas chaves e usada em
+   * qualquer outra pagina do site.
+   *
+   * O assunto e documental, nao de canteiro: o que ilustra regularizacao e
+   * fachada pronta, levantamento em campo, prancha aprovada, escritura e chave
+   * na mao — nao maquina pesada. A referencia de enquadramento e a secao
+   * "Expansao sem riscos" do site da Nexxer, que o cliente mandou em 13/09/2026:
+   * foto vertical grande ao lado do texto, com equipe tecnica em campo.
+   */
+  {
+    /* Capa da pagina de vendas. Precisa ser casa pronta e bem acabada — e o
+       imovel que o visitante quer poder vender, nao a obra dele. Vai atras de
+       cortina escura, entao ceu claro nao atrapalha o contraste do H1. */
+    key: 'imovel-fachada-residencial',
+    query: 'modern house facade architecture exterior daylight',
+    /* O indice 3 e o unico da busca que e casa inteira vista da rua, com o
+       volume a direita e o portao a esquerda — que e onde entra o H1. Os
+       primeiros resultados eram jardim, fachada recortada e porta de entrada
+       noturna; nenhum se le como "imovel" a dois metros de distancia. */
+    pick: 3,
+    alt: 'Fachada de residência de dois pavimentos vista da entrada, com garagem e acesso pavimentado',
+    orientation: 'landscape',
+  },
+  {
+    /* A foto no formato da secao da Nexxer: equipe tecnica de colete e capacete
+       em campo, conferindo documento. `portrait` porque ela ocupa a coluna alta
+       ao lado do texto. */
+    key: 'imovel-equipe-vistoria',
+    query: 'engineers hard hat safety vest site inspection documents',
+    alt: 'Equipe de engenharia com colete e capacete conferindo documentação em vistoria',
+    orientation: 'portrait',
+  },
+  {
+    /* Levantamento do que existe construido — a primeira etapa do servico. */
+    key: 'imovel-levantamento-campo',
+    query: 'land surveyor total station tripod measuring property',
+    alt: 'Topógrafo operando estação total no levantamento de um terreno',
+    orientation: 'landscape',
+  },
+  {
+    /* Prancha e instrumento sobre a mesa: a etapa de projeto de regularizacao. */
+    key: 'imovel-prancha-projeto',
+    query: 'architectural floor plan blueprint desk scale ruler drawing',
+    pick: 2,
+    alt: 'Planta técnica sobre a prancheta, com escalímetro e instrumentos de desenho',
+    orientation: 'landscape',
+  },
+  {
+    /* Averbacao em cartorio — o fim da linha do servico. */
+    key: 'imovel-escritura-assinatura',
+    query: 'signing property contract document pen desk real estate',
+    pick: 1,
+    alt: 'Assinatura de documento de imóvel sobre a mesa, com contrato e caneta',
+    orientation: 'landscape',
+  },
+  {
+    /* O resultado: imovel regular, vendavel e financiavel. */
+    key: 'imovel-chaves-entrega',
+    query: 'house keys handover real estate agent client',
+    alt: 'Entrega das chaves de um imóvel ao novo proprietário',
+    orientation: 'landscape',
+  },
+  {
+    /*
+     * Faixa de cobertura: Sao Paulo vista do alto.
+     *
+     * Entrou no lugar de uma busca por fachada comercial, que devolveu uma loja
+     * com letreiro em japones — imagem de outro pais numa pagina que vende
+     * servico de prefeitura paulistana e um erro que o visitante nota. Esta e
+     * Sao Paulo de verdade, e ainda diz sozinha o recorte de atuacao: quadra
+     * densa, lote estreito, edificacao colada na divisa. E o retrato do imovel
+     * que precisa de regularizacao.
+     */
+    key: 'imovel-sao-paulo-aerea',
+    query: 'brazil sao paulo city buildings street aerial',
+    pick: 4,
+    alt: 'Vista aérea de São Paulo, com quadras densas de casas e edifícios',
+    orientation: 'landscape',
+  },
 ];
 
 /*
@@ -169,7 +384,16 @@ async function main() {
     const file = `${item.key}.jpg`;
     const dest = join(IMAGES_DIR, file);
 
-    if (!FORCE && (await exists(dest)) && manifest[item.key]) {
+    /*
+     * Parte do acervo ja foi convertida para WebP depois de baixada, e o arquivo
+     * .jpg original saiu do repositorio. Conferir so o .jpg fazia o script
+     * rebaixar essas imagens a cada execucao e devolver um .jpg duplicado ao
+     * lado do .webp — dois arquivos disputando a mesma chave em src/lib/images.ts.
+     * A chave e o nome sem extensao, entao a existencia tem de ser checada assim.
+     */
+    const jaBaixada = (await exists(dest)) || (await exists(join(IMAGES_DIR, `${item.key}.webp`)));
+
+    if (!FORCE && jaBaixada && manifest[item.key]) {
       console.log(`· ${item.key} — ja existe, pulando`);
       continue;
     }

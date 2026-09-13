@@ -50,6 +50,10 @@ export const mainNav: NavItem[] = [
     children: [
       { label: 'Projetos', href: '/servicos#projetos' },
       { label: 'Prefeitura', href: '/servicos/regularizacao/prefeitura' },
+      /* Entra no menu como item proprio, e nao so como card dentro da pagina de
+         prefeitura, porque e o assunto de maior volume de busca da frente. Quem
+         chega pelo menu procurando "regularizar imovel" acha em um clique. */
+      { label: 'Regularização de imóvel', href: '/servicos/regularizacao/prefeitura/regularizacao-de-imovel' },
       { label: 'Bombeiros', href: '/servicos/regularizacao/bombeiros' },
       { label: 'CETESB', href: '/servicos/regularizacao/cetesb' },
       { label: 'Execução e consultoria', href: '/servicos#execucao' },
@@ -86,6 +90,7 @@ export const footerNav = {
     { label: 'Instalações Elétricas', href: '/servicos/projeto-eletrico' },
     { label: 'Projetos de SPCI', href: '/servicos/projeto-spci' },
     { label: 'Documentação e Regularização', href: '/servicos/regularizacao' },
+    { label: 'Regularização de Imóvel', href: '/servicos/regularizacao/prefeitura/regularizacao-de-imovel' },
     { label: 'AVCB e Corpo de Bombeiros', href: '/servicos/regularizacao/bombeiros' },
     { label: 'Ver todos os serviços', href: '/servicos' },
   ],
