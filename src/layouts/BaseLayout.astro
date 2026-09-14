@@ -12,6 +12,7 @@ import { cities } from '../data/cities';
 import Navbar from '../components/layout/Navbar.astro';
 import Footer from '../components/layout/Footer.astro';
 import WhatsAppFab from '../components/layout/WhatsAppFab.astro';
+import GoogleTag from '../components/layout/GoogleTag.astro';
 
 interface Props {
   title?: string;
@@ -114,6 +115,11 @@ const jsonLd = {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    {/* O Google pede a tag o mais alto possivel no <head>: o que vier antes
+        dela acontece sem medicao. Só charset e viewport ficam acima, porque
+        precisam ser os primeiros bytes para o parser nao reinterpretar a pagina. */}
+    <GoogleTag />
 
     <title>{title}</title>
     <meta name="description" content={description} />

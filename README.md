@@ -247,6 +247,27 @@ Preview indexado é problema real: vira conteúdo duplicado competindo com o
 domínio definitivo e coloca a marca do cliente num domínio de terceiro nos
 resultados de busca.
 
+### Medição (Google Ads)
+
+A tag do Google (`gtag.js`) da conta **MDK Engenharia** (`711-240-3964`) está em
+`src/components/layout/GoogleTag.astro` e entra no `<head>` de toda página via
+`BaseLayout` — as 37 páginas do build, não só as de campanha.
+
+| | |
+|---|---|
+| ID da tag | `AW-18442675033` |
+| Override | `PUBLIC_GOOGLE_ADS_ID` (vazio = não injeta nada) |
+
+O ID fica com valor padrão no próprio componente, e não numa Build Variable do
+Coolify, por um motivo prático: variável que falta em build de Docker chega como
+string vazia, não como `undefined`. Se o padrão morasse no `Dockerfile`, um
+deploy sem a variável configurada publicaria o site **sem medição nenhuma** — e
+campanha rodando sem tag só aparece como problema semanas depois, no relatório.
+Com o padrão no componente, esquecer de configurar não quebra nada.
+
+Para ligar o override em produção, acrescentar ao `Dockerfile` o par
+`ARG`/`ENV` de `PUBLIC_GOOGLE_ADS_ID`, como já existe para as outras duas.
+
 ### Checklist de lançamento
 
 Estado em 05/08/2026:

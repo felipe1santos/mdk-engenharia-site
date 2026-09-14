@@ -1,0 +1,37 @@
+---
+/**
+ * Tag do Google (gtag.js) da conta de Google Ads da MDK.
+ *
+ * Fica num componente proprio, e nao solto no <head> do BaseLayout, para que o
+ * id viva num lugar so e possa ser trocado por ambiente sem mexer no layout.
+ *
+ * O id vem de PUBLIC_GOOGLE_ADS_ID quando definido; o valor abaixo e o padrao
+ * da conta atual (MDK Engenharia, 711-240-3964). Com PUBLIC_GOOGLE_ADS_ID=""
+ * nada e injetado — util para builds locais que nao devem contar como trafego.
+ */
+const tagId = import.meta.env.PUBLIC_GOOGLE_ADS_ID ?? 'AW-18442675033';
+
+/**
+ * O corpo do snippet entra por set:html, e nao por define:vars, de proposito:
+ * define:vars embrulha o codigo num IIFE, e ai a funcao `gtag` deixa de ser
+ * global. O `config` ainda funcionaria (ele so empurra pro dataLayer), mas
+ * qualquer chamada posterior — um `gtag('event', 'conversion', ...)` num botao
+ * de WhatsApp, por exemplo — quebraria com "gtag is not defined".
+ */
+const snippet = `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', '${tagId}');`;
+---
+
+{
+  tagId && (
+    <>
+      {/* is:inline em ambos: o gtag.js precisa rodar como script classico no
+          escopo global, sem passar pelo bundler do Astro. */}
+      <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${tagId}`} />
+      <script is:inline set:html={snippet} />
+    </>
+  )
+}
