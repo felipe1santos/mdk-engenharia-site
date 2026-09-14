@@ -1,6 +1,7 @@
 ---
 /**
- * Tag do Google (gtag.js) da conta de Google Ads da MDK.
+ * Tag do Google (gtag.js) da conta de Google Ads da MDK, mais a medicao de
+ * conversao dos CTAs de contato.
  *
  * Fica num componente proprio, e nao solto no <head> do BaseLayout, para que o
  * id viva num lugar so e possa ser trocado por ambiente sem mexer no layout.
@@ -12,17 +13,72 @@
 const tagId = import.meta.env.PUBLIC_GOOGLE_ADS_ID ?? 'AW-18442675033';
 
 /**
+ * Rotulos das acoes de conversao criadas na conta, na categoria "Contato".
+ *
+ * O rotulo (a parte depois da barra) e emitido pelo Google quando a acao de
+ * conversao e criada e nao pode ser inventado: e ele que diz ao Google QUAL
+ * conversao aconteceu. Sem o par id/rotulo correto, o evento chega e e
+ * descartado em silencio — nao ha erro no console para avisar.
+ *
+ * WhatsApp e Telefone sao acoes primarias (entram no lance inteligente);
+ * E-mail e secundaria, so para observacao. Isso e configuracao de conta, nao
+ * de codigo — trocar aqui nao muda nada la.
+ */
+const conversions = {
+  whatsapp: `${tagId}/E_P6COej-fYcENnGk9pE`,
+  telefone: `${tagId}/XFQbCOqj-fYcENnGk9pE`,
+  email: `${tagId}/8yVYCO2j-fYcENnGk9pE`,
+};
+
+/**
  * O corpo do snippet entra por set:html, e nao por define:vars, de proposito:
  * define:vars embrulha o codigo num IIFE, e ai a funcao `gtag` deixa de ser
- * global. O `config` ainda funcionaria (ele so empurra pro dataLayer), mas
- * qualquer chamada posterior — um `gtag('event', 'conversion', ...)` num botao
- * de WhatsApp, por exemplo — quebraria com "gtag is not defined".
+ * global. O `config` ainda funcionaria (ele so empurra pro dataLayer), mas o
+ * listener de clique abaixo quebraria com "gtag is not defined".
  */
-const snippet = `window.dataLayer = window.dataLayer || [];
+const bootstrap = `window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 
 gtag('config', '${tagId}');`;
+
+/**
+ * Medicao dos CTAs de contato.
+ *
+ * Um unico listener delegado no document cobre os ~370 links de contato do
+ * site (WhatsApp, telefone e e-mail aparecem nas 37 paginas, varias vezes por
+ * pagina) sem precisar marcar link por link — e cobre tambem os que forem
+ * adicionados depois, sem ninguem lembrar de anotar nada.
+ *
+ * Fase de captura (`true`): o evento e visto na descida, antes que qualquer
+ * handler da pagina possa chamar stopPropagation e engolir a medicao.
+ *
+ * Nao ha `event_callback` nem atraso na navegacao: os links de WhatsApp abrem
+ * em aba nova (`target="_blank"`) e `tel:`/`mailto:` entregam para um app
+ * externo — em nenhum dos tres a pagina descarrega, entao o gtag tem tempo de
+ * enviar. Segurar o clique so adicionaria latencia visivel para o usuario.
+ */
+const clickTracking = `(function () {
+  var conversions = ${JSON.stringify(conversions)};
+
+  function conversionFor(href) {
+    if (href.indexOf('wa.me') > -1 || href.indexOf('whatsapp.com') > -1) return conversions.whatsapp;
+    if (href.indexOf('tel:') === 0) return conversions.telefone;
+    if (href.indexOf('mailto:') === 0) return conversions.email;
+    return null;
+  }
+
+  document.addEventListener('click', function (event) {
+    var target = event.target;
+    if (!target || !target.closest) return;
+
+    var link = target.closest('a[href]');
+    if (!link) return;
+
+    var sendTo = conversionFor(link.getAttribute('href') || '');
+    if (sendTo) gtag('event', 'conversion', { send_to: sendTo });
+  }, true);
+})();`;
 ---
 
 {
@@ -31,7 +87,8 @@ gtag('config', '${tagId}');`;
       {/* is:inline em ambos: o gtag.js precisa rodar como script classico no
           escopo global, sem passar pelo bundler do Astro. */}
       <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${tagId}`} />
-      <script is:inline set:html={snippet} />
+      <script is:inline set:html={bootstrap} />
+      <script is:inline set:html={clickTracking} />
     </>
   )
 }

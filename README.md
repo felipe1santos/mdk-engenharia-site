@@ -268,6 +268,35 @@ Com o padrão no componente, esquecer de configurar não quebra nada.
 Para ligar o override em produção, acrescentar ao `Dockerfile` o par
 `ARG`/`ENV` de `PUBLIC_GOOGLE_ADS_ID`, como já existe para as outras duas.
 
+#### Conversões de contato
+
+A tag sozinha só mede visualização de página e alimenta o remarketing. Clique em
+CTA não é evento automático: precisa de uma ação de conversão criada na conta (que
+emite o rótulo) e de um `gtag('event','conversion')` disparado no clique.
+
+As três ações vivem na categoria **Contato**, que é meta padrão da conta:
+
+| Ação (Google Ads) | Rótulo | No lance | Dispara em |
+|---|---|---|---|
+| Clique WhatsApp | `…/E_P6COej-fYcENnGk9pE` | Principal | `wa.me`, `whatsapp.com` |
+| Clique Telefone | `…/XFQbCOqj-fYcENnGk9pE` | Principal | `tel:` |
+| Clique E-mail | `…/8yVYCO2j-fYcENnGk9pE` | Secundária | `mailto:` |
+
+Todas com contagem **Uma** (o mesmo lead clicando três vezes conta uma), valor
+R$ 1 para todas — nenhuma vale mais que outra — e janela de clique de 90 dias.
+
+No site, um **único listener delegado** no `document` cobre os ~370 links de
+contato das 37 páginas, e cobre também os que forem adicionados depois. Roda na
+**fase de captura**, para que nenhum handler da página consiga engolir a medição
+com `stopPropagation`. Não segura a navegação com `event_callback`: os links de
+WhatsApp abrem em aba nova e `tel:`/`mailto:` entregam para app externo, então a
+página não descarrega e o gtag tem tempo de enviar.
+
+**O rótulo não pode ser inventado.** Se o par id/rótulo estiver errado, o evento
+chega ao Google e é descartado em silêncio — não aparece erro no console. Ao
+recriar uma ação de conversão, pegar o rótulo novo em Metas → a ação → snippet de
+evento e atualizar o componente.
+
 ### Checklist de lançamento
 
 Estado em 05/08/2026:
